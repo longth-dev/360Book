@@ -1,0 +1,34 @@
+.hover-yellow:hover {
+    background-color: #ffc107 !important;
+    color: black !important;
+    border-color: #ffc107 !important;
+}
+
+.home-button.active {
+    background-color: #ffc107 !important;
+    color: black !important;
+    border-color: #ffc107 !important;
+    box-shadow: none !important;
+}
+
+
+.btn {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2) inset;
+
+}
+
+.btn-warning {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    color: black;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
