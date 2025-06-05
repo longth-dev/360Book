@@ -6,7 +6,7 @@ import CountDownExamDay from "./Pages/CountDownExamDay/CountDownExamDay";
 import CountDownRegisterForAdmission from "./Pages/CountDownRegisterForAdmission/CountDownRegisterForAdmission";
 import PublishScoreDay from "./Pages/PublishScoreDay/PublishScoreDay";
 import CountDownPublishRealScore from "./Pages/CountDownPublishRealScore/CountDownPublishRealScore";
-
+import AdmissionScheduleViewer from "./Pages/Admission Schedule Viewer/AdmissionScheduleViewer";
 function App() {
   return (
     <Router>
@@ -18,6 +18,7 @@ function App() {
         <Route path="/dem-nguoc/ngay-dang-ki-nguyen-vong" element={<CountDownRegisterForAdmission />} />
         <Route path="/dem-nguoc/cong-bo-diem-thi" element={<PublishScoreDay />} />
         <Route path="/dem-nguoc/diem-chuan-dot-1" element={<CountDownPublishRealScore />} />
+        <Route path="/lich-thi" element={<AdmissionScheduleViewer />} />
       </Routes>
     </Router>
   )
