@@ -1,0 +1,40 @@
+.admission-schedule-viewer {
+    min-height: 80vh;
+    padding: 20px;
+}
+
+.selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.card {
+    transition: transform 0.2s;
+    border-radius: 10px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-title {
+    font-size: 1.1rem;
+    color: #225BBF;
+}
+
+.card-text {
+    color: #333;
+}
+
+.form-select {
+    min-width: 200px;
+}
+
+@media (max-width: 768px) {
+    .selector {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
