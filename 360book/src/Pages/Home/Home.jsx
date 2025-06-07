@@ -23,6 +23,22 @@ const Home = () => {
 
     const handleClick = (btnName) => {
         setActiveButton(btnName);
+        if (btnName === 'THM') {
+            navigate('/khoi-to-hop');
+        } else {
+            // Handle other button clicks with existing fetch calls
+            switch (btnName) {
+                case 'PTTS':
+                    fetchPTTS();
+                    break;
+                case 'DiemChuan':
+                    fetchDiemChuan();
+                    break;
+                case 'TheManh':
+                    fetchTheManh();
+                    break;
+            }
+        }
     };
 
 
@@ -108,7 +124,7 @@ const Home = () => {
                         </button>
 
                         <button
-                            onClick={() => { handleClick('THM'); fetchTHM(); }}
+                            onClick={() => handleClick('THM')}
                             className={`home-button btn btn-outline-light px-4 py-2 fw-semibold hover-yellow ${activeButton === 'THM' ? 'active' : ''}`}
                             style={{ borderRadius: "5px", color: "grey", backgroundColor: "white" }}
                         >
