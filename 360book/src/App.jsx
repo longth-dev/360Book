@@ -8,6 +8,7 @@ import PublishScoreDay from "./Pages/PublishScoreDay/PublishScoreDay";
 import CountDownPublishRealScore from "./Pages/CountDownPublishRealScore/CountDownPublishRealScore";
 import AdmissionScore from "./Pages/AdmissionScore/AdmissionScore";
 import ScoreCalculator from "./Pages/ScoreCalculator/ScoreCalculator";
+import UniCompare from "./Pages/UniversityComparison/UniCompare";
 function App() {
   return (
     <Router>
@@ -21,6 +22,7 @@ function App() {
         <Route path="/dem-nguoc/diem-chuan-dot-1" element={<CountDownPublishRealScore />} />
         <Route path="/diem-chuan" element={<AdmissionScore />} />
         <Route path="/tinh-diem" element={<ScoreCalculator />} />
+        <Route path="/so-sanh" element={<UniCompare />} />
         {/* Add more routes as needed */}
       </Routes>
     </Router>
