@@ -8,6 +8,9 @@ import PublishScoreDay from "./Pages/PublishScoreDay/PublishScoreDay";
 import CountDownPublishRealScore from "./Pages/CountDownPublishRealScore/CountDownPublishRealScore";
 import AdmissionScheduleViewer from "./Pages/Admission Schedule Viewer/AdmissionScheduleViewer";
 import SubjectCombinationViewer from "./Pages/SubjectCombinationViewer/SubjectCombinationViewer";
+import UniversityList from "./Pages/UniversityList/UniversityList";
+import MajorList from "./Pages/SubjectCombinationViewer/MajorList";
+import UniversityDetail from "./Pages/UniversityDetail/UniversityDetail";
 function App() {
   return (
     <Router>
@@ -19,8 +22,12 @@ function App() {
         <Route path="/dem-nguoc/ngay-dang-ki-nguyen-vong" element={<CountDownRegisterForAdmission />} />
         <Route path="/dem-nguoc/cong-bo-diem-thi" element={<PublishScoreDay />} />
         <Route path="/dem-nguoc/diem-chuan-dot-1" element={<CountDownPublishRealScore />} />
-        <Route path="/khoi-to-hop" element={<SubjectCombinationViewer />} />
+        <Route path="/tra-cuu-to-hop-mon" element={<SubjectCombinationViewer />} />
         <Route path="/lich-thi" element={<AdmissionScheduleViewer />} />
+        <Route path="/subject-combination-viewer" element={<SubjectCombinationViewer />} />
+        <Route path="/universities/:comboId" element={<UniversityList />} />
+        <Route path="/majors/:comboId" element={<MajorList />} />
+        <Route path="/university-detail/:comboId/:uniId" element={<UniversityDetail />} />
       </Routes>
     </Router>
   )

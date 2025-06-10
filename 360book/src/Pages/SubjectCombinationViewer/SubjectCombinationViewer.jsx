@@ -85,93 +85,162 @@
 // export default ViewToHopMon;
 
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import "./SubjectCombinationViewer.css";
 import Navbar from "../../Components/Navbar/Navbar";
 import Footer from "../../Components/Footer/Footer";
-import "./SubjectCombinationViewer.css";
 
-// Mock data for testing
-const mockToHopMon = [
-    {
-        id: "A00",
-        name: "Toán - Lý - Hóa",
-        subjects: ["Toán", "Vật lý", "Hóa học"]
+// Mock data for subject combinations and universities
+const mockSubjectCombinations = {
+    'D01': {
+        name: 'Toán - Văn - Anh',
+        universities: [
+            {
+                id: 'KHA',
+                name: 'Đại học Khánh Hòa',
+                majors: [
+                    {
+                        name: 'Công nghệ thông tin',
+                        code: '7480201',
+                        scores: [
+                            { year: 2023, score: 15.0, note: 'Điểm sàn' },
+                            { year: 2022, score: 15.0, note: 'Điểm trúng tuyển' },
+                            { year: 2021, score: 15.0, note: 'Điểm trúng tuyển' }
+                        ]
+                    },
+                    {
+                        name: 'Kỹ thuật phần mềm',
+                        code: '7480203',
+                        scores: [
+                            { year: 2023, score: 16.0, note: 'Điểm sàn' },
+                            { year: 2022, score: 15.5, note: 'Điểm trúng tuyển' },
+                            { year: 2021, score: 15.0, note: 'Điểm trúng tuyển' }
+                        ]
+                    }
+                ],
+                additionalInfo: 'Điểm xét tuyển = Điểm thi THPT × 3'
+            }
+        ]
     },
-    {
-        id: "A01",
-        name: "Toán - Lý - Anh",
-        subjects: ["Toán", "Vật lý", "Tiếng Anh"]
-    },
-    {
-        id: "B00",
-        name: "Toán - Hóa - Sinh",
-        subjects: ["Toán", "Hóa học", "Sinh học"]
-    },
-    {
-        id: "D01",
-        name: "Toán - Văn - Anh",
-        subjects: ["Toán", "Ngữ văn", "Tiếng Anh"]
+    'A00': {
+        name: 'Toán - Lý - Hóa',
+        universities: [
+            {
+                id: 'FPT',
+                name: 'Đại học FPT',
+                majors: [
+                    {
+                        name: 'Công nghệ thông tin',
+                        code: '7480201',
+                        scores: [
+                            { year: 2023, score: 21.5, note: 'Điểm sàn' },
+                            { year: 2022, score: 21.0, note: 'Điểm trúng tuyển' },
+                            { year: 2021, score: 20.5, note: 'Điểm trúng tuyển' }
+                        ]
+                    },
+                    {
+                        name: 'Kỹ thuật phần mềm',
+                        code: '7480203',
+                        scores: [
+                            { year: 2023, score: 22.0, note: 'Điểm sàn' },
+                            { year: 2022, score: 21.5, note: 'Điểm trúng tuyển' },
+                            { year: 2021, score: 21.0, note: 'Điểm trúng tuyển' }
+                        ]
+                    }
+                ],
+                additionalInfo: 'Có xét tuyển học bạ THPT'
+            }
+        ]
     }
-];
+};
 
-const SubjectCombinationViewer = () => {
-    const [selectedId, setSelectedId] = useState("");
+export default function SubjectCombinationViewer() {
+    const [selectedCombo, setSelectedCombo] = useState("");
 
-    const selectedItem = mockToHopMon.find((item) => item.id === selectedId);
+    const handleComboChange = (e) => {
+        setSelectedCombo(e.target.value);
+    };
+
+    const currentCombo = selectedCombo ? mockSubjectCombinations[selectedCombo] : null;
+    const universityCount = currentCombo ? currentCombo.universities.length : 0;
 
     return (
         <>
             <Navbar />
             <div className="container py-4">
-                <h1 className="text-center mb-4">Tổ hợp môn xét tuyển</h1>
+                <h2 className="text-center mb-4">Tra cứu tổ hợp môn xét tuyển</h2>
 
                 <div className="row justify-content-center mb-4">
                     <div className="col-md-6">
-                        <label htmlFor="tohopmon-select" className="form-label">
-                            Chọn tổ hợp môn:
-                        </label>
                         <select
-                            id="tohopmon-select"
                             className="form-select"
-                            value={selectedId}
-                            onChange={(e) => setSelectedId(e.target.value)}
+                            value={selectedCombo}
+                            onChange={handleComboChange}
                         >
-                            <option value="">-- Tất cả --</option>
-                            {mockToHopMon.map((item) => (
-                                <option key={item.id} value={item.id}>
-                                    {item.id} - {item.name}
+                            <option value="">Chọn tổ hợp môn</option>
+                            {Object.entries(mockSubjectCombinations).map(([code, data]) => (
+                                <option key={code} value={code}>
+                                    {code} - {data.name}
                                 </option>
                             ))}
                         </select>
                     </div>
                 </div>
 
-                <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                    {(selectedItem ? [selectedItem] : mockToHopMon).map((item) => (
-                        <div key={item.id} className="col">
-                            <div className="card h-100 shadow-sm">
-                                <div className="card-body">
-                                    <h5 className="card-title">{item.id}</h5>
-                                    <h6 className="card-subtitle mb-3 text-muted">{item.name}</h6>
-                                    <div className="card-text">
-                                        <p className="fw-bold mb-2">Các môn thi:</p>
-                                        <ul className="list-unstyled">
-                                            {item.subjects.map((subject, index) => (
-                                                <li key={index} className="mb-2">
-                                                    <span className="badge bg-primary me-2">{index + 1}</span>
-                                                    {subject}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
+                {selectedCombo && (
+                    <div className="card shadow-sm">
+                        <div className="card-body">
+                            <div className="d-flex justify-content-between align-items-center mb-4">
+                                <h3 className="mb-0">
+                                    Xem {universityCount} trường đại học xét tuyển {selectedCombo}
+                                </h3>
+                                <div>
+                                    <Link
+                                        to={`/universities/${selectedCombo}`}
+                                        className="btn btn-primary"
+                                    >
+                                        Xem danh sách trường
+                                    </Link>
                                 </div>
                             </div>
+
+                            <div className="table-responsive">
+                                <table className="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>STT</th>
+                                            <th>Tên trường</th>
+                                            <th>Ngành xét tuyển</th>
+                                            <th>Chi tiết</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {currentCombo.universities.map((uni, index) => (
+                                            <tr key={uni.id}>
+                                                <td>{index + 1}</td>
+                                                <td>{uni.name}</td>
+                                                <td>
+                                                    {uni.majors.map(major => major.name).join(", ")}
+                                                </td>
+                                                <td>
+                                                    <Link
+                                                        to={`/university-detail/${selectedCombo}/${uni.id}`}
+                                                        className="btn btn-sm btn-outline-primary"
+                                                    >
+                                                        Xem chi tiết
+                                                    </Link>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    ))}
-                </div>
+                    </div>
+                )}
             </div>
             <Footer />
         </>
     );
-};
+}
 
-export default SubjectCombinationViewer;

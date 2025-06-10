@@ -1,0 +1,59 @@
+.table-light {
+    background-color: #f8f9fa;
+}
+
+.breadcrumb-wrapper {
+    background-color: #f8f9fa;
+    padding: 0.75rem 1rem;
+    border-radius: 0.25rem;
+}
+
+.breadcrumb {
+    margin-bottom: 0;
+}
+
+.card-header {
+    border-bottom: 0;
+}
+
+.major-section {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 0.25rem;
+}
+
+.table {
+    background-color: white;
+    margin-bottom: 0;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+}
+
+.table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+.badge {
+    font-size: 0.9rem;
+    padding: 0.5em 0.8em;
+    font-weight: 500;
+}
+
+.alert-info {
+    background-color: #e8f4f8;
+    border-color: #bee5eb;
+    color: #0c5460;
+}
+
+@media (max-width: 768px) {
+    .table-responsive {
+        margin: 0 -1rem;
+    }
+    
+    .major-section {
+        padding: 1rem;
+    }
+}

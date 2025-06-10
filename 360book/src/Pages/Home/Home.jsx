@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import AIChatbox from '../../Components/AIChatbox/AIChatbox';
 
 
 
@@ -23,22 +24,7 @@ const Home = () => {
 
     const handleClick = (btnName) => {
         setActiveButton(btnName);
-        if (btnName === 'THM') {
-            navigate('/khoi-to-hop');
-        } else {
-            // Handle other button clicks with existing fetch calls
-            switch (btnName) {
-                case 'PTTS':
-                    fetchPTTS();
-                    break;
-                case 'DiemChuan':
-                    fetchDiemChuan();
-                    break;
-                case 'TheManh':
-                    fetchTheManh();
-                    break;
-            }
-        }
+
     };
 
 
@@ -209,6 +195,7 @@ const Home = () => {
                     </div>
                 </div>
             </div>
+            <AIChatbox />
             <Footer />
         </>
     );
