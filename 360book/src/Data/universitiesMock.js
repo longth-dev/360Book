@@ -1,7 +1,12 @@
+import bachkhoa from "../assets/University images/bku.png";
+import ktqd from "../assets/University images/neu.png";
+import fpt from "../assets/University images/fpt.png";
+import ftu from "../assets/University images/ftu.png";
 const universitiesMock = [
   {
     name: "Đại học Bách Khoa",
     location: "TP.HCM",
+    image:bachkhoa,
     majors: [
       {
         name: "Công nghệ Thông tin",
@@ -22,6 +27,7 @@ const universitiesMock = [
   {
     name: "Đại học Kinh tế Quốc dân",
     location: "Hà Nội",
+    image:ktqd,
     majors: [
       {
         name: "Kinh tế",
@@ -42,6 +48,7 @@ const universitiesMock = [
   {
     name: "Đại học Ngoại thương",
     location: "Hà Nội",
+    image: ftu,
     majors: [
       {
         name: "Kinh tế",
@@ -62,6 +69,7 @@ const universitiesMock = [
   {
     name: "Đại học FPT",
     location: "TP.HCM",
+    image: fpt,
     majors: [
       {
         name: "Công nghệ Thông tin",

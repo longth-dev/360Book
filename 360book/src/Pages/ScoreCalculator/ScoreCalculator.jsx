@@ -1,10 +1,11 @@
 import React from "react";
 import "./ScoreCalculator.css";
-import scoreEnglish from "../../assets/score-with-english.png"; // Replace with actual image path
-import scoreCalculator from "../../assets/score-calculator.png"; // Replace with actual image path
-import scoreAverage from "../../assets/average score.png"; // Replace with actual image path
+import scoreEnglish from "../../assets/Scores/score-with-english.png"; // Replace with actual image path
+import scoreCalculator from "../../assets/Scores/score-calculator.png"; // Replace with actual image path
+import scoreAverage from "../../assets/Scores/average score.png"; // Replace with actual image path
 import Navbar from "../../Components/Navbar/Navbar";
 import Footer from "../../Components/Footer/Footer";
+import ScoreForm from "./ScoreForm";
 const ScoreCalculator = () => {
   return (
     <>
@@ -90,6 +91,9 @@ const ScoreCalculator = () => {
               </li>
             </ul>
           </article>
+          <div className="scorecalc-subsection score-form-wrapper">
+              <ScoreForm />
+          </div>
         </section>
       </div>
       <Footer />
