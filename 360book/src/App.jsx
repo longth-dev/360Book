@@ -7,6 +7,11 @@ import CountDownRegisterForAdmission from "./Pages/CountDownRegisterForAdmission
 import PublishScoreDay from "./Pages/PublishScoreDay/PublishScoreDay";
 import CountDownPublishRealScore from "./Pages/CountDownPublishRealScore/CountDownPublishRealScore";
 import ListUniversities from "./Pages/ListUniversities/ListUniversities";
+import AdminSideBar from "./Pages/AdminSideBar/AdminSideBar";
+import ManageUniversity from "./Pages/ManageUniversity/ManageUniversity";
+import LayoutAdmin from "./Pages/Layout/LayoutAdmin";
+import ManageMajor from "./Pages/ManageMajor/ManageMajor";
+import ManageSchedual from "./Pages/ManageSchedual/ManageSchedual";
 
 function App() {
   return (
@@ -20,6 +25,15 @@ function App() {
         <Route path="/dem-nguoc/ngay-dang-ki-nguyen-vong" element={<CountDownRegisterForAdmission />} />
         <Route path="/dem-nguoc/cong-bo-diem-thi" element={<PublishScoreDay />} />
         <Route path="/dem-nguoc/diem-chuan-dot-1" element={<CountDownPublishRealScore />} />
+
+
+
+        {/** MANAGE ADMIN */}
+        <Route path='/admin' element={<LayoutAdmin />}>
+          <Route path="/admin/manage-dai-hoc" element={<ManageUniversity />} />
+          <Route path="/admin/manage-nganh-hoc" element={<ManageMajor />} />
+          <Route path="/admin/manage-thoi-gian-thi" element={<ManageSchedual />} />
+        </Route>
 
       </Routes>
     </Router>

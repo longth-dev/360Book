@@ -1,5 +1,4 @@
-Nền giống hình mẫu
-.countdown-detail-container {
+.countdown-detail-green-container {
     background: repeating-linear-gradient(45deg,
             #4caf50,
             #4caf50 25%,
@@ -117,7 +116,8 @@ Nền giống hình mẫu
     text-align: center;
     color: #444;
     line-height: 1.6;
-    margin: 0 auto; /* Thêm dòng này để canh giữa khối */
+    margin: 0 auto;
+    /* Thêm dòng này để canh giữa khối */
 }
 
 .exam-info-wrapper {

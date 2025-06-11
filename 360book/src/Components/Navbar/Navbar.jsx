@@ -11,6 +11,25 @@ const Navbar = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        let prevScrollY = window.scrollY;
+        const navbar = document.querySelector('.navbar');
+
+        const handleScroll = () => {
+            if (!navbar) return;
+            if (window.scrollY < prevScrollY) {
+                navbar.style.top = '0';
+            } else {
+                navbar.style.top = '-100px';
+            }
+            prevScrollY = window.scrollY;
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+
+    useEffect(() => {
         const token = localStorage.getItem("token");
         if (token) {
             setIsLogined(true);
@@ -37,6 +56,7 @@ const Navbar = () => {
             navigate('/login');
         }
     }
+
 
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4">
@@ -74,9 +94,9 @@ const Navbar = () => {
                         <Link className="nav-link" to="/lich-thi">Lịch thi</Link>
                     </li>
                     <li className="nav-item dropdown">
-                        <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" style={{ color: "blue" }}>
+                        <spaan className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" style={{ color: "blue" }}>
                             Xem thêm
-                        </a>
+                        </spaan>
                         <ul className="dropdown-menu" style={{ borderRadius: "10px", marginTop: "20px" }}>
                             <li><Link className="dropdown-item" to="/gioi-thieu">Giới thiệu</Link></li>
                             <li><Link className="dropdown-item" to="/dem-nguoc">Đếm ngược ngày thi</Link></li>
@@ -94,7 +114,7 @@ const Navbar = () => {
                     </button>
                 ) : (
                     <Link to="/login" className="btn btn-primary rounded-pill px-4 py-2 fw-semibold">
-                        <i className="fa-solid fa-right-to-bracket me-2"></i> login
+                        <i className="fa-solid fa-right-to-bracket me-2"></i> Login
                     </Link>
                 )}
             </div>

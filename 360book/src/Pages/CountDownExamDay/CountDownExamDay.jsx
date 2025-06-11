@@ -52,7 +52,7 @@ const CountDownExamDay = () => {
         <>
             <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
             <Navbar />
-            <div className="countdown-detail-container">
+            <div className="countdown-detail-green-container">
                 <div className="countdown-content-wrapper">
                     <h2 className="countdown-title">Đếm ngược ngày Thi tốt nghiệp THPT 2025</h2>
                     <p className="countdown-subtitle">26 - 27/6/2025 (Thứ 5 - Thứ 6)</p>
