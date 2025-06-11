@@ -12,6 +12,7 @@ import ManageUniversity from "./Pages/ManageUniversity/ManageUniversity";
 import LayoutAdmin from "./Pages/Layout/LayoutAdmin";
 import ManageMajor from "./Pages/ManageMajor/ManageMajor";
 import ManageSchedual from "./Pages/ManageSchedual/ManageSchedual";
+import FavoriteUniversity from "./Pages/FavoriteUniversity/FavoriteUniversity";
 
 function App() {
   return (
@@ -34,6 +35,11 @@ function App() {
           <Route path="/admin/manage-nganh-hoc" element={<ManageMajor />} />
           <Route path="/admin/manage-thoi-gian-thi" element={<ManageSchedual />} />
         </Route>
+
+
+        {/** USER PAGE */}
+        <Route path="/nguoi-dung/truong-yeu-thich" element={<FavoriteUniversity />} />
+
 
       </Routes>
     </Router>
