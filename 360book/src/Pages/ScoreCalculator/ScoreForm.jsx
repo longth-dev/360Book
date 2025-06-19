@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./ScoreForm.css"; // CSS riêng cho form
+import "./ScoreForm.css";
 
 const ScoreForm = () => {
   const [data, setData] = useState({
@@ -10,26 +10,69 @@ const ScoreForm = () => {
     isEnglishExempted: false,
     bonus: "",
     priority: "",
-    avg10: "",
-    avg11: "",
-    avg12: "",
     result: null,
   });
+
+  const [grades, setGrades] = useState({
+    grade10: {},
+    grade11: {},
+    grade12: {},
+  });
+
+  const [errors, setErrors] = useState({});
+
+  const subjects = [
+    "Văn",
+    "Toán",
+    "Tiếng Anh",
+    "Sử",
+    "Địa",
+    "GDKTPL",
+    "Lí",
+    "Hóa",
+    "Sinh",
+    "Tin",
+    "Công nghệ",
+  ];
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const val = type === "checkbox" ? checked : value;
 
-    // Chỉ cho phép số từ 0 đến 10 và số thập phân
-    if (
-      type !== "checkbox" &&
-      (isNaN(val) || parseFloat(val) < 0 || parseFloat(val) > 10)
-    )
-      return;
+    if (type !== "checkbox") {
+      const num = parseFloat(val);
+      if (isNaN(num) || num < 0 || num > 10) {
+        setErrors((prev) => ({ ...prev, [name]: "Điểm phải từ 0 đến 10" }));
+      } else {
+        setErrors((prev) => ({ ...prev, [name]: null }));
+      }
+    }
 
-    setData((prev) => ({
+    setData((prev) => ({ ...prev, [name]: val }));
+  };
+
+  const handleGradeChange = (e, year, subject) => {
+    const value = e.target.value;
+    const num = parseFloat(value);
+
+    if (isNaN(num) || num < 0 || num > 10) {
+      setErrors((prev) => ({
+        ...prev,
+        [`${year}-${subject}`]: "Điểm phải từ 0 đến 10",
+      }));
+    } else {
+      setErrors((prev) => ({
+        ...prev,
+        [`${year}-${subject}`]: null,
+      }));
+    }
+
+    setGrades((prev) => ({
       ...prev,
-      [name]: val,
+      [year]: {
+        ...prev[year],
+        [subject]: value,
+      },
     }));
   };
 
@@ -42,9 +85,6 @@ const ScoreForm = () => {
       isEnglishExempted,
       bonus,
       priority,
-      avg10,
-      avg11,
-      avg12,
     } = data;
 
     const lit = parseFloat(literature) || 0;
@@ -54,13 +94,21 @@ const ScoreForm = () => {
     const kk = parseFloat(bonus) || 0;
     const ut = parseFloat(priority) || 0;
 
-    const avgSchoolYears =
-      (parseFloat(avg10) * 1 +
-        parseFloat(avg11) * 2 +
-        parseFloat(avg12) * 3) /
-      6;
+    const avgYear = (grade) => {
+      const values = Object.values(grades[grade])
+        .map((v) => parseFloat(v))
+        .filter((v) => !isNaN(v));
+      if (values.length === 0) return 0;
+      return values.reduce((a, b) => a + b, 0) / values.length;
+    };
 
-    let avgExam;
+    const avg10 = avgYear("grade10");
+    const avg11 = avgYear("grade11");
+    const avg12 = avgYear("grade12");
+
+    const avgSchoolYears = (avg10 + avg11 * 2 + avg12 * 3) / 6;
+
+    let avgExam = 0;
     if (isEnglishExempted) {
       avgExam = (lit + mat + ele) / 3 + kk / 4;
     } else {
@@ -72,55 +120,122 @@ const ScoreForm = () => {
   };
 
   return (
-    <div className="scorecalc-subsection">
+    <div className="scoreform-wrapper">
       <h2>5. Tính điểm xét tốt nghiệp</h2>
-      <form className="score-form">
-        <div className="form-group">
+      <form className="scoreform-grid">
+        <div className="scoreform-group">
           <label>Điểm Ngữ văn:</label>
-          <input type="number" step="0.01" max="10" name="literature" onChange={handleChange} />
+          <input
+            type="number"
+            name="literature"
+            step="0.01"
+            onChange={handleChange}
+          />
+          {errors.literature && <p className="error-msg">{errors.literature}</p>}
         </div>
-        <div className="form-group">
+        <div className="scoreform-group">
           <label>Điểm Toán:</label>
-          <input type="number" step="0.01" max="10" name="math" onChange={handleChange} />
+          <input
+            type="number"
+            name="math"
+            step="0.01"
+            onChange={handleChange}
+          />
+          {errors.math && <p className="error-msg">{errors.math}</p>}
         </div>
-        <div className="form-group">
+        <div className="scoreform-group">
           <label>Điểm môn tự chọn:</label>
-          <input type="number" step="0.01" max="10" name="elective" onChange={handleChange} />
+          <input
+            type="number"
+            name="elective"
+            step="0.01"
+            onChange={handleChange}
+          />
+          {errors.elective && <p className="error-msg">{errors.elective}</p>}
         </div>
-        <div className="form-group checkbox">
-          <input type="checkbox" name="isEnglishExempted" onChange={handleChange} />
+        <div className="scoreform-group scoreform-checkbox">
+          <input
+            type="checkbox"
+            name="isEnglishExempted"
+            onChange={handleChange}
+          />
           <label>Miễn thi môn tiếng Anh?</label>
         </div>
         {!data.isEnglishExempted && (
-          <div className="form-group">
+          <div className="scoreform-group">
             <label>Điểm tiếng Anh:</label>
-            <input type="number" step="0.01" max="10" name="english" onChange={handleChange} />
+            <input
+              type="number"
+              name="english"
+              step="0.01"
+              onChange={handleChange}
+            />
+            {errors.english && <p className="error-msg">{errors.english}</p>}
           </div>
         )}
-        <div className="form-group">
+        <div className="scoreform-group">
           <label>Điểm khuyến khích (nếu có):</label>
-          <input type="number" step="0.01" max="10" name="bonus" onChange={handleChange} />
+          <input
+            type="number"
+            name="bonus"
+            step="0.01"
+            onChange={handleChange}
+          />
+          {errors.bonus && <p className="error-msg">{errors.bonus}</p>}
         </div>
-        <div className="form-group">
+        <div className="scoreform-group">
           <label>Điểm ưu tiên (nếu có):</label>
-          <input type="number" step="0.01" max="10" name="priority" onChange={handleChange} />
-        </div>
-        <div className="form-group">
-          <label>Điểm TB lớp 10:</label>
-          <input type="number" step="0.01" max="10" name="avg10" onChange={handleChange} />
-        </div>
-        <div className="form-group">
-          <label>Điểm TB lớp 11:</label>
-          <input type="number" step="0.01" max="10" name="avg11" onChange={handleChange} />
-        </div>
-        <div className="form-group">
-          <label>Điểm TB lớp 12:</label>
-          <input type="number" step="0.01" max="10" name="avg12" onChange={handleChange} />
+          <input
+            type="number"
+            name="priority"
+            step="0.01"
+            onChange={handleChange}
+          />
+          {errors.priority && <p className="error-msg">{errors.priority}</p>}
         </div>
       </form>
-      <button className="btn-calculate" onClick={calculate}>Tính điểm</button>
+
+      <h3>Bảng điểm trung bình các môn học</h3>
+      {["grade10", "grade11", "grade12"].map((yearKey, i) => (
+        <div key={yearKey}>
+          <h4>Lớp {i + 10}</h4>
+          <table className="scoreform-table">
+            <thead>
+              <tr>
+                {subjects.map((subj) => (
+                  <th key={subj}>{subj}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                {subjects.map((subj) => (
+                  <td key={subj}>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={grades[yearKey][subj] || ""}
+                      onChange={(e) => handleGradeChange(e, yearKey, subj)}
+                    />
+                    {errors[`${yearKey}-${subj}`] && (
+                      <p className="error-msg">
+                        {errors[`${yearKey}-${subj}`]}
+                      </p>
+                    )}
+                  </td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      ))}
+
+      <button className="scoreform-btn" onClick={calculate}>
+        Tính điểm
+      </button>
+
       {data.result && (
-        <p className="score-result">
+        <p className="scoreform-result">
           ✅ Điểm xét tốt nghiệp của bạn là: <strong>{data.result}</strong>
         </p>
       )}

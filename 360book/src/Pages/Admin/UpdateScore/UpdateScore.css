@@ -1,0 +1,63 @@
+/* ScoreForm.css */
+
+.score-container {
+  max-width: 500px;
+  margin: 50px auto;
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", sans-serif;
+}
+
+.score-title {
+  text-align: center;
+  color: #003366;
+  margin-bottom: 1.5rem;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.score-form .form-group {
+  margin-bottom: 1.2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.score-form label {
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  color: #333333;
+}
+
+.score-form input {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.score-form input:focus {
+  outline: none;
+  border-color: #003366;
+  box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #003366;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 1rem;
+}
+
+.submit-btn:hover {
+  background-color: #002244;
+}

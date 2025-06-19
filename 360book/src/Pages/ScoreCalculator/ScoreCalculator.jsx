@@ -91,9 +91,9 @@ const ScoreCalculator = () => {
               </li>
             </ul>
           </article>
-          <div className="scorecalc-subsection score-form-wrapper">
+       
               <ScoreForm />
-          </div>
+         
         </section>
       </div>
       <Footer />
