@@ -19,7 +19,7 @@ const ManageMajorDetail = () => {
 
     const fetchNganhHoc = async () => {
         try {
-            const response = await axios.get(`/api/chi-tiet-nganh-hoc/${id}`);
+            const response = await axios.get(`/api/uni/v1/major/by-uni?universityId=${id}`);
             setMajorList(response.data.data);
             toast.success("Tải danh sách ngành học thành công");
         } catch (error) {
@@ -65,9 +65,6 @@ const ManageMajorDetail = () => {
     }
 
     return (
-
-
-
         <div className="manage-major-detail bg-light min-vh-100 p-4">
             <ToastContainer position="top-right" autoClose={5000} />
             <div className="d-flex justify-content-center align-items-center mb-4 gap-2" style={{ fontSize: '1.5rem', fontWeight: '600' }}>
@@ -98,10 +95,10 @@ const ManageMajorDetail = () => {
                     </thead>
                     <tbody>
                         {majorList.map((major, index) => (
-                            <tr key={major.maNganh}>
+                            <tr key={major.majorName}>
                                 <td>{index + 1}</td>
                                 <td>{major.maNganh}</td>
-                                <td>{major.tenNganh}</td>
+                                <td>{major.majorName}</td>
                             </tr>
                         ))}
                     </tbody>
