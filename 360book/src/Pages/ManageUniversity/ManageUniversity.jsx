@@ -34,10 +34,10 @@ const ManageUniversity = () => {
     const handleCreateUniversity = async (formData) => {
         try {
             const dataToSend = new FormData();
-            dataToSend.append("tenTruong", formData.tenTruong);
-            dataToSend.append("maTruong", formData.maTruong);
-            dataToSend.append("diaChi", formData.diaChi);
-            dataToSend.append("theManh", formData.theManh);
+            dataToSend.append("universityName", formData.tenTruong);
+            dataToSend.append("code", formData.maTruong);
+            dataToSend.append("address", formData.diaChi);
+            dataToSend.append("main", formData.theManh);
             if (formData.thumbnail) {
                 dataToSend.append("thumbnail", formData.thumbnail);
             }
@@ -67,10 +67,10 @@ const ManageUniversity = () => {
     const handleUpdateUniversity = async (updatedForm) => {
         try {
             const dataToSend = new FormData();
-            dataToSend.append("tenTruong", updatedForm.tenTruong);
-            dataToSend.append("maTruong", updatedForm.maTruong);
-            dataToSend.append("diaChi", updatedForm.diaChi);
-            dataToSend.append("theManh", updatedForm.theManh);
+            dataToSend.append("universityName", updatedForm.tenTruong);
+            dataToSend.append("code", updatedForm.maTruong);
+            dataToSend.append("address", updatedForm.diaChi);
+            dataToSend.append("main", updatedForm.theManh);
 
             if (updatedForm.thumbnail) {
                 dataToSend.append("thumbnail", updatedForm.thumbnail);
@@ -93,8 +93,8 @@ const ManageUniversity = () => {
 
 
     const filteredUniversities = universities.filter(u =>
-        u.tenTruong.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        u.maTruong.toLowerCase().includes(searchTerm.toLowerCase())
+        u.universityName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        u.code.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const totalPages = Math.ceil(filteredUniversities.length / itemsPerPage);
@@ -141,18 +141,18 @@ const ManageUniversity = () => {
                     </div>
                 ) : (
                     currentItems.map((university, index) => (
-                        <div className="col-md-6 col-lg-4 mb-4" key={university.id}>
+                        <div className="col-md-6 col-lg-4 mb-4" key={university.universityId}>
                             <div className="card h-100 shadow-sm card-hover">
                                 <img
                                     src={university.thumbnail || `https://picsum.photos/200/150?random=${index}`}
                                     className="card-img-top"
-                                    alt={university.tenTruong}
+                                    alt={university.universityName}
                                     style={{ height: "150px", objectFit: "cover" }}
                                 />
                                 <div className="card-body">
-                                    <h5 className="card-title">{university.tenTruong} - {university.maTruong}</h5>
-                                    <p className="card-text text-muted">📍 {university.diaChi}</p>
-                                    {university.theManh && <p className="card-text text-muted">⚡ {university.theManh}</p>}
+                                    <h5 className="card-title">{university.universityName} - {university.code}</h5>
+                                    <p className="card-text text-muted">📍 {university.address}</p>
+                                    {university.main && <p className="card-text text-muted">⚡ {university.main}</p>}
 
                                     <button
                                         className="btn btn-sm btn-warning"
