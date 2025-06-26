@@ -40,7 +40,7 @@ const ManageMajor = () => {
 
 
     const handleCardClick = (university) => {
-        navigate(`/admin/manage-nganh-hoc/${university.id}`, { state: { tenTruong: university.universityName, maTruong: university.code } });
+        navigate(`/admin/manage-nganh-hoc/${university.universityId}`, { state: { tenTruong: university.universityName, maTruong: university.code } });
     };
 
 
