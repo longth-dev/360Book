@@ -4,11 +4,11 @@
     transition: color 0.3s ease;
 }
 .btn-primary:hover {
-    background-color: #004080;
+    background-color: #7fb5eb;
     color: #fff;
 }
 
 .btn-outline-primary:hover {
-    background-color: #004080;
+    background-color: #7fb5eb;
     color: white;
 }

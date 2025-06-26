@@ -1,12 +1,4 @@
-/* Wrapper riêng biệt cho form */
-.scoreform-wrapper {
-  background-color: #fdfdfd;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  padding: 24px;
-  margin-bottom: 32px;
-  font-family: 'Segoe UI', sans-serif;
-}
+
 
 /* Header */
 .scoreform-wrapper h2,

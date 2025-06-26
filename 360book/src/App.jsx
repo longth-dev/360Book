@@ -9,9 +9,9 @@ import CountDownPublishRealScore from "./Pages/CountDownPublishRealScore/CountDo
 import AdmissionScore from "./Pages/AdmissionScore/AdmissionScore";
 import ScoreCalculator from "./Pages/ScoreCalculator/ScoreCalculator";
 import UniCompare from "./Pages/UniversityComparison/UniCompare";
-import LayoutAdmin from "./Pages/Layout/LayoutAdmin";
-import AddScore from "./Pages/Admin/AddScore/AddScore";
-import UpdateScore from "./Pages/Admin/UpdateScore/UpdateScore";
+import AdminRoutes from "./Routes/AdminRoutes";
+
+
 function App() {
   return (
     <Router>
@@ -40,20 +40,8 @@ function App() {
         <Route path="/so-sanh" element={<UniCompare />} />
         {/* Add more routes as needed */}
         /* Admin routes wrapped in LayoutAdmin */
-        <Route path="/admin" element={<LayoutAdmin />}>
-          {/* <Route path="/admin/manage-dai-hoc" element={<ManageUniversity />} />
-          <Route path="/admin/manage-nganh-hoc" element={<ManageMajor />} />
-          <Route
-            path="/admin/manage-thoi-gian-thi"
-            element={<ManageSchedual />}
-          /> */}
-          <Route path="/admin/diem-chuan/add" element={<AddScore />} />
-          <Route
-            path="/admin/diem-chuan/update"
-            element={<UpdateScore />}
-          />
-          <Route path="/admin/" />
-        </Route>
+        {AdminRoutes()}
+      
       </Routes>
     </Router>
   );

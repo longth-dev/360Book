@@ -86,6 +86,10 @@
   margin-bottom: 1rem;
 }
 
+.scorecalc-subsection h2{
+  color: #003366;
+}
+
 /* Lists */
 .scorecalc-section ul,
 .scorecalc-section ol {

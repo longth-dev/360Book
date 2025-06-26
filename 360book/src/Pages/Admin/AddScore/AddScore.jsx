@@ -1,86 +1,71 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./AddScore.css";
+import { submitScore } from "../../../api/scoreService";
 
 const AddScore = () => {
-  const [formData, setFormData] = useState({
-    university: "",
-    major: "",
-    score: "",
-    year: "",
-  });
+  const [school, setSchool] = useState("");
+  const [major, setMajor] = useState("");
+  const [score, setScore] = useState("");
+  const [message, setMessage] = useState("");
 
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
+  const navigate = useNavigate(); // ✅ hook để điều hướng
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Dữ liệu gửi:", formData);
-    // TODO: gửi formData lên server
+
+    if (!school || !major || score === "") {
+      setMessage("Vui lòng điền đầy đủ thông tin.");
+      return;
+    }
+
+    const numericScore = parseFloat(score);
+    if (isNaN(numericScore) || numericScore < 0 || numericScore > 30) {
+      setMessage("Điểm phải nằm trong khoảng từ 0 đến 30.");
+      return;
+    }
+
+    try {
+      await submitScore(school, major, numericScore);
+      // ✅ Chuyển hướng sau khi gửi thành công
+      navigate("/admin/diem-chuan/view");
+    } catch (error) {
+      console.error(error);
+      setMessage("Lỗi khi gửi điểm.");
+    }
   };
 
   return (
     <div className="addscore-container">
       <h2 className="addscore-title">Thêm điểm chuẩn</h2>
-      <form className="addscore-form" onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="university">Tên trường</label>
-          <input
-            type="text"
-            id="university"
-            name="university"
-            value={formData.university}
-            onChange={handleChange}
-            placeholder="VD: Đại học Kinh tế Quốc dân"
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="major">Ngành</label>
-          <input
-            type="text"
-            id="major"
-            name="major"
-            value={formData.major}
-            onChange={handleChange}
-            placeholder="VD: Kế toán"
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="score">Điểm chuẩn</label>
-          <input
-            type="number"
-            id="score"
-            name="score"
-            value={formData.score}
-            onChange={handleChange}
-            placeholder="VD: 26.5"
-            step="0.1"
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="year">Năm tuyển sinh</label>
-          <input
-            type="number"
-            id="year"
-            name="year"
-            value={formData.year}
-            onChange={handleChange}
-            placeholder="VD: 2025"
-            required
-          />
-        </div>
-
-        <button type="submit" className="submit-btn">Lưu thông tin</button>
+      <form onSubmit={handleSubmit} className="addscore-form">
+        <input
+          type="text"
+          placeholder="Trường"
+          value={school}
+          onChange={(e) => setSchool(e.target.value)}
+          className="addscore-input"
+        />
+        <input
+          type="text"
+          placeholder="Ngành"
+          value={major}
+          onChange={(e) => setMajor(e.target.value)}
+          className="addscore-input"
+        />
+        <input
+          type="number"
+          min="0"
+          max="30"
+          step="0.1"
+          placeholder="Điểm chuẩn (0 - 30)"
+          value={score}
+          onChange={(e) => setScore(e.target.value)}
+          className="addscore-input"
+        />
+        <button type="submit" className="addscore-button">Gửi</button>
       </form>
+      {message && <p className="addscore-message">{message}</p>}
     </div>
   );
 };
