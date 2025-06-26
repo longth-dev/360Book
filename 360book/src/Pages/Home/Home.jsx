@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import AIChatbox from '../../Components/AIChatbox/AIChatbox';
 
 
 
@@ -23,6 +24,7 @@ const Home = () => {
 
     const handleClick = (btnName) => {
         setActiveButton(btnName);
+
     };
 
 
@@ -108,7 +110,7 @@ const Home = () => {
                         </button>
 
                         <button
-                            onClick={() => { handleClick('THM'); fetchTHM(); }}
+                            onClick={() => handleClick('THM')}
                             className={`home-button btn btn-outline-light px-4 py-2 fw-semibold hover-yellow ${activeButton === 'THM' ? 'active' : ''}`}
                             style={{ borderRadius: "5px", color: "grey", backgroundColor: "white" }}
                         >
@@ -193,6 +195,7 @@ const Home = () => {
                     </div>
                 </div>
             </div>
+            <AIChatbox />
             <Footer />
         </>
     );

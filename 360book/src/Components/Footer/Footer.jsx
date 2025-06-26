@@ -47,7 +47,7 @@ const Footer = () => {
             </div>
 
             {/* Copyright dưới cùng */}
-            <div className="text-center small py-2 border-top border-secondary" style={{ backgroundColor: "#21639E", color:"#849CE2" }}>
+            <div className="text-center small py-2 border-top border-secondary" style={{ backgroundColor: "#21639E", color: "#849CE2" }}>
                 <p className="mb-0">&copy; 2025 All Rights Reserved</p>
             </div>
         </footer>

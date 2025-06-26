@@ -1,0 +1,44 @@
+.major-list-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.card {
+    transition: transform 0.2s;
+    border-radius: 8px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.card-title {
+    color: #225BBF;
+    margin-bottom: 1rem;
+}
+
+.university-list {
+    font-size: 0.9rem;
+}
+
+.badge {
+    font-weight: 500;
+    padding: 0.5em 0.8em;
+}
+
+.btn-outline-primary {
+    color: #225BBF;
+    border-color: #225BBF;
+}
+
+.btn-outline-primary:hover {
+    background-color: #225BBF;
+    color: white;
+}
+
+.container {
+    min-height: 80vh;
+    padding-bottom: 2rem;
+}
