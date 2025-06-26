@@ -18,7 +18,7 @@ const ManageUniversity = () => {
 
     const fetchUniversity = async () => {
         try {
-            const response = await axios.get('/api/truong-dai-hoc');
+            const response = await axios.get('/api/uni');
             setUniversities(response.data.data || []);
             toast.success("Tải danh sách trường đại học thành công");
         } catch (error) {

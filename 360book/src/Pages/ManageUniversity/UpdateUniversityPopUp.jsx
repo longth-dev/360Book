@@ -62,7 +62,7 @@ const UpdateUniversityPopUp = ({ university, onClose, onUpdate }) => {
               value={form.maTruong}
               onChange={handleChange}
               required
-              disabled // thường không cho đổi mã trường vì là key
+              disabled
             />
           </div>
           <div className="form-group mb-3">
