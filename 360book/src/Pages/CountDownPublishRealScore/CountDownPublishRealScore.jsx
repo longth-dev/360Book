@@ -48,13 +48,14 @@ const CountDownPublishRealScore = () => {
         return () => clearInterval(timer);
     }, [targetDate]);
 
+    const currentYear = new Date().getFullYear();
     return (
         <>
             <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
             <Navbar />
             <div className="countdown-detail-blue-container">
                 <div className="countdown-content-wrapper">
-                    <h2 className="countdown-title">Đếm ngược ngày Công bố điểm chuẩn Đại học 2025 đợt 1</h2>
+                    <h2 className="countdown-title">Đếm ngược ngày Công bố điểm chuẩn Đại học {currentYear}</h2>
                     <div className="countdown-box blue">
                         <span className="label">Còn</span>
                         <span className="number">{timeLeft.days}</span>
@@ -93,13 +94,13 @@ const CountDownPublishRealScore = () => {
 
             </div>
             <div className="exam-info-wrapper">
-                <h3 className="exam-info-title">Đếm ngược ngày Công bố điểm chuẩn Đại học 2025 đợt 1</h3>
+                <h3 className="exam-info-title">Đếm ngược ngày Công bố điểm chuẩn Đại học {currentYear}</h3>
                 <p className="exam-info-text">
-                    Thời gian công bố điểm chuẩn đại học 2025:Theo lịch tuyển sinh Đại học 2025, điểm trúng tuyển đại học 2025 sẽ được công bố từ ngày 20/8 đến 17h ngày 22/8/2025. Đây là khoảng thời gian quan trọng đối với hàng triệu sĩ tử sau kỳ thi tốt nghiệp THPT và xét tuyển đại học.
+                    Thời gian công bố điểm chuẩn đại học {currentYear}: Theo lịch tuyển sinh Đại học {currentYear}, điểm trúng tuyển đại học 2025 sẽ được công bố từ ngày 20/8 đến 17h ngày 22/8/2025. Đây là khoảng thời gian quan trọng đối với hàng triệu sĩ tử sau kỳ thi tốt nghiệp THPT và xét tuyển đại học.
                 </p>
                 <p>
                     &raquo; <a href="/diem-chuan" style={{ color: "#007BFF", textDecoration: "underline" }}>
-                        Cập nhật điểm chuẩn đại học 2025 liên tục – nhanh chóng – chính xác ngay tại đây
+                        Cập nhật điểm chuẩn đại học {currentYear} liên tục – nhanh chóng – chính xác ngay tại đây
                     </a>
                 </p>
             </div >

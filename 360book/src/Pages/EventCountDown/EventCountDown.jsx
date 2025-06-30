@@ -46,7 +46,7 @@ const EventCountDown = () => {
     }
     const fetchCongBoDiemChuanDot1 = async () => {
         try {
-            const response = await axios.get("/api/cong-bo-diem-chuan-dot-1");
+            const response = await axios.get("/api/cong-bo-diem-chuan");
             setNgayCongBoDiemChuanDot1(response.data);
             toast.success("fetch ngay cong bo diem chuan dot 1")
         } catch (error) {
@@ -61,6 +61,8 @@ const EventCountDown = () => {
         fetchNgayCongBoDiemThi();
         fetchCongBoDiemChuanDot1();
     })
+
+    const currentYear = new Date().getFullYear();
 
     return (
         <>
@@ -83,10 +85,11 @@ const EventCountDown = () => {
                             className="event-icon"
                         />
                         <div className="event-info">
-                            <strong>Đếm ngược ngày Thi tốt nghiệp THPT 2025</strong>
-                            <p className="event-date">Ngày diễn ra: 26 - 27/6/2025</p>
-                            <p className="event-note">→ Xem chi tiết Lịch thi và lưu ý quan trọng</p>
+                            <strong>Đếm ngược ngày Thi tốt nghiệp THPT {currentYear}</strong>
+                            <p className="event-date">Ngày diễn ra: 26 - 27/6/2025</p>       {/* đợi api nè */}
+                            <p className="event-note">→ Xem chi tiết Lịch thi và lưu ý quan trọng</p> {/* đợi api nè */}
                         </div>
+                        {/* đợi api nè */}
                         <div className="countdown-box green">
                             <span className="label">Còn</span>
                             <span className="number">35</span>
@@ -102,10 +105,11 @@ const EventCountDown = () => {
                             className="event-icon"
                         />
                         <div className="event-info">
-                            <strong>Đếm ngược ngày Đăng ký nguyện vọng xét tuyển ĐH 2025</strong>
-                            <p className="event-date">Ngày diễn ra: 16/7 - 17h 28/7/2025</p>
+                            <strong>Đếm ngược ngày Đăng ký nguyện vọng xét tuyển ĐH {currentYear}</strong>
+                            <p className="event-date">Ngày diễn ra: 16/7 - 17h 28/7/2025</p>        {/* đợi api nè */}
                             <p className="event-note">→ Xem chi tiết Thời gian đăng ký và lưu ý quan trọng</p>
                         </div>
+                        {/* đợi api nè */}
                         <div className="countdown-box pink">
                             <span className="label">Còn</span>
                             <span className="number">55</span>
@@ -121,10 +125,11 @@ const EventCountDown = () => {
                             className="event-icon"
                         />
                         <div className="event-info">
-                            <strong>Đếm ngược ngày Công bố điểm thi tốt nghiệp THPT 2025</strong>
-                            <p className="event-date">Ngày diễn ra: 8h00 ngày 16/7/2025</p>
+                            <strong>Đếm ngược ngày Công bố điểm thi tốt nghiệp THPT {currentYear}</strong>
+                            <p className="event-date">Ngày diễn ra: 8h00 ngày 16/7/2025</p>  {/* đợi api nè */}
                             <p className="event-note">→ Xem chi tiết Ngày công bố điểm và các bước tiếp theo</p>
                         </div>
+                        {/* đợi api nè */}
                         <div className="countdown-box orange">
                             <span className="label">Còn</span>
                             <span className="number">107</span>
@@ -140,10 +145,11 @@ const EventCountDown = () => {
                             className="event-icon"
                         />
                         <div className="event-info">
-                            <strong>Đếm ngược ngày Công bố điểm chuẩn Đại học 2025 đợt 1</strong>
-                            <p className="event-date">Ngày diễn ra: 8h00 ngày 16/7/2025</p>
+                            <strong>Đếm ngược ngày Công bố điểm chuẩn Đại học {currentYear}</strong>
+                            <p className="event-date">Ngày diễn ra: 8h00 ngày 16/7/2025</p> {/* đợi api nè */}
                             <p className="event-note">→ Xem chi tiết Ngày công bố điểm và các bước tiếp theo</p>
                         </div>
+                        {/* đợi api nè */}
                         <div className="countdown-box blue">
                             <span className="label">Còn</span>
                             <span className="number">55</span>

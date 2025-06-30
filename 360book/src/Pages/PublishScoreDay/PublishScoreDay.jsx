@@ -49,13 +49,15 @@ const PublishScoreDay = () => {
         return () => clearInterval(timer);
     }, [targetDate]);
 
+    const currentYear = new Date().getFullYear();
+
     return (
         <>
             <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
             <Navbar />
             <div className="countdown-detail-orange-container">
                 <div className="countdown-content-wrapper">
-                    <h2 className="countdown-title">Đếm ngược Công bố điểm thi tốt nghiệp THPT 2025</h2>
+                    <h2 className="countdown-title">Đếm ngược Công bố điểm thi tốt nghiệp THPT {currentYear}</h2>
                     <div className="countdown-box orange">
                         <span className="label">Còn</span>
                         <span className="number">{timeLeft.days}</span>
@@ -94,18 +96,18 @@ const PublishScoreDay = () => {
 
             </div>
             <div className="exam-info-wrapper">
-                <h3 className="exam-info-title">Đếm ngược ngày Công bố điểm thi tốt nghiệp THPT 2025</h3>
+                <h3 className="exam-info-title">Đếm ngược ngày Công bố điểm thi tốt nghiệp THPT {currentYear}</h3>
                 <p className="exam-info-text">
                     <strong>
                         Khi nào công bố điểm thi tốt nghiệp THPT 2025?
                     </strong>
                 </p>
                 <p>
-                    Theo lịch công tác từ Bộ Giáo dục và Đào tạo, điểm thi tốt nghiệp THPT 2025 sẽ được công bố vào ngày 16/7/2025 trên toàn quốc. Đây là thời điểm được hàng triệu học sinh và phụ huynh mong chờ để xác định kết quả học tập sau 12 năm đèn sách, cũng như xét tuyển vào các trường đại học, cao đẳng.
+                    Theo lịch công tác từ Bộ Giáo dục và Đào tạo, điểm thi tốt nghiệp THPT {currentYear} sẽ được công bố vào ngày 16/7/2025 trên toàn quốc. Đây là thời điểm được hàng triệu học sinh và phụ huynh mong chờ để xác định kết quả học tập sau 12 năm đèn sách, cũng như xét tuyển vào các trường đại học, cao đẳng.
                 </p>
                 <p className="exam-info-text">
                     <strong>
-                        Sau khi biết điểm thi THPT 2025 cần làm gì?
+                        Sau khi biết điểm thi THPT {currentYear} cần làm gì?
                     </strong>
                 </p>
                 <p className="exam-info-text" >
@@ -115,7 +117,7 @@ const PublishScoreDay = () => {
 
                     Bắt đầu chuẩn bị các bước tiếp theo như <strong> nộp lệ phí xét tuyển</strong>  , theo dõi lịch tuyển sinh và xác nhận nhập học.<br></br>
 
-                    <strong>Điểm thi tốt nghiệp THPT 2025</strong> – Bước ngoặt lớn mở ra cánh cửa đại học. Theo dõi thường xuyên để cập nhật sớm và chính xác nhất!
+                    <strong>Điểm thi tốt nghiệp THPT {currentYear}</strong> – Bước ngoặt lớn mở ra cánh cửa đại học. Theo dõi thường xuyên để cập nhật sớm và chính xác nhất!
                 </p>
             </div >
             <Footer />
