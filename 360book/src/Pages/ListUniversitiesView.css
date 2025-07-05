@@ -92,4 +92,58 @@
     font-size: 1rem;
     margin: 0.7rem 0 0.7rem 0;
   }
+}
+
+.univ-list-view-search-wrap {
+  position: relative;
+  max-width: 400px;
+  margin: 0 auto 2.5rem auto;
+}
+
+.univ-list-view-search-input {
+  width: 100%;
+  padding: 0.9rem 1.2rem;
+  border-radius: 22px;
+  border: 1.5px solid #a5b4fc;
+  font-size: 1rem;
+  background: #f4f7ff;
+  color: #222;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(60,60,120,0.04);
+}
+.univ-list-view-search-input:focus {
+  border: 1.5px solid #6366f1;
+  box-shadow: 0 4px 16px rgba(99,102,241,0.08);
+}
+
+.univ-list-view-suggestions {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(60,60,120,0.12);
+  z-index: 10;
+  margin: 0;
+  padding: 0.5rem 0;
+  list-style: none;
+  border: 1.5px solid #e0e7ef;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.univ-list-view-suggestion-item {
+  padding: 0.7rem 1.2rem;
+  font-size: 1rem;
+  color: #3a3a7c;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  border: none;
+  background: none;
+}
+.univ-list-view-suggestion-item:hover {
+  background: #f1f5ff;
+  color: #2563eb;
 } 

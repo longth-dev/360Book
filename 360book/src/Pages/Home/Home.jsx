@@ -9,7 +9,34 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
-
+// MOCK DATA TRƯỜNG
+const MOCK_UNIVERSITIES = [
+    {
+        id: 1,
+        name: 'HCMUTE - Đại học Sư phạm Kỹ thuật TP.HCM',
+        website: 'https://hcmute.edu.vn',
+    },
+    {
+        id: 2,
+        name: 'HUST - Đại học Bách khoa Hà Nội',
+        website: 'https://hust.edu.vn',
+    },
+    {
+        id: 3,
+        name: 'UEH - Đại học Kinh tế TP.HCM',
+        website: 'https://ueh.edu.vn',
+    },
+    {
+        id: 4,
+        name: 'VNUHCM - Đại học Quốc gia TP.HCM',
+        website: 'https://vnuhcm.edu.vn',
+    },
+    {
+        id: 5,
+        name: 'VNUHN - Đại học Quốc gia Hà Nội',
+        website: 'https://vnu.edu.vn',
+    },
+];
 
 const Home = () => {
     const navigate = useNavigate();
@@ -21,15 +48,22 @@ const Home = () => {
     const [isInputFocused, setIsInputFocused] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
     const [activeButton, setActiveButton] = useState(null);
+    const [searchValue, setSearchValue] = useState("");
 
     const handleClick = (btnName) => {
         setActiveButton(btnName);
     };
 
-
     const handleClickTaiDay = () => {
         navigate("/tu-van-chon-truong")
     }
+
+    // Lọc trường theo searchValue
+    const filteredUniversities = searchValue.trim()
+        ? MOCK_UNIVERSITIES.filter(univ =>
+            univ.name.toLowerCase().includes(searchValue.trim().toLowerCase())
+        )
+        : [];
 
     const fetchPTTS = async () => {
         try {
@@ -137,11 +171,21 @@ const Home = () => {
                             className="form-control form-control-lg"
                             placeholder="Tìm kiếm trường, ngành, điểm chuẩn..."
                             style={{ borderRadius: "5px", paddingLeft: "25px", fontSize: "1.2rem", cursor: "pointer", }}
-                            onFocus={() => setIsInputFocused(true)}
-                            onBlur={() => setIsInputFocused(false)}
-
+                            value={searchValue}
+                            onChange={e => {
+                                setSearchValue(e.target.value);
+                                setShowDropdown(true);
+                            }}
+                            onFocus={() => {
+                                setIsInputFocused(true);
+                                setShowDropdown(true);
+                            }}
+                            onBlur={() => {
+                                setIsInputFocused(false);
+                                setTimeout(() => setShowDropdown(false), 150);
+                            }}
                         />
-                        {isInputFocused && showDropdown && activeData.length > 0 && (
+                        {isInputFocused && showDropdown && filteredUniversities.length > 0 && (
                             <div
                                 className="dropdown-menu show"
                                 style={{
@@ -156,9 +200,17 @@ const Home = () => {
                                     zIndex: 10
                                 }}
                             >
-                                {activeData.map((item, index) => (
-                                    <div key={index} className="dropdown-item">
-                                        <strong>ID:</strong> {item.id || item.ID} - <strong>Name:</strong> {item.tenPhuongThuc || item.tenKhoi || item.tenNganh || item.name}
+                                {filteredUniversities.map((item, index) => (
+                                    <div
+                                        key={item.id}
+                                        className="dropdown-item"
+                                        onMouseDown={() => {
+                                            if (item.website) window.open(item.website, '_blank');
+                                            setShowDropdown(false);
+                                            setSearchValue("");
+                                        }}
+                                    >
+                                        {item.name}
                                     </div>
                                 ))}
                             </div>
