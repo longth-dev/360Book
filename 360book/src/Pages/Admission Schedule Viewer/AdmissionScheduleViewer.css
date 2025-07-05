@@ -1,279 +1,196 @@
-/* Main container styles to ensure footer stays at bottom */
-#root {
+/* Prefix all selectors with .admission-schedule-viewer to avoid conflicts */
+
+.admission-schedule-viewer-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #e3f0ff 0%, #f6f9ff 100%);
+    padding: 40px 0 80px 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-}
-
-.container {
-    flex: 1;
-    min-height: auto;
-    padding: 2rem 0;
-}
-
-.card {
-    border-radius: 8px;
-    margin-bottom: 2rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease;
-}
-
-.card:hover {
-    transform: translateY(-2px);
-}
-
-.card-body {
-    padding: 1.5rem;
-}
-
-.table-responsive {
-    margin: 0;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.table {
-    margin-bottom: 0;
-    background-color: white;
-}
-
-.table th {
-    background-color: #f8f9fa;
-    border-bottom: 2px solid #dee2e6;
-    color: #495057;
-    font-weight: 600;
-    padding: 1rem;
-}
-
-.table td {
-    vertical-align: middle;
-    padding: 1rem;
-    color: #212529;
-}
-
-.table tbody tr:hover {
-    background-color: #f8f9fa;
-}
-
-.form-select {
-    padding: 0.75rem;
-    border-radius: 6px;
-    border: 1px solid #dee2e6;
-    font-size: 1rem;
-    width: 100%;
-    cursor: pointer;
-}
-
-.form-select:focus {
-    border-color: #225BBF;
-    box-shadow: 0 0 0 0.25rem rgba(34, 91, 191, 0.25);
-    outline: none;
-}
-
-.btn-primary {
-    background-color: #225BBF;
-    border-color: #225BBF;
-    padding: 0.5rem 1.5rem;
-    font-weight: 500;
-}
-
-.btn-primary:hover {
-    background-color: #1a4494;
-    border-color: #1a4494;
-}
-
-.btn-outline-primary {
-    color: #225BBF;
-    border-color: #225BBF;
-    padding: 0.5rem 1.5rem;
-    font-weight: 500;
-}
-
-.btn-outline-primary:hover {
-    background-color: #225BBF;
-    color: white;
-}
-
-.schedule-container {
-    max-width: 800px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-    min-height: 80vh;
-}
-
-.schedule-tabs {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-
-.tab-button {
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 8px;
-    background-color: #f0f0f0;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.tab-button.active {
-    background-color: #225BBF;
-    color: white;
-}
-
-.timeline {
-    position: relative;
-    padding: 2rem 0;
-}
-
-.timeline::before {
-    content: '';
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 2px;
-    height: 100%;
-    background-color: #dee2e6;
-}
-
-.timeline-item {
-    display: flex;
-    justify-content: center;
     align-items: center;
-    margin-bottom: 2rem;
-    opacity: 0;
-    animation: fadeInUp 0.5s ease forwards;
+    animation: asv-fade-in 1s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.timeline-date {
-    width: 200px;
-    text-align: right;
-    padding-right: 2rem;
-    font-weight: 500;
-}
-
-.timeline-content {
-    position: relative;
-    width: 200px;
-    padding-left: 2rem;
-}
-
-.timeline-dot {
-    position: absolute;
-    left: -5px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background-color: #225BBF;
-    transition: all 0.3s ease;
-}
-
-.timeline-item.important .timeline-dot {
-    background-color: #dc3545;
-    box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.2);
-}
-
-.timeline-text {
-    background-color: white;
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-}
-
-.timeline-item:hover .timeline-text {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-@keyframes fadeInUp {
+/* Fade-in animation */
+@keyframes asv-fade-in {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(40px) scale(0.98);
     }
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
     }
 }
 
-@media (max-width: 768px) {
-    .container {
-        padding: 1rem;
-    }
-    
-    .card-body {
-        padding: 1rem;
-    }
-    
-    .table th,
-    .table td {
-        padding: 0.75rem;
-    }
-    
-    .btn-primary,
-    .btn-outline-primary {
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-
-    .timeline::before {
-        left: 30px;
-    }
-
-    .timeline-item {
-        flex-direction: column;
-        align-items: flex-start;
-        margin-left: 30px;
-    }
-
-    .timeline-date {
-        width: 100%;
-        text-align: left;
-        padding-right: 0;
-        padding-bottom: 0.5rem;
-    }
-
-    .timeline-content {
-        width: 100%;
-    }
-
-    .timeline-dot {
-        left: -35px;
-    }
-
-    /* Footer styles */
-    .footer {
-        padding: 2rem 0;
-    }
-
-    .footer-content {
-        flex-direction: column;
-        gap: 1.5rem;
-    }
+/* Animated floating icon */
+.admission-schedule-viewer-float-icon {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 10px;
+    animation: asv-float 2.5s ease-in-out infinite alternate;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-/* Footer positioning */
-.footer {
-    margin-top: auto;
-    background-color: #1a1a1a;
-    padding: 3rem 0;
-    color: #849CE2;
-    width: 100%;
+@keyframes asv-float {
+    from { transform: translateY(0); }
+    to { transform: translateY(-18px); }
 }
 
-.footer-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
+.admission-schedule-viewer-title {
+    font-size: 2.3rem;
+    font-weight: 800;
+    color: #225BBF;
+    margin-bottom: 10px;
+    text-align: center;
+    letter-spacing: 1px;
+    animation: asv-fade-in 1.2s 0.2s both;
 }
 
-.footer-content {
+.admission-schedule-viewer-desc {
+    color: #4a5a7a;
+    font-size: 1.1rem;
+    text-align: center;
+    margin-bottom: 32px;
+    animation: asv-fade-in 1.2s 0.3s both;
+}
+
+.admission-schedule-viewer-search-bar {
+    max-width: 420px;
+    margin: 0 auto 32px auto;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 2rem;
+    gap: 10px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(34,91,191,0.07);
+    padding: 10px 16px;
+    align-items: center;
+    animation: asv-fade-in 1.2s 0.4s both;
+}
+
+.admission-schedule-viewer-search-input {
+    flex: 1;
+    border-radius: 8px;
+    border: 1.5px solid #bcd2f7;
+    padding: 10px 14px;
+    font-size: 1.08rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: #f8fbff;
+    color: #225BBF;
+}
+
+.admission-schedule-viewer-search-input:focus {
+    border-color: #225BBF;
+    box-shadow: 0 0 0 2px #cbe7ff;
+    background: #fff;
+}
+
+.admission-schedule-viewer-search-btn {
+    background: linear-gradient(90deg, #225BBF 60%, #3a8dde 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 22px;
+    font-size: 1.08rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    box-shadow: 0 2px 8px rgba(34,91,191,0.08);
+}
+
+.admission-schedule-viewer-search-btn:hover {
+    background: linear-gradient(90deg, #174a99 60%, #225BBF 100%);
+    transform: translateY(-2px) scale(1.04);
+}
+
+.admission-schedule-viewer-table-wrapper {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(34,91,191,0.10);
+    padding: 32px 24px;
+    max-width: 1150px;
+    margin: 0 auto;
+    overflow-x: auto;
+    animation: asv-fade-in 1.2s 0.5s both;
+}
+
+.admission-schedule-viewer-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 1.07rem;
+    background: transparent;
+}
+
+.admission-schedule-viewer-table th,
+.admission-schedule-viewer-table td {
+    border: none;
+    padding: 16px 12px;
+    text-align: left;
+    transition: background 0.2s;
+}
+
+.admission-schedule-viewer-table th {
+    background: linear-gradient(90deg, #225BBF 60%, #3a8dde 100%);
+    color: #fff;
+    font-weight: 700;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.admission-schedule-viewer-table tr {
+    border-radius: 8px;
+    transition: box-shadow 0.2s;
+}
+
+.admission-schedule-viewer-table tr:nth-child(even) {
+    background: #f0f6ff;
+}
+
+.admission-schedule-viewer-table tr:hover {
+    background: #e3f0ff;
+    box-shadow: 0 2px 12px rgba(34,91,191,0.07);
+}
+
+.admission-schedule-viewer-table td {
+    color: #2d3a4a;
+    border-bottom: 1.5px solid #e3eafc;
+}
+
+.admission-schedule-viewer-table tr:last-child td {
+    border-bottom: none;
+}
+
+@media (max-width: 900px) {
+    .admission-schedule-viewer-table-wrapper {
+        padding: 12px 2px;
+    }
+    .admission-schedule-viewer-title {
+        font-size: 1.3rem;
+    }
+    .admission-schedule-viewer-search-bar {
+        flex-direction: column;
+        gap: 8px;
+        padding: 10px 6px;
+    }
+    .admission-schedule-viewer-table th,
+    .admission-schedule-viewer-table td {
+        padding: 10px 6px;
+        font-size: 0.98rem;
+    }
+}
+
+/* Optional: subtle fade-in for each row */
+@keyframes asv-row-fade {
+    from { opacity: 0; transform: translateY(20px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+.admission-schedule-viewer-table tr {
+    animation: asv-row-fade 0.7s cubic-bezier(0.23, 1, 0.32, 1);
 }

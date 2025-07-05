@@ -1,0 +1,146 @@
+.admin-sc-container {
+    max-width: 900px;
+    margin: 40px auto 0 auto;
+    background: #f8fbff;
+    border-radius: 14px;
+    box-shadow: 0 4px 24px rgba(34,91,191,0.10);
+    padding: 36px 28px 32px 28px;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    animation: admin-sc-fade-in 0.7s;
+}
+
+@keyframes admin-sc-fade-in {
+    from { opacity: 0; transform: translateY(30px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+
+.admin-sc-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #225BBF;
+    margin-bottom: 24px;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+.admin-sc-form {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.admin-sc-input {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1.5px solid #bcd2f7;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: #fff;
+    color: #225BBF;
+    min-width: 180px;
+}
+
+.admin-sc-input:focus {
+    border-color: #225BBF;
+    box-shadow: 0 0 0 2px #cbe7ff;
+}
+
+.admin-sc-btn {
+    background: linear-gradient(90deg, #225BBF 60%, #3a8dde 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 22px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    box-shadow: 0 2px 8px rgba(34,91,191,0.08);
+}
+
+.admin-sc-btn:hover {
+    background: linear-gradient(90deg, #174a99 60%, #225BBF 100%);
+    transform: translateY(-2px) scale(1.04);
+}
+
+.admin-sc-table-wrapper {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(34,91,191,0.07);
+    padding: 18px;
+    margin-top: 10px;
+    overflow-x: auto;
+}
+
+.admin-sc-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1rem;
+}
+
+.admin-sc-table th,
+.admin-sc-table td {
+    border: 1px solid #e3eafc;
+    padding: 12px 10px;
+    text-align: left;
+}
+
+.admin-sc-table th {
+    background: #225BBF;
+    color: #fff;
+    font-weight: 600;
+}
+
+.admin-sc-table tr:nth-child(even) {
+    background: #f0f6ff;
+}
+
+.admin-sc-actions button {
+    margin-right: 8px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: none;
+    font-size: 0.98rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.admin-sc-edit-btn {
+    background: #ffc107;
+    color: #222;
+}
+
+.admin-sc-edit-btn:hover {
+    background: #e0a800;
+}
+
+.admin-sc-delete-btn {
+    background: #e74c3c;
+    color: #fff;
+}
+
+.admin-sc-delete-btn:hover {
+    background: #c0392b;
+}
+
+@media (max-width: 700px) {
+    .admin-sc-container {
+        padding: 12px 2px;
+    }
+    .admin-sc-title {
+        font-size: 1.2rem;
+    }
+    .admin-sc-form {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .admin-sc-table th,
+    .admin-sc-table td {
+        padding: 8px 4px;
+        font-size: 0.95rem;
+    }
+}

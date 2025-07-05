@@ -14,6 +14,8 @@ import ManageMajor from "./Pages/ManageMajor/ManageMajor";
 import ManageSchedual from "./Pages/ManageSchedual/ManageSchedual";
 import FavoriteUniversity from "./Pages/FavoriteUniversity/FavoriteUniversity";
 import ManageMajorDetail from "./Pages/ManageMajor/ManageMajorDetail";
+import SubjectCombinationViewer from "./Pages/SubjectCombinationViewer/SubjectCombinationViewer";
+import ManageMajorGroup from "./Pages/ManageMajorGroup/ManageMajorGroup";
 
 function App() {
   return (
@@ -27,6 +29,7 @@ function App() {
         <Route path="/dem-nguoc/ngay-dang-ki-nguyen-vong" element={<CountDownRegisterForAdmission />} />
         <Route path="/dem-nguoc/cong-bo-diem-thi" element={<PublishScoreDay />} />
         <Route path="/dem-nguoc/diem-chuan-dot-1" element={<CountDownPublishRealScore />} />
+        <Route path="/tra-cuu-to-hop-mon" element={<SubjectCombinationViewer />} />
 
 
 
@@ -36,6 +39,8 @@ function App() {
           <Route path="/admin/manage-nganh-hoc" element={<ManageMajor />} />
           <Route path="/admin/manage-nganh-hoc/:id" element={<ManageMajorDetail />} />
           <Route path="/admin/manage-thoi-gian-thi" element={<ManageSchedual />} />
+          <Route path="/admin/manage-to-hop-mon" element={<ManageMajorGroup />} />
+
         </Route>
 
 

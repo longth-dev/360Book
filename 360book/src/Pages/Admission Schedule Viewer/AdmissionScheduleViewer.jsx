@@ -120,44 +120,50 @@ export default function AdmissionScheduleViewer() {
     return (
         <>
             <Navbar />
-            <div className="schedule-container">
-                <h2 className="text-center mb-4">Lịch thi THPT Quốc gia và Xét tuyển Đại học 2025</h2>
-
-                <div className="schedule-tabs mb-4">
-                    <button
-                        className={`tab-button ${selectedType === 'national_exam' ? 'active' : ''}`}
-                        onClick={() => setSelectedType('national_exam')}
-                    >
-                        Lịch thi THPT Quốc gia
-                    </button>
-                    <button
-                        className={`tab-button ${selectedType === 'university' ? 'active' : ''}`}
-                        onClick={() => setSelectedType('university')}
-                    >
-                        Lịch xét tuyển Đại học
-                    </button>
-                </div>
-
-                <div className="timeline">
-                    {mockSchedules[selectedType].map((item, index) => (
-                        <div
-                            key={index}
-                            className={`timeline-item ${item.important ? 'important' : ''}`}
-                            style={{ animationDelay: `${index * 0.2}s` }}
+            <div className="admission-schedule-viewer-container">
+                <img src="/your-icon.svg" alt="" className="admission-schedule-viewer-float-icon" />
+                <h1 className="admission-schedule-viewer-title">Lịch tuyển sinh đại học 2025</h1>
+                <div className="admission-schedule-viewer-desc">Cập nhật nhanh các mốc quan trọng trong mùa tuyển sinh!</div>
+                <form className="admission-schedule-viewer-search-bar">
+                    {/* Search bar content can go here */}
+                </form>
+                <div className="admission-schedule-viewer-table-wrapper">
+                    <div className="schedule-tabs mb-4">
+                        <button
+                            className={`tab-button ${selectedType === 'national_exam' ? 'active' : ''}`}
+                            onClick={() => setSelectedType('national_exam')}
                         >
-                            <div className="timeline-date">
-                                {new Date(item.date).toLocaleDateString('vi-VN', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric'
-                                })}
+                            Lịch thi THPT Quốc gia
+                        </button>
+                        <button
+                            className={`tab-button ${selectedType === 'university' ? 'active' : ''}`}
+                            onClick={() => setSelectedType('university')}
+                        >
+                            Lịch xét tuyển Đại học
+                        </button>
+                    </div>
+
+                    <div className="timeline">
+                        {mockSchedules[selectedType].map((item, index) => (
+                            <div
+                                key={index}
+                                className={`timeline-item ${item.important ? 'important' : ''}`}
+                                style={{ animationDelay: `${index * 0.2}s` }}
+                            >
+                                <div className="timeline-date">
+                                    {new Date(item.date).toLocaleDateString('vi-VN', {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric'
+                                    })}
+                                </div>
+                                <div className="timeline-content">
+                                    <div className="timeline-dot"></div>
+                                    <div className="timeline-text">{item.event}</div>
+                                </div>
                             </div>
-                            <div className="timeline-content">
-                                <div className="timeline-dot"></div>
-                                <div className="timeline-text">{item.event}</div>
-                            </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             </div>
             <Footer />
