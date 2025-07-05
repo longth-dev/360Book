@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../../Components/Navbar/Navbar";
 import bg from "../../assets/bg.png";
 import Footer from "../../Components/Footer/Footer";
+import AIChatbox from "../../Components/AIChatbox/AIChatbox";
 import './Home.css'
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -194,6 +195,7 @@ const Home = () => {
                 </div>
             </div>
             <Footer />
+            <AIChatbox />
         </>
     );
 };

@@ -6,7 +6,6 @@ import CountDownExamDay from "./Pages/CountDownExamDay/CountDownExamDay";
 import CountDownRegisterForAdmission from "./Pages/CountDownRegisterForAdmission/CountDownRegisterForAdmission";
 import PublishScoreDay from "./Pages/PublishScoreDay/PublishScoreDay";
 import CountDownPublishRealScore from "./Pages/CountDownPublishRealScore/CountDownPublishRealScore";
-import ListUniversities from "./Pages/ListUniversities/ListUniversities";
 import AdminSideBar from "./Pages/AdminSideBar/AdminSideBar";
 import ManageUniversity from "./Pages/ManageUniversity/ManageUniversity";
 import LayoutAdmin from "./Pages/Layout/LayoutAdmin";
@@ -17,6 +16,9 @@ import ManageMajorDetail from "./Pages/ManageMajor/ManageMajorDetail";
 import SubjectCombinationViewer from "./Pages/SubjectCombinationViewer/SubjectCombinationViewer";
 import ManageMajorGroup from "./Pages/ManageMajorGroup/ManageMajorGroup";
 import ManageNews from "./Pages/ManageNews/ManageNews";
+import UniversityDetailView from "./Pages/UniversityDetailView";
+import ListUniversitiesView from "./Pages/ListUniversitiesView";
+import AIChatbox from "./Components/AIChatbox/AIChatbox";
 
 function App() {
   return (
@@ -24,13 +26,15 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/danh-sach-truong" element={<ListUniversities />} />
         <Route path="/dem-nguoc" element={<EventCountDown />} />
         <Route path="/dem-nguoc/ngay-thi-tot-nghiep" element={<CountDownExamDay />} />
         <Route path="/dem-nguoc/ngay-dang-ki-nguyen-vong" element={<CountDownRegisterForAdmission />} />
         <Route path="/dem-nguoc/cong-bo-diem-thi" element={<PublishScoreDay />} />
         <Route path="/dem-nguoc/diem-chuan-dot-1" element={<CountDownPublishRealScore />} />
         <Route path="/tra-cuu-to-hop-mon" element={<SubjectCombinationViewer />} />
+        <Route path="/ai-chatbox" element={<AIChatbox />} />
+        <Route path="/list-universities-view" element={<ListUniversitiesView />} />
+        <Route path="/list-universities-view/:id" element={<UniversityDetailView />} />
 
 
 
