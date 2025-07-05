@@ -16,6 +16,7 @@ import FavoriteUniversity from "./Pages/FavoriteUniversity/FavoriteUniversity";
 import ManageMajorDetail from "./Pages/ManageMajor/ManageMajorDetail";
 import SubjectCombinationViewer from "./Pages/SubjectCombinationViewer/SubjectCombinationViewer";
 import ManageMajorGroup from "./Pages/ManageMajorGroup/ManageMajorGroup";
+import ManageNews from "./Pages/ManageNews/ManageNews";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
           <Route path="/admin/manage-nganh-hoc/:id" element={<ManageMajorDetail />} />
           <Route path="/admin/manage-thoi-gian-thi" element={<ManageSchedual />} />
           <Route path="/admin/manage-to-hop-mon" element={<ManageMajorGroup />} />
+          <Route path="/admin/manage-tin-tuc" element={<ManageNews />} />
 
         </Route>
 
