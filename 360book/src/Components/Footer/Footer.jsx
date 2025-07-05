@@ -18,7 +18,7 @@ const Footer = () => {
                     {/* Cột 1 */}
                     <div className="col-md-3 border-start border-white ps-4">
                         <ul className="list-unstyled small">
-                            <li><span className="arrow">➤</span><Link to="/danh-sach"> Danh sách ĐH</Link></li>
+                            <li><span className="arrow">➤</span><Link to="/danh-sach-truong"> Danh sách ĐH</Link></li>
                             <li><span className="arrow">➤</span><Link to="/diem-chuan"> Xem điểm chuẩn ĐH</Link></li>
                             <li><span className="arrow">➤</span><Link to="/tinh-diem-hoc-ba"> Công cụ tính điểm học bạ 2025</Link></li>
                             <li><span className="arrow">➤</span><Link to="/xet-tuyen" > Tổ hợp xét tuyển Đại học 2025</Link></li>

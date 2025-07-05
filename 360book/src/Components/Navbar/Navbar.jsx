@@ -82,7 +82,7 @@ const Navbar = () => {
                         </Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link" to="/list-universities-view">Danh sách trường</Link>
+                        <Link className="nav-link" to="/danh-sach-truong">Danh sách trường</Link>
                     </li>
                     <li className="nav-item">
                         <Link className="nav-link" to="/nganh-dao-tao">Ngành đào tạo</Link>

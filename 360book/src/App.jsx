@@ -33,8 +33,8 @@ function App() {
         <Route path="/dem-nguoc/diem-chuan-dot-1" element={<CountDownPublishRealScore />} />
         <Route path="/tra-cuu-to-hop-mon" element={<SubjectCombinationViewer />} />
         <Route path="/ai-chatbox" element={<AIChatbox />} />
-        <Route path="/list-universities-view" element={<ListUniversitiesView />} />
-        <Route path="/list-universities-view/:id" element={<UniversityDetailView />} />
+        <Route path="/danh-sach-truong" element={<ListUniversitiesView />} />
+        <Route path="/danh-sach-truong/:id" element={<UniversityDetailView />} />
 
 
 

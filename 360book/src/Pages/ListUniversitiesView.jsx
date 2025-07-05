@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 // import axios from 'axios';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import Navbar from '../Components/Navbar/Navbar';
 import Footer from '../Components/Footer/Footer';
 import './ListUniversitiesView.css';
@@ -118,20 +118,36 @@ const ListUniversitiesView = () => {
         {error && <div className="univ-list-view-error">{error}</div>} */}
                 <div className="univ-list-view-grid">
                     {universities.map(univ => (
-                        <Link
-                            to={`/universities/${univ.id}`}
-                            className="univ-list-view-card"
-                            key={univ.id}
-                        >
-                            <div className="univ-list-view-thumb-wrap">
-                                <img
-                                    src={univ.thumbnail || 'https://picsum.photos/seed/' + univ.id + '/300/200'}
-                                    alt={univ.name}
-                                    className="univ-list-view-thumb"
-                                />
+                        univ.website ? (
+                            <a
+                                href={univ.website}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="univ-list-view-card"
+                                key={univ.id}
+                                style={{ textDecoration: 'none' }}
+                            >
+                                <div className="univ-list-view-thumb-wrap">
+                                    <img
+                                        src={univ.thumbnail || 'https://picsum.photos/seed/' + univ.id + '/300/200'}
+                                        alt={univ.name}
+                                        className="univ-list-view-thumb"
+                                    />
+                                </div>
+                                <div className="univ-list-view-name">{univ.name}</div>
+                            </a>
+                        ) : (
+                            <div className="univ-list-view-card univ-list-view-card-disabled" key={univ.id} title="Không có website">
+                                <div className="univ-list-view-thumb-wrap">
+                                    <img
+                                        src={univ.thumbnail || 'https://picsum.photos/seed/' + univ.id + '/300/200'}
+                                        alt={univ.name}
+                                        className="univ-list-view-thumb"
+                                    />
+                                </div>
+                                <div className="univ-list-view-name">{univ.name}</div>
                             </div>
-                            <div className="univ-list-view-name">{univ.name}</div>
-                        </Link>
+                        )
                     ))}
                 </div>
             </div>
