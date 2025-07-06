@@ -1,115 +1,111 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import "./AdmissionScore.css";
 import Navbar from "../../Components/Navbar/Navbar";
 import Footer from "../../Components/Footer/Footer";
-
-const universities = [
-  {
-    name: "Đại học Bách Khoa",
-    majors: [
-      {
-        name: "Công nghệ Thông tin",
-        score: 27.5,
-        code: "7480201",
-        subjects: "A00, A01",
-      },
-      {
-        name: "Kỹ thuật Cơ khí",
-        score: 25.8,
-        code: "7520103",
-        subjects: "A00",
-      },
-    ],
-  },
-  {
-    name: "Đại học Kinh tế Quốc dân",
-    majors: [
-      { name: "Kinh tế", score: 26.0, code: "7310101", subjects: "A00, D01" },
-      {
-        name: "Tài chính Ngân hàng",
-        score: 25.5,
-        code: "7340201",
-        subjects: "A00, A01, D01",
-      },
-    ],
-  },
-  {
-    name: "Đại học Ngoại thương",
-    majors: [
-      {
-        name: "Quản trị Kinh doanh",
-        score: 26.8,
-        code: "7340101",
-        subjects: "A00, A01, D01",
-      },
-      {
-        name: "Kinh tế Quốc tế",
-        score: 27.0,
-        code: "7310106",
-        subjects: "D01, D03, D04",
-      },
-    ],
-  },
-];
+import { Spinner } from "react-bootstrap";
 
 const AdmissionScore = () => {
-  const [selectedUniversity, setSelectedUniversity] = useState(
-    universities[0].name
-  );
+  const [allScores, setAllScores] = useState([]);
+  const [selectedUniversity, setSelectedUniversity] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  const majors =
-    universities.find((u) => u.name === selectedUniversity)?.majors || [];
+  useEffect(() => {
+    const fetchScores = async () => {
+      try {
+        const response = await axios.get("/api/diem-chuan");
+        const grouped = groupByUniversity(response.data);
+        setAllScores(grouped);
+        if (Object.keys(grouped).length > 0) {
+          setSelectedUniversity(Object.keys(grouped)[0]);
+        }
+      } catch (error) {
+        console.error("Lỗi khi tải điểm chuẩn:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchScores();
+  }, []);
+
+  const groupByUniversity = (data) => {
+    const grouped = {};
+    data.forEach((item) => {
+      const uni = item.tenTruong;
+      if (!grouped[uni]) grouped[uni] = [];
+      grouped[uni].push({
+        name: item.nganh,
+        score: item.diemChuan,
+        code: item.maNganh || "N/A",
+        subjects: item.toHopMon || "Chưa rõ",
+      });
+    });
+    return grouped;
+  };
+
+  const majors = allScores[selectedUniversity] || [];
 
   return (
     <>
-    <Navbar />
-      <div className="diemchuan-container">
-        <h1 className="diemchuan-title">Tra Cứu Điểm Chuẩn Đại Học</h1>
-        <p className="diemchuan-subtitle">
-          Chọn trường đại học để xem điểm chuẩn các ngành tuyển sinh
-        </p>
+      <Navbar />
+      <div className="admission-page-wrapper">
+        <div className="admission-container">
+          <h1 className="admission-title">🎓 Tra Cứu Điểm Chuẩn Đại Học</h1>
+          <p className="admission-subtitle">
+            Chọn trường để xem điểm chuẩn các ngành tuyển sinh
+          </p>
 
-        <div className="diemchuan-select">
-          <label htmlFor="university">Trường Đại học:</label>
-          <select
-            id="university"
-            value={selectedUniversity}
-            onChange={(e) => setSelectedUniversity(e.target.value)}
-          >
-            {universities.map((u, index) => (
-              <option key={index} value={u.name}>
-                {u.name}
-              </option>
-            ))}
-          </select>
-        </div>
+          {loading ? (
+            <div className="text-center my-5">
+              <Spinner animation="border" variant="primary" />
+            </div>
+          ) : (
+            <>
+              <div className="admission-select">
+                <label htmlFor="university">Trường Đại học:</label>
+                <select
+                  id="university"
+                  value={selectedUniversity}
+                  onChange={(e) => setSelectedUniversity(e.target.value)}
+                >
+                  {Object.keys(allScores).map((uni, index) => (
+                    <option key={index} value={uni}>
+                      {uni}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-        <div className="diemchuan-content">
-          <table className="diemchuan-table">
-            <thead>
-              <tr>
-                <th>STT</th>
-                <th>Mã Ngành</th>
-                <th>Tên Ngành</th>
-                <th>Tổ Hợp Môn</th>
-                <th>Điểm Chuẩn</th>
-              </tr>
-            </thead>
-            <tbody>
-              {majors.map((major, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{major.code}</td>
-                  <td>{major.name}</td>
-                  <td>{major.subjects}</td>
-                  <td>{major.score}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+              <div className="admission-table-wrapper">
+                <table className="admission-table">
+                  <thead>
+                    <tr>
+                      <th>STT</th>
+                      <th>Mã Ngành</th>
+                      <th>Tên Ngành</th>
+                      <th>Tổ Hợp Môn</th>
+                      <th>Điểm Chuẩn</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {majors.map((major, index) => (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{major.code}</td>
+                        <td>{major.name}</td>
+                        <td>{major.subjects}</td>
+                        <td className="highlight">{major.score}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 };

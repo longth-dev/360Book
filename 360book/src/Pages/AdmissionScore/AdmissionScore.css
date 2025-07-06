@@ -1,152 +1,128 @@
-/* Reset some default styles */
+/* Reset */
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.diemchuan-container {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-  background-color: #ffffff;
-  color: #374151; /* neutral dark gray for body text */
-  min-height: 100vh;
-  padding: 4rem 1.5rem 6rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+/* Wrapper for the whole page content */
+.admission-page-wrapper {
+  padding: 4rem 1rem;
+  background-color: #f9fafb;
 }
 
-.diemchuan-title {
-  font-size: 3.5rem;
-  font-weight: 700;
+/* Inner container */
+.admission-container {
+  max-width: 1000px;
+  margin: 0 auto;
   text-align: center;
-  margin: 0 0 0.75rem;
-  color: #111827; /* near black for main headline */
-  line-height: 1.1;
-  max-width: 700px;
 }
 
-.diemchuan-subtitle {
+/* Title */
+.admission-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  color: #1f2937;
+}
+
+/* Subtitle */
+.admission-subtitle {
   font-size: 1.125rem;
-  color: #6b7280; /* neutral gray */
-  max-width: 600px;
-  text-align: center;
-  margin-bottom: 3rem;
-  line-height: 1.4;
+  color: #6b7280;
+  margin-bottom: 2rem;
   font-weight: 500;
 }
 
-.diemchuan-select {
-  width: 100%;
-  max-width: 400px;
-  margin-bottom: 3rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+/* Dropdown */
+.admission-select {
+  margin-bottom: 2rem;
 }
 
-.diemchuan-select label {
+.admission-select label {
   font-weight: 600;
+  margin-right: 1rem;
   font-size: 1rem;
-  color: #374151; /* dark gray for labels */
-  user-select: none;
+  color: #374151;
 }
 
-.diemchuan-select select {
+.admission-select select {
   font-size: 1rem;
-  padding: 0.75rem 1rem;
-  border-radius: 0.75rem;
-  border: 1.5px solid #d1d5db; /* light gray border */
-  background-color: #f9fafb; /* very light gray background */
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1.5px solid #d1d5db;
+  background-color: #ffffff;
   color: #374151;
   cursor: pointer;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-  appearance: none;
-  outline-offset: 2px;
-  outline-color: transparent;
-  outline-style: solid;
-  box-shadow: inset 0 0 5px rgba(0,0,0,0.03);
+  transition: border-color 0.3s ease;
 }
 
-.diemchuan-select select:hover {
-  border-color: #6366f1; /* indigo-500 */
-  background-color: #eef2ff; /* light indigo */
-  box-shadow: 0 0 8px rgba(99,102,241,0.3);
+.admission-select select:hover,
+.admission-select select:focus {
+  border-color: #6366f1;
+  outline: none;
 }
 
-.diemchuan-select select:focus {
-  border-color: #4f46e5; /* indigo-600 */
-  box-shadow: 0 0 0 3px rgba(99,102,241,0.3);
-  background-color: #eef2ff;
-  outline-color: #4f46e5;
+/* Table */
+.admission-table-wrapper {
+  overflow-x: auto;
 }
 
-.diemchuan-content {
+.admission-table {
   width: 100%;
-  max-width: 900px;
-  background-color: #ffffff;
-  border-radius: 1rem;
-  box-shadow:
-    0 4px 6px rgba(0, 0, 0, 0.05),
-    0 1px 3px rgba(0, 0, 0, 0.1);
-  padding: 2.5rem 2rem;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background-color: white;
+  border-radius: 0.5rem;
+  overflow: hidden;
 }
 
-.diemchuan-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 1rem;
-  font-weight: 600;
-  font-size: 1rem;
-  color: #374151;
+.admission-table thead {
+  background-color: #dbeafe;
 }
 
-.diemchuan-table thead th {
-  text-align: left;
-  padding: 0.75rem 1rem;
-  font-size: 1.125rem;
-  color: #1f2937; /* gray-800 */
-  border-bottom: 2px solid #e5e7eb; /* gray-200 */
-  user-select: none;
+.admission-table thead th {
+  padding: 1rem;
+  text-align: center;
+  font-weight: 700;
+  color: #1e3a8a;
+  border-bottom: 1px solid #c7d2fe;
 }
 
-.diemchuan-table tbody tr {
-  background-color: #f3f4f6; /* gray-100 */
-  border-radius: 0.75rem;
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.05);
-  transition: background-color 0.3s ease;
+.admission-table tbody td {
+  padding: 0.75rem;
+  text-align: center;
+  font-weight: 500;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.diemchuan-table tbody tr:hover {
-  background-color: #e0e7ff; /* indigo-100 */
-  box-shadow:
-    0 4px 15px rgba(79, 70, 229, 0.3); /* indigo shadow on hover */
+.admission-table tbody tr:hover {
+  background-color: #f0f9ff;
 }
 
-.diemchuan-table tbody td {
-  padding: 0.75rem 1rem;
-  vertical-align: middle;
-  border-radius: 0.75rem;
+.highlight {
+  color: #dc2626;
+  font-weight: bold;
 }
 
-
-@media (max-width: 640px) {
-  .diemchuan-title {
-    font-size: 2.25rem;
-    max-width: 100%;
-    padding: 0 1rem;
+/* Responsive */
+@media (max-width: 768px) {
+  .admission-title {
+    font-size: 2rem;
   }
-  .diemchuan-subtitle {
+
+  .admission-subtitle {
     font-size: 1rem;
-    padding: 0 1rem;
-    max-width: 100%;
   }
-  .diemchuan-content {
-    padding: 1.5rem 1rem;
+
+  .admission-select select {
+    width: 100%;
+    margin-top: 0.5rem;
   }
-  .diemchuan-table thead th,
-  .diemchuan-table tbody td {
-    padding: 0.5rem 0.75rem;
+
+  .admission-table thead th,
+  .admission-table tbody td {
+    font-size: 0.9rem;
+    padding: 0.5rem;
   }
 }
-

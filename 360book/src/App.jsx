@@ -9,9 +9,12 @@ import CountDownPublishRealScore from "./Pages/CountDownPublishRealScore/CountDo
 import AdmissionScore from "./Pages/AdmissionScore/AdmissionScore";
 import ScoreCalculator from "./Pages/ScoreCalculator/ScoreCalculator";
 import UniCompare from "./Pages/UniversityComparison/UniCompare";
-import AdminRoutes from "./Routes/AdminRoutes";
-
-
+import LayoutAdmin from "./Pages/Layout/LayoutAdmin";
+import AddScore from "./Pages/Admin/AddScore/AddScore";
+import ViewScore from "./Pages/Admin/ViewScore/ViewScore";
+import UpdateScore from "./Pages/Admin/UpdateScore/UpdateScore";
+import ManageQA from "./Pages/Admin/ManageQA/ManageQA";
+import VerifyInfo from "./Pages/VerifyInfo/VerifyInfo";
 function App() {
   return (
     <Router>
@@ -40,8 +43,15 @@ function App() {
         <Route path="/so-sanh" element={<UniCompare />} />
         {/* Add more routes as needed */}
         /* Admin routes wrapped in LayoutAdmin */
-        {AdminRoutes()}
-      
+        <Route path="/admin" element={<LayoutAdmin />}>
+          <Route path="diem-chuan/add" element={<AddScore />} />
+          <Route path="diem-chuan/update" element={<UpdateScore />} />
+          <Route path="hoi-xoay-dap-xoay" element={<ManageQA />} />
+          <Route path="diem-chuan/view" element={<ViewScore />} />
+          {/* Các route khác */}
+        </Route>
+
+        <Route path="/staff" element={<VerifyInfo/>}/>
       </Routes>
     </Router>
   );
