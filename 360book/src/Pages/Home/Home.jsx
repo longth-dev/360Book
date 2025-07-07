@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import NewsCarousel from "./NewsCarousel";
+import AdmissionSlider from "./AdmissionSlider";
 
 
 
@@ -20,6 +22,7 @@ const Home = () => {
     const [isInputFocused, setIsInputFocused] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
     const [activeButton, setActiveButton] = useState(null);
+    const [newsList, setNewsList] = useState([]);
 
     const handleClick = (btnName) => {
         setActiveButton(btnName);
@@ -76,6 +79,22 @@ const Home = () => {
             toast.error("fail lay len the manh")
         }
     }
+
+    const fetchNews = async () => {
+        try {
+            const response = await axios.get("/api/news");
+            setNewsList(response.data.data || []);
+            toast.success("Fetch news thành công!");
+        } catch (error) {
+            console.error("Error fetching news:", error);
+            toast.error("Không thể lấy danh sách tin tức");
+        }
+    };
+
+    useEffect(() => {
+        fetchNews();
+    }, []);
+
 
     return (
         <>
@@ -192,6 +211,28 @@ const Home = () => {
                         </button>
                     </div>
                 </div>
+                <div className="container my-5">
+                    <NewsCarousel newsList={newsList} />
+                </div>
+                <div className="container my-5">
+                    <h2 className="text-center mb-4">360Book Location</h2>
+                    <div style={{ width: "100%", height: "400px", borderRadius: "8px", overflow: "hidden" }}>
+                        <iframe
+                            title="Map"
+                            width="100%"
+                            height="100%"
+                            frameBorder="0"
+                            style={{ border: 0 }}
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.5021981218963!2d106.7004232148007!3d10.773374792323432!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752edb9d245a1d%3A0x391251c0ffdaaf34!2zSOG7kyBDw7RuZyBuaOG6rXAgQ-G6p3kgVGjDoG5oIHZp4buHbiDEkOG7k25nIEjhu41jIFRQLiBIQ00!5e0!3m2!1svi!2s!4v1626264814053!5m2!1svi!2s"
+                            allowFullScreen=""
+                            loading="lazy"
+                        ></iframe>
+                    </div>
+                </div>
+                <AdmissionSlider />
+
+
+
             </div>
             <Footer />
         </>
@@ -199,3 +240,4 @@ const Home = () => {
 };
 
 export default Home;
+
