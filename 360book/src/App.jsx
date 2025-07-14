@@ -15,7 +15,6 @@ import ManageMajorDetail from "./Pages/ManageMajor/ManageMajorDetail";
 import SubjectCombinationViewer from "./Pages/SubjectCombinationViewer/SubjectCombinationViewer";
 import ManageMajorGroup from "./Pages/ManageMajorGroup/ManageMajorGroup";
 import ManageNews from "./Pages/ManageNews/ManageNews";
-import UniversityDetailView from "./Pages/UniversityDetailView";
 import ListUniversitiesView from "./Pages/ListUniversitiesView";
 import AIChatbox from "./Components/AIChatbox/AIChatbox";
 
@@ -33,8 +32,6 @@ function App() {
         <Route path="/tra-cuu-to-hop-mon" element={<SubjectCombinationViewer />} />
         <Route path="/ai-chatbox" element={<AIChatbox />} />
         <Route path="/danh-sach-truong" element={<ListUniversitiesView />} />
-        <Route path="/danh-sach-truong/:id" element={<UniversityDetailView />} />
-
 
 
         {/** MANAGE ADMIN */}
