@@ -100,7 +100,6 @@ const Navbar = () => {
                         <ul className="dropdown-menu" style={{ borderRadius: "10px", marginTop: "20px" }}>
                             <li><Link className="dropdown-item" to="/gioi-thieu">Giới thiệu</Link></li>
                             <li><Link className="dropdown-item" to="/dem-nguoc">Đếm ngược ngày thi</Link></li>
-                            <li><Link className="dropdown-item" to="/lien-he">Liên hệ</Link></li>
                             <li><Link className="dropdown-item" to="/hoi-va-dap">Hỏi xoáy đáp xoay</Link></li>
                             <li><Link className="dropdown-item" to="/tra-cuu-to-hop-mon">Tra cứu tổ hợp môn</Link></li>
                         </ul>

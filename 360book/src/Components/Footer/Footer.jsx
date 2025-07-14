@@ -31,7 +31,6 @@ const Footer = () => {
                             <li><span className="arrow">➤</span><Link to="/lich-thi" > Lịch thi</Link></li>
                             <li><span className="arrow">➤</span><Link to="/tinh-diem" > Công cụ tính điểm tốt nghiệp THPT</Link></li>
                             <li><span className="arrow">➤</span><Link to="/nganh-nghe" > Các ngành nghề đào tạo 2025</Link></li>
-                            <li><span className="arrow">➤</span><Link to="/diem-chuan-10" > Liên hệ chúng tôi</Link></li>
                         </ul>
                     </div>
 
