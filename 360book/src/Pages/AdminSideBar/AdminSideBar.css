@@ -108,12 +108,13 @@ body.dark {
   transition: 0.3s ease;
 }
 
+/* Giữ nguyên hover cho các a trong .bottom-content li */
 .bottom-content li:hover a {
   background: #ff4757;
   color: #fff;
 }
 
-/* Logout Link */
+/* Riêng cho logout-link (dùng div hoặc a) */
 .logout-link {
   display: flex;
   align-items: center;
@@ -131,59 +132,5 @@ body.dark {
 }
 
 .logout-link:hover .icon {
-  color: #fff;
-}
-
-/* Dropdown menu */
-.dropdown-toggle {
-  display: flex;
-  align-items: center;
-  padding: 0.5rem 0.75rem;
-  cursor: pointer;
-  transition: background 0.3s;
-  color: #dcdcdc;
-  border-radius: 8px;
-  margin-top: 5px;
-}
-
-.dropdown-toggle:hover {
-  background-color: #004080;
-  color: #fff;
-}
-
-.dropdown-content {
-  background-color: #002244;
-  padding-left: 0.8rem; /* Giảm từ 1.5rem xuống để căn đều với các mục khác */
-  margin-top: 0.2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  border-radius: 0 0 8px 8px;
-}
-
-.dropdown-content li {
-  list-style: none;
-}
-
-.dropdown-content li a {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.4rem 0.6rem;
-  border-radius: 6px;
-  color: #dcdcdc;
-  font-size: 14px;
-  text-decoration: none;
-  transition: background 0.2s ease;
-}
-
-.dropdown-content li a .icon {
-  font-size: 14px; /* Icon nhỏ hơn */
-}
-
-.dropdown-content li a:hover {
-  background-color: #004080;
   color: #fff;
 }

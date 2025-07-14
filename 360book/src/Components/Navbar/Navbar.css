@@ -4,11 +4,18 @@
     transition: color 0.3s ease;
 }
 .btn-primary:hover {
-    background-color: #7fb5eb;
+    background-color: #004080;
     color: #fff;
 }
 
 .btn-outline-primary:hover {
-    background-color: #7fb5eb;
+    background-color: #004080;
     color: white;
+}
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 999;
+    transition: top 0.3s ease-in-out;
 }

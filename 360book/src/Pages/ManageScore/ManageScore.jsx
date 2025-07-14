@@ -77,7 +77,7 @@ const ManageScore = () => {
           type="text"
           className="form-control mb-2"
           style={{ maxWidth: "300px" }}
-          placeholder="🔍 Tìm kiếm theo tên hoặc môn học..."
+          placeholder="🔍 Tìm kiếm theo điểm chuẩn..."
           value={searchTerm}
           onChange={(e) => {
             setSearchTerm(e.target.value);
