@@ -11,9 +11,6 @@ import AIChatbox from '../../Components/AIChatbox/AIChatbox';
 import NewsCarousel from "./NewsCarousel";
 import AdmissionSlider from "./AdmissionSlider";
 
-
-
-
 const Home = () => {
     const navigate = useNavigate();
     const [PTTS, setPTTS] = useState([]);

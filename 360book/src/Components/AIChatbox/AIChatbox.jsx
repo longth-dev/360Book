@@ -35,6 +35,7 @@ const AIChatbox = () => {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(false); 
 
     const suggestedQuestions = [
         "Tổ hợp môn nào phù hợp với ngành CNTT?",
@@ -80,57 +81,65 @@ const AIChatbox = () => {
     };
 
     return (
-        <div className="chatbox-container">
+        <div className={`chatbox-container ${isCollapsed ? 'collapsed' : ''}`}>
             <div className="chatbox-header">
                 <h3>Tư vấn tuyển sinh 360BOOK</h3>
-            </div>
-            <div className="suggested-questions">
-                <p>Câu hỏi gợi ý:</p>
-                <div className="question-buttons">
-                    {suggestedQuestions.map((question, index) => (
-                        <button
-                            key={index}
-                            onClick={() => handleSuggestedQuestion(question)}
-                            className="suggestion-btn"
-                            disabled={isLoading}
-                        >
-                            {question}
-                        </button>
-                    ))}
-                </div>
-            </div>
-            <div className="chatbox-messages">
-                {messages.map((message, index) => (
-                    <div key={index} className={`message ${message.sender}`}>
-                        <div className="message-content">
-                            {message.text}
-                        </div>
-                    </div>
-                ))}
-                {isLoading && (
-                    <div className="message ai">
-                        <div className="message-content">
-                            <div className="typing-indicator">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </div>
-            <form onSubmit={sendMessage} className="chatbox-input">
-                <input
-                    type="text"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    placeholder="Hãy đặt câu hỏi về tuyển sinh..."
-                    disabled={isLoading}
-                />
-                <button type="submit" disabled={isLoading}>
-                    <i className="fas fa-paper-plane"></i>
+                <button className="toggle-btn" onClick={() => setIsCollapsed(!isCollapsed)}>
+                    {isCollapsed ? '🔼 Mở rộng' : '🔽 Thu nhỏ'}
                 </button>
-            </form>
+            </div>
+
+            {!isCollapsed && (
+                <>
+                    <div className="suggested-questions">
+                        <p>Câu hỏi gợi ý:</p>
+                        <div className="question-buttons">
+                            {suggestedQuestions.map((question, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => handleSuggestedQuestion(question)}
+                                    className="suggestion-btn"
+                                    disabled={isLoading}
+                                >
+                                    {question}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="chatbox-messages">
+                        {messages.map((message, index) => (
+                            <div key={index} className={`message ${message.sender}`}>
+                                <div className="message-content">
+                                    {message.text}
+                                </div>
+                            </div>
+                        ))}
+                        {isLoading && (
+                            <div className="message ai">
+                                <div className="message-content">
+                                    <div className="typing-indicator">
+                                        <span></span><span></span><span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    <form onSubmit={sendMessage} className="chatbox-input">
+                        <input
+                            type="text"
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            placeholder="Hãy đặt câu hỏi về tuyển sinh..."
+                            disabled={isLoading}
+                        />
+                        <button type="submit" disabled={isLoading}>
+                            <i className="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </>
+            )}
         </div>
     );
 };

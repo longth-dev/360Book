@@ -144,3 +144,25 @@
     background-color: #225BBF;
     color: white;
 }
+
+.chatbox-container.collapsed {
+    height: auto;
+    width: 300px;
+    overflow: hidden;
+    padding-bottom: 10px;
+}
+
+.chatbox-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.toggle-btn {
+    background: transparent;
+    border: none;
+    font-size: 0.9rem;
+    cursor: pointer;
+    color: #007bff;
+    margin-left: 10px;
+}
