@@ -1,14 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import './AdminSideBar.css';
 import { NavLink } from "react-router-dom";
 
 const AdminSideBar = () => {
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-    const toggleDropdown = () => {
-        setIsDropdownOpen(!isDropdownOpen);
-    };
-
     const handleLogout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("role");
@@ -60,30 +54,12 @@ const AdminSideBar = () => {
                                 <span className="text nav-text">Quản lý tổ hợp môn</span>
                             </NavLink>
                         </li>
-
-                        {/* Dropdown: Quản lý điểm chuẩn */}
                         <li className="nav-link">
-                            <div className="dropdown-toggle" onClick={toggleDropdown}>
+                            <NavLink to="/admin/diem-chuan">
                                 <i className="fa-solid fa-star icon"></i>
                                 <span className="text nav-text">Quản lý điểm chuẩn</span>
-                                <i className={`fa-solid ${isDropdownOpen ? "fa-chevron-up" : "fa-chevron-down"}`} style={{ marginLeft: "auto" }}></i>
-                            </div>
-                            {isDropdownOpen && (
-                                <ul className="dropdown-content">
-                                    <li>
-                                        <NavLink to="/admin/diem-chuan/add">
-                                            <span className="text nav-text">➕ Thêm điểm chuẩn</span>
-                                        </NavLink>
-                                    </li>
-                                    <li>
-                                        <NavLink to="/admin/diem-chuan/update">
-                                            <span className="text nav-text">📝 Cập nhật điểm chuẩn</span>
-                                        </NavLink>
-                                    </li>
-                                </ul>
-                            )}
+                            </NavLink>
                         </li>
-
                         <li className="nav-link">
                             <NavLink to="/admin/hoi-xoay-dap-xoay">
                                 <i className="fa-solid fa-circle-question icon"></i>
