@@ -102,6 +102,7 @@ const Navbar = () => {
                             <li><Link className="dropdown-item" to="/dem-nguoc">Đếm ngược ngày thi</Link></li>
                             <li><Link className="dropdown-item" to="/hoi-va-dap">Hỏi xoáy đáp xoay</Link></li>
                             <li><Link className="dropdown-item" to="/tra-cuu-to-hop-mon">Tra cứu tổ hợp môn</Link></li>
+                            <li><Link className="dropdown-item" to="/so-sanh">So sánh hai trường đại học</Link></li>
                         </ul>
                     </li>
                 </ul>
