@@ -14,12 +14,14 @@ const ManageMajorDetail = () => {
     const [showModal, setShowModal] = useState(false);
     const [newMaNganh, setNewMaNganh] = useState("");
     const [newTenNganh, setNewTenNganh] = useState("");
+    const [newToHopMon, setNewToHopMon] = useState("");
+    const [toHopMon, setToHopMon] = useState([]);
     const navigate = useNavigate();
 
 
     const fetchNganhHoc = async () => {
         try {
-            const response = await axios.get(`/api/chi-tiet-nganh-hoc/${id}`);
+            const response = await axios.get(`/api/uni/v1/major/by-uni?universityId=${id}`);
             setMajorList(response.data.data);
             toast.success("Tải danh sách ngành học thành công");
         } catch (error) {
@@ -31,21 +33,38 @@ const ManageMajorDetail = () => {
         }
     };
 
+    const fetchToHopMon = async () => {
+        try {
+            const response = await axios.get(`/api/uni/v1/major/to-hop-mon?universityId=${id}`);
+            setToHopMon(response.data.data || [])
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
+
     useEffect(() => {
         fetchNganhHoc();
+        fetchToHopMon();
     }, [id]);
 
 
     const handleAddMajor = async () => {
         try {
-            if (!newMaNganh || !newTenNganh) {
+            if (!newMaNganh || !newTenNganh || !newToHopMon) {
                 toast.error("Vui lòng nhập đầy đủ thông tin mã ngành và tên ngành");
                 return;
             }
-
+            console.log({
+                codeMajor: newMaNganh,
+                majorName: newTenNganh,
+                codeCombination: newToHopMon
+            });
             const response = await axios.post(`/api/them-nganh-hoc/${id}`, {
-                maNganh: newMaNganh,
-                tenNganh: newTenNganh
+                codeMajor: newMaNganh,
+                majorName: newTenNganh,
+                codeCombination: newToHopMon
             });
 
             if (response.data.success) {
@@ -53,6 +72,7 @@ const ManageMajorDetail = () => {
                 setMajorList(prev => [...prev, { maNganh: newMaNganh, tenNganh: newTenNganh }]);
                 setNewMaNganh("");
                 setNewTenNganh("");
+                setNewToHopMon("");
                 setShowModal(false);
             } else {
                 toast.error("Thêm ngành học thất bại");
@@ -65,9 +85,6 @@ const ManageMajorDetail = () => {
     }
 
     return (
-
-
-
         <div className="manage-major-detail bg-light min-vh-100 p-4">
             <ToastContainer position="top-right" autoClose={5000} />
             <div className="d-flex justify-content-center align-items-center mb-4 gap-2" style={{ fontSize: '1.5rem', fontWeight: '600' }}>
@@ -94,14 +111,15 @@ const ManageMajorDetail = () => {
                             <th>STT</th>
                             <th>Mã ngành</th>
                             <th>Tên ngành</th>
+
                         </tr>
                     </thead>
                     <tbody>
                         {majorList.map((major, index) => (
-                            <tr key={major.maNganh}>
+                            <tr key={major.majorName}>
                                 <td>{index + 1}</td>
                                 <td>{major.maNganh}</td>
-                                <td>{major.tenNganh}</td>
+                                <td>{major.majorName}</td>
                             </tr>
                         ))}
                     </tbody>
@@ -115,6 +133,33 @@ const ManageMajorDetail = () => {
                 <div className="modal-overlay">
                     <div className="modal-content p-4 bg-white rounded shadow">
                         <h5 className="mb-3 text-center">📘 Thêm Ngành Học</h5>
+
+                        <div className="form-group mb-3">
+                            <label><i className="fas fa-layer-group me-2"></i>Tổ Hợp Môn</label>
+                            <select
+                                className="form-control"
+                                value={newToHopMon}
+                                onChange={(e) => setNewToHopMon(e.target.value)}
+                                required
+                            >
+                                <option value="">-- Chọn tổ hợp môn --</option>
+                                {toHopMon.length > 0 ? (
+                                    toHopMon.map((item) => (
+                                        <option key={item.codeCombination} value={item.codeCombination}>
+                                            {item.codeCombination} - {Array.isArray(item.subjectName)
+                                                ? item.subjectName.join(", ")
+                                                : item.subjectName}
+                                        </option>
+                                    ))
+                                ) : (
+                                    <option value="" disabled>
+                                        Không có dữ liệu tổ hợp môn
+                                    </option>
+                                )}
+                            </select>
+                        </div>
+
+
                         <div className="form-group mb-3">
                             <label><i className="fas fa-code me-2"></i>Mã Ngành</label>
                             <input
@@ -146,7 +191,7 @@ const ManageMajorDetail = () => {
 
             <div className="text-center mt-4">
                 <button className="btn btn-outline-secondary px-4 py-2" onClick={() => navigate(-1)}>
-                    <i className="bi bi-arrow-left"></i> Go Back
+                    <i className="bi bi-arrow-left"></i> Trở về
                 </button>
             </div>
         </div>
