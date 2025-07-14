@@ -7,7 +7,6 @@ import CountDownRegisterForAdmission from "./Pages/CountDownRegisterForAdmission
 import PublishScoreDay from "./Pages/PublishScoreDay/PublishScoreDay";
 import CountDownPublishRealScore from "./Pages/CountDownPublishRealScore/CountDownPublishRealScore";
 import ListUniversities from "./Pages/ListUniversities/ListUniversities";
-import AdminSideBar from "./Pages/AdminSideBar/AdminSideBar";
 import ManageUniversity from "./Pages/ManageUniversity/ManageUniversity";
 import LayoutAdmin from "./Pages/Layout/LayoutAdmin";
 import ManageMajor from "./Pages/ManageMajor/ManageMajor";

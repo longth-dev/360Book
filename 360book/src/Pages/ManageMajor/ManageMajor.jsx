@@ -13,7 +13,7 @@ const ManageMajor = () => {
 
     const fetchUniversity = async () => {
         try {
-            const response = await axios.get('/api/truong-dai-hoc');
+            const response = await axios.get('/api/uni/v1');
             setUniversities(response.data.data || []);
             toast.success("Tải danh sách trường đại học thành công");
         } catch (error) {
@@ -28,8 +28,8 @@ const ManageMajor = () => {
 
 
     const filteredUniversities = universities.filter(u =>
-        u.tenTruong.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        u.maTruong.toLowerCase().includes(searchTerm.toLowerCase())
+        u.universityName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        u.code.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const totalPages = Math.ceil(filteredUniversities.length / itemsPerPage);
@@ -40,7 +40,7 @@ const ManageMajor = () => {
 
 
     const handleCardClick = (university) => {
-        navigate(`/admin/manage-nganh-hoc/${university.id}`, { state: { tenTruong: university.tenTruong, maTruong: university.maTruong } });
+        navigate(`/admin/manage-nganh-hoc/${university.universityId}`, { state: { tenTruong: university.universityName, maTruong: university.code } });
     };
 
 
@@ -70,7 +70,7 @@ const ManageMajor = () => {
                     </div>
                 ) : (
                     currentItems.map((university, index) => (
-                        <div className="col-md-6 col-lg-4 mb-4" key={university.id}>
+                        <div className="col-md-6 col-lg-4 mb-4" key={university.universityId}>
                             <div
                                 className="card h-100 shadow-sm card-hover"
                                 onClick={() => handleCardClick(university)}
@@ -79,13 +79,13 @@ const ManageMajor = () => {
                                 <img
                                     src={university.thumbnail || `https://picsum.photos/200/150?random=${index}`}
                                     className="card-img-top"
-                                    alt={university.tenTruong}
+                                    alt={university.universityName}
                                     style={{ height: "150px", objectFit: "cover" }}
                                 />
                                 <div className="card-body">
-                                    <h5 className="card-title">{university.tenTruong} - {university.maTruong}</h5>
-                                    <p className="card-text text-muted">📍 {university.diaChi}</p>
-                                    {university.theManh && <p className="card-text text-muted">⚡ {university.theManh}</p>}
+                                    <h5 className="card-title">{university.universityName} - {university.code}</h5>
+                                    <p className="card-text text-muted">📍 {university.address}</p>
+                                    {university.main && <p className="card-text text-muted">⚡ {university.main}</p>}
                                 </div>
                             </div>
                         </div>

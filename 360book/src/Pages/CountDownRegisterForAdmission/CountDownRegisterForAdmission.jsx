@@ -49,13 +49,16 @@ const CountDownRegisterForAdmission = () => {
         return () => clearInterval(timer);
     }, [targetDate]);
 
+
+    const currentYear = new Date().getFullYear();
+
     return (
         <>
             <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
             <Navbar />
             <div className="countdown-detail-pink-container">
                 <div className="countdown-content-wrapper">
-                    <h2 className="countdown-title">Đếm ngược ngày Đăng Ký Nguyện Vọng ĐH 2025</h2>
+                    <h2 className="countdown-title">Đếm ngược ngày Đăng Ký Nguyện Vọng ĐH {currentYear}</h2>
                     <div className="countdown-box pink">
                         <span className="label">Còn</span>
                         <span className="number">{timeLeft.days}</span>
@@ -94,14 +97,14 @@ const CountDownRegisterForAdmission = () => {
 
             </div>
             <div className="exam-info-wrapper">
-                <h3 className="exam-info-title">Đếm ngược ngày Đăng ký nguyện vọng xét tuyển ĐH 2025</h3>
+                <h3 className="exam-info-title">Đếm ngược ngày Đăng ký nguyện vọng xét tuyển ĐH {currentYear}</h3>
                 <p className="exam-info-text">
-                    Theo kế hoạch từ Bộ Giáo dục và Đào tạo, thời gian đăng ký nguyện vọng xét tuyển Đại học 2025 sẽ diễn ra từ ngày 16/7 đến 17h ngày 28/7/2025. Đây là giai đoạn quan trọng quyết định cơ hội trúng tuyển vào các trường đại học, cao đẳng trên toàn quốc.
+                    Theo kế hoạch từ Bộ Giáo dục và Đào tạo, thời gian đăng ký nguyện vọng xét tuyển Đại học {currentYear} sẽ diễn ra từ ngày 16/7 đến 17h ngày 28/7/2025. Đây là giai đoạn quan trọng quyết định cơ hội trúng tuyển vào các trường đại học, cao đẳng trên toàn quốc.
                 </p>
                 <p className="exam-info-text">
-                    Đây là kỳ thi quan trọng không chỉ để xét công nhận tốt nghiệp THPT mà còn là căn cứ để xét tuyển vào đại học, cao đẳng năm 2025.
+                    Đây là kỳ thi quan trọng không chỉ để xét công nhận tốt nghiệp THPT mà còn là căn cứ để xét tuyển vào đại học, cao đẳng năm {currentYear}.
                 </p>
-                <p className="exam-info-text"><strong>Hình thức đăng ký nguyện vọng xét tuyển 2025:</strong></p>
+                <p className="exam-info-text"><strong>Hình thức đăng ký nguyện vọng xét tuyển {currentYear}:</strong></p>
                 <p>
                     Tất cả thí sinh sẽ đăng ký và điều chỉnh nguyện vọng trực tuyến trên hệ thống tuyển sinh của Bộ GD&ĐT tại địa chỉ: <a href="https://thisinh.thitotnghiepthpt.edu.vn" target="_blank">https://thisinh.thitotnghiepthpt.edu.vn</a><br /><br />
 
@@ -112,7 +115,7 @@ const CountDownRegisterForAdmission = () => {
                     – Sử dụng kết quả thi tốt nghiệp THPT, chứng chỉ ngoại ngữ, điểm học bạ hoặc điểm thi đánh giá năng lực (nếu trường cho phép)
                 </p>
 
-                <p className="exam-info-text"><strong>Những lưu ý khi đăng ký nguyện vọng xét tuyển Đại học 2025</strong></p>
+                <p className="exam-info-text"><strong>Những lưu ý khi đăng ký nguyện vọng xét tuyển Đại học {currentYear}</strong></p>
                 <p>
                     Đăng ký không giới hạn số lượng nguyện vọng, nhưng cần <strong> sắp xếp nguyện vọng theo thứ tự ưu tiên thực sự mong muốn.</strong><br />
                     Cẩn thận khi nhập <strong> mã trường - mã ngành - mã tổ hợp</strong> để tránh sai sót.<br />
@@ -137,7 +140,7 @@ const CountDownRegisterForAdmission = () => {
                 </ul>
 
                 <p>
-                    <strong>Đăng ký nguyện vọng xét tuyển Đại học 2025</strong> – Bước đi quan trọng mở cánh cửa tương lai.
+                    <strong>Đăng ký nguyện vọng xét tuyển Đại học {currentYear}</strong> – Bước đi quan trọng mở cánh cửa tương lai.
                     Hãy chuẩn bị kỹ lưỡng để nắm chắc cơ hội vào trường Đại học mơ ước!
                 </p>
 
