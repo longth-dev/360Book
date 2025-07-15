@@ -370,104 +370,26 @@
     align-items: center;
     gap: 10px;
     color: white;
-    font-weight: 500;
 }
 
-.chatbox-minimized-title .ai-avatar {
-    width: 32px;
-    height: 32px;
+.chatbox-container.collapsed {
+    height: auto;
+    width: 300px;
+    overflow: hidden;
+    padding-bottom: 10px;
 }
 
-.chatbox-minimized-controls {
+.chatbox-header {
     display: flex;
-    gap: 8px;
+    justify-content: space-between;
+    align-items: center;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .chatbox-container {
-        width: calc(100vw - 40px);
-        height: 60vh;
-        min-height: 400px;
-        bottom: 10px;
-        right: 20px;
-        left: 20px;
-    }
-    
-    .chatbox-container.expanded {
-        width: calc(100vw - 40px);
-        height: 80vh;
-        min-height: 500px;
-    }
-    
-    .chatbox-minimized {
-        width: calc(100vw - 40px);
-        right: 20px;
-        left: 20px;
-    }
-    
-    .message {
-        max-width: 90%;
-    }
-    
-    .question-buttons {
-        flex-direction: column;
-    }
-    
-    .chatbox-input {
-        padding: 15px;
-    }
-    
-    .chatbox-input input {
-        padding: 10px 14px;
-        font-size: 0.9rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .chatbox-container {
-        width: calc(100vw - 20px);
-        right: 10px;
-        left: 10px;
-        height: 70vh;
-        min-height: 350px;
-    }
-    
-    .chatbox-container.expanded {
-        height: 85vh;
-        min-height: 450px;
-    }
-    
-    .chatbox-minimized {
-        width: calc(100vw - 20px);
-        right: 10px;
-        left: 10px;
-    }
-    
-    .chatbox-header {
-        padding: 15px;
-    }
-    
-    .chatbox-title h3 {
-        font-size: 1rem;
-    }
-    
-    .message-content {
-        padding: 10px 14px;
-        font-size: 0.85rem;
-    }
-    
-    .chatbox-input {
-        padding: 12px;
-    }
-    
-    .chatbox-input input {
-        padding: 8px 12px;
-        font-size: 0.85rem;
-    }
-    
-    .chatbox-input button {
-        width: 36px;
-        height: 36px;
-    }
+.toggle-btn {
+    background: transparent;
+    border: none;
+    font-size: 0.9rem;
+    cursor: pointer;
+    color: #007bff;
+    margin-left: 10px;
 }

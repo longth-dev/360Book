@@ -38,6 +38,7 @@ const AIChatbox = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isMinimized, setIsMinimized] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(false);
 
     const suggestedQuestions = [
         "Tổ hợp môn nào phù hợp với ngành CNTT?",

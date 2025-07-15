@@ -106,6 +106,19 @@ const FavoriteUniversity = () => {
 
 
 
+
+    const handleUnlike = async (universityId) => {
+        try {
+            await axios.post(`/api/xoa-truong-yeu-thich/${userId}/${universityId}`);
+            setFavorites(prev => prev.filter(u => u.id !== universityId));
+            toast.success("Đã xoá trường khỏi danh sách yêu thích");
+        } catch (error) {
+            console.error("Lỗi khi unlike trường:", error);
+            toast.error("Không thể xoá trường khỏi yêu thích");
+        }
+    };
+
+
     const filteredFavorites = favorites.filter(university =>
         university.tenTruong.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -163,15 +176,22 @@ const FavoriteUniversity = () => {
                     <>
                         <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
                             {currentItems.map(university => (
-                                <div
-                                    key={university.id}
-                                    className="col"
-                                >
+                                <div key={university.id} className="col">
                                     <div
-                                        className="card h-100 shadow-sm rounded-4 card-hover"
+                                        className="card h-100 shadow-sm rounded-4 card-hover position-relative"
                                         style={{ cursor: "pointer" }}
                                         onClick={() => handleCardClick(university.id)}
                                     >
+                                        <i
+                                            className="fa-solid fa-heart position-absolute top-0 end-0 m-2 text-danger"
+                                            style={{ fontSize: '1.4rem', zIndex: 1 }}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleUnlike(university.id);
+                                            }}
+                                            title="Bỏ yêu thích"
+                                        ></i>
+
                                         <img
                                             src={university.thumbnail || "https://picsum.photos/200/150"}
                                             className="card-img-top rounded-top-4"
@@ -179,14 +199,19 @@ const FavoriteUniversity = () => {
                                             style={{ height: '150px', objectFit: 'cover' }}
                                         />
                                         <div className="card-body">
-                                            <h5 className="card-title">{university.tenTruong} - {university.maTruong}</h5>
+                                            <h5 className="card-title">
+                                                {university.tenTruong} - {university.maTruong}
+                                            </h5>
                                             <p className="card-text text-muted">📍 {university.diaChi}</p>
-                                            {university.theManh && <p className="card-text text-muted">⚡ {university.theManh}</p>}
+                                            {university.theManh && (
+                                                <p className="card-text text-muted">⚡ {university.theManh}</p>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
                             ))}
                         </div>
+
 
                         {/* Pagination */}
                         <nav className="mt-4 d-flex justify-content-center">
