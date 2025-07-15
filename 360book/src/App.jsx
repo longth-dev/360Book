@@ -23,6 +23,7 @@ import LayoutAdmin from "./Pages/Layout/LayoutAdmin";
 import ManageQA from "./Pages/ManageQA/ManageQA";
 import VerifyInfo from "./Pages/VerifyInfo/VerifyInfo";
 import ManageScore from "./Pages/ManageScore/ManageScore";
+import UserQA from "./Pages/UserQA/UserQA";
 function App() {
   return (
     <Router>
@@ -49,7 +50,7 @@ function App() {
         <Route path="/tra-cuu-to-hop-mon" element={<SubjectCombinationViewer />} />
         <Route path="/ai-chatbox" element={<AIChatbox />} />
         <Route path="/danh-sach-truong" element={<ListUniversitiesView />} />
-
+        <Route path="/hoi-va-dap" element={<UserQA />} />
 
         {/** MANAGE ADMIN */}
         <Route path='/admin' element={<LayoutAdmin />}>
