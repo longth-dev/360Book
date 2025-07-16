@@ -6,6 +6,7 @@ import CountDownExamDay from "./Pages/CountDownExamDay/CountDownExamDay";
 import CountDownRegisterForAdmission from "./Pages/CountDownRegisterForAdmission/CountDownRegisterForAdmission";
 import PublishScoreDay from "./Pages/PublishScoreDay/PublishScoreDay";
 import CountDownPublishRealScore from "./Pages/CountDownPublishRealScore/CountDownPublishRealScore";
+import AdminSideBar from "./Pages/AdminSideBar/AdminSideBar";
 import ManageUniversity from "./Pages/ManageUniversity/ManageUniversity";
 import LayoutAdmin from "./Pages/Layout/LayoutAdmin";
 import ManageMajor from "./Pages/ManageMajor/ManageMajor";
@@ -15,8 +16,9 @@ import ManageMajorDetail from "./Pages/ManageMajor/ManageMajorDetail";
 import SubjectCombinationViewer from "./Pages/SubjectCombinationViewer/SubjectCombinationViewer";
 import ManageMajorGroup from "./Pages/ManageMajorGroup/ManageMajorGroup";
 import ManageNews from "./Pages/ManageNews/ManageNews";
-import ListUniversitiesView from "./Pages/ListUniversitiesView";
+import ListUniversitiesView from "./Pages/UniversityList/ListUniversitiesView";
 import AIChatbox from "./Components/AIChatbox/AIChatbox";
+import UniversityDetail from "./Pages/UniversityDetail/UniversityDetail";
 
 function App() {
   return (
@@ -32,6 +34,8 @@ function App() {
         <Route path="/tra-cuu-to-hop-mon" element={<SubjectCombinationViewer />} />
         <Route path="/ai-chatbox" element={<AIChatbox />} />
         <Route path="/danh-sach-truong" element={<ListUniversitiesView />} />
+        <Route path="/university-detail/:comboId/:uniId" element={<UniversityDetail />} />
+
 
 
 

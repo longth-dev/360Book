@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import AIChatbox from '../../Components/AIChatbox/AIChatbox';
 import NewsCarousel from "./NewsCarousel";
 import AdmissionSlider from "./AdmissionSlider";
 
@@ -33,11 +32,7 @@ const Home = () => {
     }
 
     // Lọc trường theo searchValue
-    const filteredUniversities = searchValue.trim()
-        ? MOCK_UNIVERSITIES.filter(univ =>
-            univ.name.toLowerCase().includes(searchValue.trim().toLowerCase())
-        )
-        : [];
+
 
     const fetchPTTS = async () => {
         try {
@@ -161,11 +156,7 @@ const Home = () => {
                             className="form-control form-control-lg"
                             placeholder="Tìm kiếm trường, ngành, điểm chuẩn..."
                             style={{ borderRadius: "5px", paddingLeft: "25px", fontSize: "1.2rem", cursor: "pointer", }}
-                            value={searchValue}
-                            onChange={e => {
-                                setSearchValue(e.target.value);
-                                setShowDropdown(true);
-                            }}
+
                             onFocus={() => {
                                 setIsInputFocused(true);
                                 setShowDropdown(true);
@@ -175,36 +166,7 @@ const Home = () => {
                                 setTimeout(() => setShowDropdown(false), 150);
                             }}
                         />
-                        {isInputFocused && showDropdown && filteredUniversities.length > 0 && (
-                            <div
-                                className="dropdown-menu show"
-                                style={{
-                                    position: "absolute",
-                                    top: "100%",
-                                    left: 0,
-                                    width: "100%",
-                                    maxHeight: '300px',
-                                    overflowY: 'auto',
-                                    marginTop: "8px",
-                                    cursor: "pointer",
-                                    zIndex: 10
-                                }}
-                            >
-                                {filteredUniversities.map((item, index) => (
-                                    <div
-                                        key={item.id}
-                                        className="dropdown-item"
-                                        onMouseDown={() => {
-                                            if (item.website) window.open(item.website, '_blank');
-                                            setShowDropdown(false);
-                                            setSearchValue("");
-                                        }}
-                                    >
-                                        {item.name}
-                                    </div>
-                                ))}
-                            </div>
-                        )}
+
                     </div>
 
                     <div style={{ marginTop: "20px", marginBottom: "5px" }}>

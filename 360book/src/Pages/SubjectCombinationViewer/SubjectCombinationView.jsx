@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
 import Navbar from "../../Components/Navbar/Navbar";
 import Footer from "../../Components/Footer/Footer";
 import "./SubjectCombinationViewer.css";
@@ -21,12 +20,10 @@ export default function SubjectCombinationViewer() {
         axios.get("https://your-api/subject-combinations")
             .then(res => {
                 setSubjectCombinations(res.data.data || []);
-                toast.success("Tải danh sách tổ hợp môn thành công");
             })
             .catch(err => {
                 setError("Không thể tải danh sách tổ hợp môn. Vui lòng thử lại sau.");
                 setSubjectCombinations([]);
-                toast.error("Tải danh sách tổ hợp môn thất bại");
             })
             .finally(() => setLoadingCombos(false));
     }, []);
@@ -42,12 +39,10 @@ export default function SubjectCombinationViewer() {
         axios.get(`https://your-api/universities?combo=${selectedCombo}`)
             .then(res => {
                 setUniversities(res.data.data || []);
-                toast.success(`Tải danh sách trường cho tổ hợp ${selectedCombo} thành công`);
             })
             .catch(err => {
                 setError("Không thể tải danh sách trường đại học. Vui lòng thử lại sau.");
                 setUniversities([]);
-                toast.error("Tải danh sách trường thất bại");
             })
             .finally(() => setLoadingUniversities(false));
     }, [selectedCombo]);
@@ -57,7 +52,6 @@ export default function SubjectCombinationViewer() {
     return (
         <>
             <Navbar />
-            <ToastContainer position="top-right" autoClose={5000} />
             <div className="subject-combination-viewer" style={{ background: '#fff', minHeight: '100vh' }}>
                 <div className="subject-combination-container">
                     <div className="subject-combination-header">
@@ -68,27 +62,30 @@ export default function SubjectCombinationViewer() {
                         <div className="subject-selector-label">
                             Chọn tổ hợp môn xét tuyển
                         </div>
-                        {loadingCombos ? (
-                            <div className="loader-container" style={{ minHeight: 80, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <div className="loader"></div>
+                        <select
+                            className="subject-selector"
+                            value={selectedCombo}
+                            onChange={e => setSelectedCombo(e.target.value)}
+                            disabled={loadingCombos}
+                        >
+                            <option value="">-- Chọn tổ hợp môn --</option>
+                            {subjectCombinations.map((combo) => (
+                                <option key={combo.id} value={combo.id}>
+                                    {combo.id} - {combo.name}
+                                </option>
+                            ))}
+                        </select>
+                        {loadingCombos && (
+                            <div className="text-center mt-2">
+                                <small className="text-muted">Đang tải danh sách tổ hợp môn...</small>
                             </div>
-                        ) : (
-                            <select
-                                className="subject-selector"
-                                value={selectedCombo}
-                                onChange={e => setSelectedCombo(e.target.value)}
-                                disabled={loadingCombos}
-                            >
-                                <option value="">-- Chọn tổ hợp môn --</option>
-                                {subjectCombinations.map((combo) => (
-                                    <option key={combo.id} value={combo.id}>
-                                        {combo.id} - {combo.name}
-                                    </option>
-                                ))}
-                            </select>
                         )}
                     </div>
-                    {/* Xóa dòng lưu ý khi có lỗi */}
+                    {error && (
+                        <div className="alert alert-warning" role="alert">
+                            <strong>Lưu ý:</strong> {error}
+                        </div>
+                    )}
                     {selectedCombo ? (
                         <div className="results-section">
                             <div className="results-header">
@@ -103,8 +100,11 @@ export default function SubjectCombinationViewer() {
                                 </div>
                             </div>
                             {loadingUniversities ? (
-                                <div className="loader-container" style={{ minHeight: 120, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <div className="loader"></div>
+                                <div className="text-center py-4">
+                                    <div className="spinner-border text-primary" role="status">
+                                        <span className="visually-hidden">Đang tải...</span>
+                                    </div>
+                                    <p className="mt-2 text-muted">Đang tải danh sách trường đại học...</p>
                                 </div>
                             ) : universities.length > 0 ? (
                                 <div className="table-responsive">
@@ -166,4 +166,9 @@ export default function SubjectCombinationViewer() {
             <Footer />
         </>
     );
-} 
+}
+
+
+
+
+
