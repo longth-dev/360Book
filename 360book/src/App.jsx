@@ -13,12 +13,13 @@ import ManageMajor from "./Pages/ManageMajor/ManageMajor";
 import ManageSchedual from "./Pages/ManageSchedual/ManageSchedual";
 import FavoriteUniversity from "./Pages/FavoriteUniversity/FavoriteUniversity";
 import ManageMajorDetail from "./Pages/ManageMajor/ManageMajorDetail";
-import SubjectCombinationViewer from "./Pages/SubjectCombinationViewer/SubjectCombinationViewer";
+import SubjectCombinationViewer from "./Pages/SubjectCombinationViewer/SubjectCombinationView";
 import ManageMajorGroup from "./Pages/ManageMajorGroup/ManageMajorGroup";
 import ManageNews from "./Pages/ManageNews/ManageNews";
 import ListUniversitiesView from "./Pages/UniversityList/ListUniversitiesView";
 import AIChatbox from "./Components/AIChatbox/AIChatbox";
 import UniversityDetail from "./Pages/UniversityDetail/UniversityDetail";
+import ExamSchedule from "./Pages/ExamSchedule/ExamSchedule";
 
 function App() {
   return (
@@ -35,7 +36,7 @@ function App() {
         <Route path="/ai-chatbox" element={<AIChatbox />} />
         <Route path="/danh-sach-truong" element={<ListUniversitiesView />} />
         <Route path="/university-detail/:comboId/:uniId" element={<UniversityDetail />} />
-
+        <Route path="/lich-thi" element={<ExamSchedule />} />
 
 
 

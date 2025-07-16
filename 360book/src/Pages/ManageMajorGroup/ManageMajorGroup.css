@@ -516,3 +516,51 @@
         align-self: flex-end;
     }
 }
+
+.manage-major-group-modal-content {
+    background: #fff !important;
+    color: #111 !important;
+    border-radius: 20px !important;
+    padding: 2.5rem 2rem !important;
+    max-width: 700px !important;
+    width: 98vw !important;
+    max-height: 95vh !important;
+    overflow-y: auto !important;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3) !important;
+    animation: modalSlideIn 0.3s ease-out !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    display: block !important;
+    z-index: 2000 !important;
+}
+
+.manage-major-group-modal-content label,
+.manage-major-group-modal-content input,
+.manage-major-group-modal-content textarea,
+.manage-major-group-modal-content select {
+    color: #111 !important;
+}
+
+/* Loader animation from ManageNews */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 1rem;
+    color: #333;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
