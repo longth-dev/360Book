@@ -20,6 +20,7 @@ import ListUniversitiesView from "./Pages/UniversityList/ListUniversitiesView";
 import AIChatbox from "./Components/AIChatbox/AIChatbox";
 import UniversityDetail from "./Pages/UniversityDetail/UniversityDetail";
 import ExamSchedule from "./Pages/ExamSchedule/ExamSchedule";
+import UserProfile from "./Pages/UserProfile/UserProfile";
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
 
         {/** USER PAGE */}
         <Route path="/nguoi-dung/truong-yeu-thich" element={<FavoriteUniversity />} />
+        <Route path="/user/profile" element={<UserProfile />} />
 
 
       </Routes>
