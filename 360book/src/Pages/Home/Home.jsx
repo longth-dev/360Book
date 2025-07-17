@@ -15,32 +15,30 @@ const Home = () => {
     const navigate = useNavigate();
     const [PTTS, setPTTS] = useState([]);
     const [THM, setTHM] = useState([]);
-    const [diemChuan, setDiemChuan] = useState([]);
     const [theManh, setTheManh] = useState([]);
     const [activeData, setActiveData] = useState([]);
     const [isInputFocused, setIsInputFocused] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
     const [activeButton, setActiveButton] = useState(null);
     const [newsList, setNewsList] = useState([]);
+    const [searchMode, setSearchMode] = useState(null);
+    const [diem, setDiem] = useState("");
+    const [phuongThuc, setPhuongThuc] = useState("TNTHPTQG");
+
 
     const handleClick = (btnName) => {
         setActiveButton(btnName);
+        if (btnName === "PTTS") {
+            setSearchMode("ptts");
+        } else {
+            setSearchMode(null);
+            if (btnName === "THM") fetchTHM();
+            else if (btnName === "TheManh") fetchTheManh();
+        }
     };
 
     const handleClickTaiDay = () => {
         navigate("/tu-van-chon-truong")
-    }
-
-    const fetchPTTS = async () => {
-        try {
-            const response = await axios.get("/api/get-ptts");
-            setPTTS(response.data.data);
-            setActiveData(response.data.data);
-            toast.success("fetch success PTTS");
-        } catch (error) {
-            console.log(error);
-            toast.error("fail fetch");
-        }
     }
     const fetchTHM = async () => {
         try {
@@ -53,18 +51,6 @@ const Home = () => {
             toast.error("fail fetch");
         }
     }
-    const fetchDiemChuan = async () => {
-        try {
-            const response = await axios.get("/api/diem-chuan");
-            setDiemChuan(response.data.data);
-            setActiveData(response.data.data);
-            toast.success("fetch success Diem Chuan");
-        } catch (error) {
-            console.log(error);
-            toast.error("fail fetch");
-        }
-    }
-
 
     const fetchTheManh = async () => {
         try {
@@ -88,6 +74,39 @@ const Home = () => {
             toast.error("Không thể lấy danh sách tin tức");
         }
     };
+
+
+    const handleSubmitPTTS = async () => {
+        if (!diem) {
+            toast.warning("Vui lòng nhập điểm của bạn");
+            return;
+        }
+        try {
+            const response = await axios.post("/api/tu-van-ptts", {
+                score: diem,
+                scoreType: phuongThuc,
+            });
+            setActiveData(response.data.data);
+            setShowDropdown(true);
+            toast.success("Search thành công");
+        } catch (error) {
+            console.log(error);
+            toast.error("Không thể Search");
+        }
+    };
+
+    const fetchPTTSafterSearching = async () => {
+        try {
+            const response = await axios.get("/api/get-ptts");
+            setPTTS(response.data.data);
+            setActiveData(response.data.data);
+            toast.success("fetch success PTTS");
+        } catch (error) {
+            console.log(error);
+            toast.error("fail fetch");
+        }
+    }
+
 
     useEffect(() => {
         fetchNews();
@@ -115,9 +134,9 @@ const Home = () => {
                     }}
                 >
                     <h1 className="mb-4" style={{ marginTop: "-100px" }}>Chào mừng bạn đến với 360 BOOK !</h1>
-                    <div className="d-flex flex-wrap justify-content-center gap-3 mb-3" style={{ marginRight: "483px" }}>
+                    <div className="d-flex flex-wrap justify-content-center gap-3 mb-3" style={{ marginRight: "634px" }}>
                         <button
-                            onClick={() => { handleClick('PTTS'); fetchPTTS(); }}
+                            onClick={() => { handleClick('PTTS') }}
                             className={`home-button btn btn-outline-light px-4 py-2 fw-semibold hover-yellow ${activeButton === 'PTTS' ? 'active' : ''}`}
                             style={{ borderRadius: "5px", color: "grey", backgroundColor: "white" }}
                         >
@@ -133,13 +152,6 @@ const Home = () => {
                         </button>
 
                         <button
-                            onClick={() => { handleClick('DiemChuan'); fetchDiemChuan(); }}
-                            className={`home-button btn btn-outline-light px-4 py-2 fw-semibold hover-yellow ${activeButton === 'DiemChuan' ? 'active' : ''}`}
-                            style={{ borderRadius: "5px", color: "grey", backgroundColor: "white" }}
-                        >
-                            Điểm chuẩn
-                        </button>
-                        <button
                             onClick={() => { handleClick('ThemManh'); fetchTheManh(); }}
                             className={`home-button btn btn-outline-light px-4 py-2 fw-semibold hover-yellow ${activeButton === 'TheManh' ? 'active' : ''}`}
                             style={{ borderRadius: "5px", color: "grey", backgroundColor: "white" }}
@@ -148,22 +160,82 @@ const Home = () => {
                         </button>
                     </div>
                     <div className="search-container" style={{ position: "relative", width: "100%", maxWidth: "1200px", marginTop: "-5px" }}>
-                        <input
-                            type="text"
-                            className="form-control form-control-lg"
-                            placeholder="Tìm kiếm trường, ngành, điểm chuẩn..."
-                            style={{ borderRadius: "5px", paddingLeft: "25px", fontSize: "1.2rem", cursor: "pointer", }}
-                            onFocus={() => {
-                                setIsInputFocused(true);
-                                setShowDropdown(true);
-                            }}
-                            onBlur={() => {
-                                setIsInputFocused(false);
-                                setTimeout(() => setShowDropdown(false), 150);
-                            }}
-                        />
-                        
+                        {searchMode === "ptts" ? (
+                            <div className="d-flex flex-wrap gap-2 align-items-center">
+                                <input
+                                    type="number"
+                                    className="form-control form-control-lg"
+                                    placeholder="Nhập điểm của bạn"
+                                    value={diem}
+                                    onChange={(e) => setDiem(e.target.value)}
+                                    style={{ width: "225px", borderRadius: "5px" }}
+                                />
+                                <select
+                                    className="form-select form-select-md"
+                                    value={phuongThuc}
+                                    onChange={(e) => setPhuongThuc(e.target.value)}
+                                    style={{ width: "250px", borderRadius: "5px" }}
+                                >
+                                    <option value="TNTHPTQG">Tốt nghiệp trung học phổ thông quốc gia</option>
+                                    <option value="HOCBA">Học bạ</option>
+                                    <option value="DGNLHN">ĐGNL Hà Nội</option>
+                                    <option value="DGNLHCM">ĐGNL TP.HCM</option>
+                                </select>
+                                <button
+                                    className="button-with-icon"
+                                    onClick={() => {
+                                        handleSubmitPTTS();
+                                        fetchPTTSafterSearching();
+                                    }}
+                                >
+                                    <svg
+                                        className="icon"
+                                        viewBox="0 0 48 48"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            fill="#ffffff"
+                                            d="M12 39c-.549 0-1.095-.15-1.578-.447A3.008 3.008 0 0 1 9 36V12c0-1.041.54-2.007 1.422-2.553a3.014 3.014 0 0 1 2.919-.132l24 12a3.003 3.003 0 0 1 0 5.37l-24 12c-.42.21-.885.315-1.341.315z"
+                                        ></path>
+                                    </svg>
+                                    <span className="text">Search</span>
+                                </button>
+
+                            </div>
+                        ) : (
+                            <input
+                                type="text"
+                                className="form-control form-control-lg"
+                                placeholder="Tìm kiếm trường, ngành, điểm chuẩn..."
+                                style={{ borderRadius: "5px", paddingLeft: "25px", fontSize: "1.2rem", cursor: "pointer" }}
+                                onFocus={() => setIsInputFocused(true)}
+                                onBlur={() => setIsInputFocused(false)}
+                            />
+                        )}
+                        {activeData.length > 0 && (showDropdown || isInputFocused) && (
+                            <div
+                                className="dropdown-menu show"
+                                style={{
+                                    position: "absolute",
+                                    top: "100%",
+                                    left: 0,
+                                    width: "100%",
+                                    maxHeight: '300px',
+                                    overflowY: 'auto',
+                                    marginTop: "8px",
+                                    cursor: "pointer",
+                                    zIndex: 10
+                                }}
+                            >
+                                {activeData.map((university, index) => (
+                                    <div key={university.universityId} className="dropdown-item">
+                                        <strong>ID:</strong> {university.universityId} - <strong>Name:</strong> {university.scoreType || university.tenKhoi || university.tenNganh || university.name}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
+
 
                     <div style={{ marginTop: "20px", marginBottom: "5px" }}>
                         <p style={{
@@ -212,9 +284,6 @@ const Home = () => {
                     </div>
                 </div>
                 <AdmissionSlider />
-
-
-
             </div>
             <Footer />
             <AIChatbox />
