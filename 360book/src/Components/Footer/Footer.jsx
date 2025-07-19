@@ -18,7 +18,7 @@ const Footer = () => {
                     {/* Cột 1 */}
                     <div className="col-md-3 border-start border-white ps-4">
                         <ul className="list-unstyled small">
-                            <li><span className="arrow">➤</span><Link to="/danh-sach"> Danh sách ĐH</Link></li>
+                            <li><span className="arrow">➤</span><Link to="/danh-sach-truong"> Danh sách ĐH</Link></li>
                             <li><span className="arrow">➤</span><Link to="/diem-chuan"> Xem điểm chuẩn ĐH</Link></li>
                             <li><span className="arrow">➤</span><Link to="/tinh-diem-hoc-ba"> Công cụ tính điểm học bạ 2025</Link></li>
                             <li><span className="arrow">➤</span><Link to="/xet-tuyen" > Tổ hợp xét tuyển Đại học 2025</Link></li>
@@ -31,7 +31,6 @@ const Footer = () => {
                             <li><span className="arrow">➤</span><Link to="/lich-thi" > Lịch thi</Link></li>
                             <li><span className="arrow">➤</span><Link to="/tinh-diem" > Công cụ tính điểm tốt nghiệp THPT</Link></li>
                             <li><span className="arrow">➤</span><Link to="/nganh-nghe" > Các ngành nghề đào tạo 2025</Link></li>
-                            <li><span className="arrow">➤</span><Link to="/diem-chuan-10" > Liên hệ chúng tôi</Link></li>
                         </ul>
                     </div>
 
@@ -47,7 +46,7 @@ const Footer = () => {
             </div>
 
             {/* Copyright dưới cùng */}
-            <div className="text-center small py-2 border-top border-secondary" style={{ backgroundColor: "#21639E", color:"#849CE2" }}>
+            <div className="text-center small py-2 border-top border-secondary" style={{ backgroundColor: "#21639E", color: "#849CE2" }}>
                 <p className="mb-0">&copy; 2025 All Rights Reserved</p>
             </div>
         </footer>
