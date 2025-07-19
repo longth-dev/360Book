@@ -1,37 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Navbar from "../../Components/Navbar/Navbar";
 import Footer from "../../Components/Footer/Footer";
 import "./UserProfile.css";
 
 const defaultAvatar = "https://ui-avatars.com/api/?name=Nguyen+Van+A&background=ffecb3&color=2d3a8c&size=128";
 
-const mockUser = {
-    name: "Nguyễn Văn A",
-    email: "nguyenvana@gmail.com",
-    emailVerified: false,
-    phone: "0912345678",
-    avatar: "",
-    favoriteUniversities: [
-        "Đại học Bách Khoa Hà Nội",
-        "Đại học Kinh tế Quốc dân",
-        "Đại học Ngoại thương"
-    ]
-};
-
 export default function UserProfile() {
-    const [user, setUser] = useState(mockUser);
+    const [user, setUser] = useState(null); // ban đầu là null
     const [showEmailForm, setShowEmailForm] = useState(false);
     const [showPasswordForm, setShowPasswordForm] = useState(false);
-    const [newEmail, setNewEmail] = useState(user.email);
+    const [newEmail, setNewEmail] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [avatarFile, setAvatarFile] = useState(null);
 
+    useEffect(() => {
+        // TODO: Thay URL này bằng API thật khi có
+        axios.get("URL_API_GET_USER_PROFILE")
+            .then(res => {
+                setUser(res.data);
+                setNewEmail(res.data.email || "");
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Không thể lấy thông tin người dùng. Vui lòng thử lại sau!");
+                // Không setUser, user sẽ là null
+            });
+    }, []);
+
     const handleEmailUpdate = e => {
         e.preventDefault();
-        setUser({ ...user, email: newEmail, emailVerified: false });
-        setShowEmailForm(false);
-        // TODO: Gọi API update email
+        axios.put("URL_API_UPDATE_EMAIL", { email: newEmail })
+            .then(res => {
+                setUser({ ...user, email: newEmail, emailVerified: false });
+                setShowEmailForm(false);
+            })
+            .catch(err => alert("Cập nhật email thất bại!"));
     };
 
     const handlePasswordUpdate = e => {
@@ -40,23 +45,33 @@ export default function UserProfile() {
             alert("Mật khẩu xác nhận không khớp!");
             return;
         }
-        setShowPasswordForm(false);
-        setNewPassword("");
-        setConfirmPassword("");
-        // TODO: Gọi API update password
+        // TODO: Thay URL này bằng API thật khi có
+        axios.put("URL_API_UPDATE_PASSWORD", { password: newPassword })
+            .then(res => {
+                setShowPasswordForm(false);
+                setNewPassword("");
+                setConfirmPassword("");
+            })
+            .catch(err => alert("Cập nhật mật khẩu thất bại!"));
     };
 
     const handleVerifyEmail = () => {
-        alert("Đã gửi email xác thực đến " + user.email + "! (Giả lập)");
-        // TODO: Gọi API gửi xác thực email
+        // TODO: Thay URL này bằng API thật khi có
+        axios.post("URL_API_VERIFY_EMAIL", { email: user.email })
+            .then(res => {
+                alert("Đã gửi email xác thực đến " + user.email + "!");
+            })
+            .catch(err => alert("Gửi email xác thực thất bại!"));
     };
 
     const handleRemoveFavorite = idx => {
+        // TODO: Thay URL này bằng API thật khi có
+        // axios.delete(`URL_API_REMOVE_FAVORITE_UNI/${user.favoriteUniversities[idx]}`)
+        //     .then(res => { ... })
         setUser({
             ...user,
             favoriteUniversities: user.favoriteUniversities.filter((_, i) => i !== idx)
         });
-        // TODO: Gọi API xóa trường yêu thích
     };
 
     const handleAvatarChange = e => {
@@ -68,9 +83,15 @@ export default function UserProfile() {
                 setUser({ ...user, avatar: ev.target.result });
             };
             reader.readAsDataURL(file);
-            // TODO: Gọi API upload avatar
+            // TODO: Thay URL này bằng API thật khi có
+            // const formData = new FormData();
+            // formData.append("avatar", file);
+            // axios.post("URL_API_UPLOAD_AVATAR", formData)
+            //     .then(res => { ... })
         }
     };
+
+    if (!user) return <div>Loading...</div>;
 
     return (
         <>
