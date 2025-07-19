@@ -108,8 +108,8 @@
 .loading-spinner {
     width: 50px;
     height: 50px;
-    border: 4px solid rgba(255, 255, 255, 0.3);
-    border-top: 4px solid white;
+    border: 4px solid #b3c6ff; /* xanh nhạt nổi bật hơn */
+    border-top: 4px solid #ff9800; /* vàng cam nổi bật */
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 1rem;
@@ -586,4 +586,25 @@
     .news-title {
         font-size: 1.1rem;
     }
+}
+
+.manage-news-modal-content {
+    background: #fff !important;
+    color: #111 !important;
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: modalSlideIn 0.3s ease-out;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.manage-news-modal-content label,
+.manage-news-modal-content input,
+.manage-news-modal-content textarea,
+.manage-news-modal-content select {
+    color: #111;
 }

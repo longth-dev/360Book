@@ -31,6 +31,9 @@ const Home = () => {
         navigate("/tu-van-chon-truong")
     }
 
+    // Lọc trường theo searchValue
+
+
     const fetchPTTS = async () => {
         try {
             const response = await axios.get("/api/get-ptts");
@@ -153,6 +156,7 @@ const Home = () => {
                             className="form-control form-control-lg"
                             placeholder="Tìm kiếm trường, ngành, điểm chuẩn..."
                             style={{ borderRadius: "5px", paddingLeft: "25px", fontSize: "1.2rem", cursor: "pointer", }}
+
                             onFocus={() => {
                                 setIsInputFocused(true);
                                 setShowDropdown(true);
@@ -162,7 +166,7 @@ const Home = () => {
                                 setTimeout(() => setShowDropdown(false), 150);
                             }}
                         />
-                        
+
                     </div>
 
                     <div style={{ marginTop: "20px", marginBottom: "5px" }}>

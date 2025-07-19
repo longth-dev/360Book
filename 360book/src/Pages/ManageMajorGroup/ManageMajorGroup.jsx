@@ -28,19 +28,20 @@ const ManageMajorGroup = () => {
     // Fetch danh sách tổ hợp môn
     const fetchSubjectCombinations = async () => {
         try {
-            setLoading(true);
+            setLoading(true); // Đảm bảo loader hiển thị khi bắt đầu fetch
             const response = await axios.get("/api/tohopmon");
             setSubjectCombinations(response.data.data || []);
             toast.success("Tải danh sách tổ hợp môn thành công");
+            setLoading(false); // Loader ẩn khi fetch thành công
         } catch (error) {
             console.error("Lỗi khi tải danh sách tổ hợp môn:", error);
             toast.error("Tải danh sách tổ hợp môn thất bại");
-        } finally {
-            setLoading(false);
+            setLoading(true); // Loader vẫn hiển thị khi fetch thất bại
         }
     };
 
     useEffect(() => {
+        setLoading(true); // Đảm bảo loader hiển thị khi bắt đầu fetch
         fetchSubjectCombinations();
     }, []);
 
@@ -263,7 +264,7 @@ const ManageMajorGroup = () => {
             {/* Add Modal */}
             {showModal && (
                 <div className="modal-overlay">
-                    <div className="modal-content">
+                    <div className="manage-major-group-modal-content">
                         <div className="modal-header">
                             <h2>Thêm tổ hợp môn mới</h2>
                             <button className="close-btn" onClick={() => setShowModal(false)}>
@@ -324,7 +325,7 @@ const ManageMajorGroup = () => {
             {/* Update Modal */}
             {showUpdateModal && (
                 <div className="modal-overlay">
-                    <div className="modal-content">
+                    <div className="manage-major-group-modal-content">
                         <div className="modal-header">
                             <h2>Cập nhật tổ hợp môn</h2>
                             <button className="close-btn" onClick={() => setShowUpdateModal(false)}>

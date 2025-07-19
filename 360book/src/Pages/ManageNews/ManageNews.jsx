@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./ManageNews.css";
 
 const ManageNews = () => {
@@ -35,14 +36,15 @@ const ManageNews = () => {
     const fetchNews = async () => {
         try {
             setLoading(true);
+            await new Promise(resolve => setTimeout(resolve, 2000)); // Thêm delay 2s để test loader
             const response = await axios.get("/api/news");
             setNewsList(response.data.data || []);
             toast.success("Tải danh sách tin tức thành công");
+            setLoading(false); // Loader ẩn khi fetch thành công
         } catch (error) {
             console.error("Lỗi khi tải danh sách tin tức:", error);
             toast.error("Tải danh sách tin tức thất bại");
-        } finally {
-            setLoading(false);
+            setLoading(true); // Loader vẫn hiển thị khi fetch thất bại
         }
     };
 
@@ -269,7 +271,7 @@ const ManageNews = () => {
             {/* Add Modal */}
             {showModal && (
                 <div className="modal-overlay">
-                    <div className="modal-content">
+                    <div className="manage-news-modal-content">
                         <div className="modal-header">
                             <h2>Thêm tin tức mới</h2>
                             <button className="close-btn" onClick={() => setShowModal(false)}>
