@@ -4,8 +4,10 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import AddUniversityPopUp from "./AddUniversityPopUp";
 import UpdateUniversityPopUp from "./UpdateUniversityPopUp";
+import { useNavigate } from "react-router-dom";
 
 const ManageUniversity = () => {
+    const navigate = useNavigate();
     const [universities, setUniversities] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
@@ -103,6 +105,10 @@ const ManageUniversity = () => {
         currentPage * itemsPerPage
     );
 
+    const handleViewClick = (universityId) => {
+        navigate(`/admin/universities/${universityId}`);
+    };
+
     return (
         <div className="manage-university bg-light min-vh-100 p-4">
             <ToastContainer position="top-right" autoClose={5000} />
@@ -159,6 +165,12 @@ const ManageUniversity = () => {
                                         onClick={() => handleEditClick(university)}
                                     >
                                         Edit
+                                    </button>
+                                    <button
+                                        className="btn btn-sm btn-primary"
+                                        onClick={() => handleViewClick(university.universityId)}
+                                    >
+                                        View
                                     </button>
                                 </div>
                             </div>

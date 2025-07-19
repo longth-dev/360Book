@@ -13,6 +13,7 @@ import ManageMajor from "./Pages/ManageMajor/ManageMajor";
 import ManageSchedual from "./Pages/ManageSchedual/ManageSchedual";
 import FavoriteUniversity from "./Pages/FavoriteUniversity/FavoriteUniversity";
 import ManageMajorDetail from "./Pages/ManageMajor/ManageMajorDetail";
+import ManageUniversityDetail from "./Pages/ManageUniversity/ManageUniversityDetai";
 
 function App() {
   return (
@@ -32,8 +33,8 @@ function App() {
         {/** MANAGE ADMIN */}
         <Route path='/admin' element={<LayoutAdmin />}>
           <Route path="/admin/manage-dai-hoc" element={<ManageUniversity />} />
-          <Route path="/admin/manage-nganh-hoc" element={<ManageMajor />} />
-          <Route path="/admin/manage-nganh-hoc/:id" element={<ManageMajorDetail />} />
+          <Route path="/admin/universities/:id" element={<ManageUniversityDetail />} />
+          <Route path="/admin/manage-nganh-hoc" element={<ManageMajorDetail />} />
           <Route path="/admin/manage-thoi-gian-thi" element={<ManageSchedual />} />
         </Route>
 

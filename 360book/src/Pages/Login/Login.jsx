@@ -50,13 +50,13 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await axios.post("/api/login", {
+      const response = await axios.post("/api/auth/login", {
         username: account,
         password: password
       });
       toast.success("Login Successfully")
       console.log(response.data);
-      localStorage.setItem('token', response.data.data.token);
+      localStorage.setItem('token', response.data.data.accessToken);
       const roles = getRoleFromToken();
       console.log(roles);
       if (roles === "ADMIN") {
