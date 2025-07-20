@@ -40,6 +40,9 @@ const Home = () => {
     const handleClickTaiDay = () => {
         navigate("/tu-van-chon-truong")
     }
+
+    // Lọc trường theo searchValue
+
     const fetchTHM = async () => {
         try {
             const response = await axios.get("/api/get-thm");

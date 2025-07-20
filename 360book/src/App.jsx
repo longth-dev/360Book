@@ -6,15 +6,16 @@ import CountDownExamDay from "./Pages/CountDownExamDay/CountDownExamDay";
 import CountDownRegisterForAdmission from "./Pages/CountDownRegisterForAdmission/CountDownRegisterForAdmission";
 import PublishScoreDay from "./Pages/PublishScoreDay/PublishScoreDay";
 import CountDownPublishRealScore from "./Pages/CountDownPublishRealScore/CountDownPublishRealScore";
+import AdminSideBar from "./Pages/AdminSideBar/AdminSideBar";
 import ManageUniversity from "./Pages/ManageUniversity/ManageUniversity";
 import ManageMajor from "./Pages/ManageMajor/ManageMajor";
 import ManageSchedual from "./Pages/ManageSchedual/ManageSchedual";
 import FavoriteUniversity from "./Pages/FavoriteUniversity/FavoriteUniversity";
 import ManageMajorDetail from "./Pages/ManageMajor/ManageMajorDetail";
-import SubjectCombinationViewer from "./Pages/SubjectCombinationViewer/SubjectCombinationViewer";
+import SubjectCombinationViewer from "./Pages/SubjectCombinationViewer/SubjectCombinationView";
 import ManageMajorGroup from "./Pages/ManageMajorGroup/ManageMajorGroup";
 import ManageNews from "./Pages/ManageNews/ManageNews";
-import ListUniversitiesView from "./Pages/ListUniversitiesView";
+import ListUniversitiesView from "./Pages/UniversityList/ListUniversitiesView";
 import AIChatbox from "./Components/AIChatbox/AIChatbox";
 import AdmissionScore from "./Pages/AdmissionScore/AdmissionScore";
 import ScoreCalculator from "./Pages/ScoreCalculator/ScoreCalculator";
@@ -28,6 +29,10 @@ import CompetencyAssessmentHCMStage1 from "./Pages/CompetencyAssessmentHCMStage1
 import CompetencyAssessmentHCMStage2 from "./Pages/CompetencyAssessmentHCMStage2/CompetencyAssessmentHCMStage2";
 import CompetencyAssessmentHNStage1 from "./Pages/CompetencyAssessmentHNStage1/CompetencyAssessmentHNStage1";
 import CompetencyAssessmentHNStage2 from "./Pages/CompetencyAssessmentHNStage2/CompetencyAssessmentHNStage2";
+import UniversityDetail from "./Pages/UniversityDetail/UniversityDetail";
+import ExamSchedule from "./Pages/ExamSchedule/ExamSchedule";
+import UserProfile from "./Pages/UserProfile/UserProfile";
+
 function App() {
   return (
     <Router>
@@ -46,7 +51,10 @@ function App() {
         <Route path="/tra-cuu-to-hop-mon" element={<SubjectCombinationViewer />} />
         <Route path="/ai-chatbox" element={<AIChatbox />} />
         <Route path="/danh-sach-truong" element={<ListUniversitiesView />} />
-        <Route path="/hoi-va-dap" element={<UserQA />} />
+        <Route path="/university-detail/:comboId/:uniId" element={<UniversityDetail />} />
+        <Route path="/lich-thi" element={<ExamSchedule />} />
+
+
 
         {/** MANAGE ADMIN */}
         <Route path='/admin' element={<LayoutAdmin />}>
@@ -63,16 +71,16 @@ function App() {
 
         {/** USER PAGE */}
         <Route path="/nguoi-dung/truong-yeu-thich" element={<FavoriteUniversity />} />
-
+        <Route path="/user/profile" element={<UserProfile />} />
 
         <Route path="/diem-chuan" element={<AdmissionScore />} />
         <Route path="/tinh-diem" element={<ScoreCalculator />} />
         <Route path="/so-sanh" element={<UniCompare />} />
         {/* Add more routes as needed */}
         /* Admin routes wrapped in LayoutAdmin */
-      
 
-        <Route path="/staff" element={<VerifyInfo/>}/>
+
+        <Route path="/staff" element={<VerifyInfo />} />
       </Routes>
     </Router>
   );
