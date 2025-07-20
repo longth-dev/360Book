@@ -33,6 +33,7 @@ import CompetencyAssessmentHNStage2 from "./Pages/CompetencyAssessmentHNStage2/C
 import UniversityDetail from "./Pages/UniversityDetail/UniversityDetail";
 import ExamSchedule from "./Pages/ExamSchedule/ExamSchedule";
 import UserProfile from "./Pages/UserProfile/UserProfile";
+import ProtectedRoutesAdmin from "./Utils/ProtectedRoutesAdmin";
 
 function App() {
   return (
@@ -41,9 +42,9 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dem-nguoc" element={<EventCountDown />} />
-        <Route path="/dem-nguoc/ngay-thi-tot-nghiep" element={<CountDownExamDay />}/>
+        <Route path="/dem-nguoc/ngay-thi-tot-nghiep" element={<CountDownExamDay />} />
         <Route path="/dem-nguoc/ngay-dang-ki-nguyen-vong" element={<CountDownRegisterForAdmission />} />
-        <Route path="/dem-nguoc/cong-bo-diem-thi" element={<PublishScoreDay />}/>
+        <Route path="/dem-nguoc/cong-bo-diem-thi" element={<PublishScoreDay />} />
         <Route path="/dem-nguoc/diem-chuan-dot-1" element={<CountDownPublishRealScore />} />
         <Route path="/dem-nguoc/dgnl-dot1-hcm" element={<CompetencyAssessmentHCMStage1 />} />
         <Route path="/dem-nguoc/dgnl-dot2-hcm" element={<CompetencyAssessmentHCMStage2 />} />
@@ -55,35 +56,31 @@ function App() {
         <Route path="/university-detail/:comboId/:uniId" element={<UniversityDetail />} />
         <Route path="/lich-thi" element={<ExamSchedule />} />
 
-
-
         {/** MANAGE ADMIN */}
-        <Route path='/admin' element={<LayoutAdmin />}>
-          <Route path="/admin/manage-dai-hoc" element={<ManageUniversity />} />
-          <Route path="/admin/universities/:id" element={<ManageUniversityDetail />} />
-          <Route path="/admin/manage-nganh-hoc" element={<ManageMajorDetail />} />
-          <Route path="/admin/manage-thoi-gian-thi" element={<ManageSchedual />} />
-          <Route path="/admin/manage-to-hop-mon" element={<ManageMajorGroup />} />
-          <Route path="/admin/manage-tin-tuc" element={<ManageNews />} />
-          <Route path="/admin/diem-chuan" element={<ManageScore />} />
-          <Route path="hoi-xoay-dap-xoay" element={<ManageQA />} />
+        <Route element={<ProtectedRoutesAdmin />}>
+          <Route path='/admin' element={<LayoutAdmin />}>
+            <Route path="/admin/manage-dai-hoc" element={<ManageUniversity />} />
+            <Route path="/admin/universities/:id" element={<ManageUniversityDetail />} />
+            <Route path="/admin/manage-nganh-hoc" element={<ManageMajorDetail />} />
+            <Route path="/admin/manage-thoi-gian-thi" element={<ManageSchedual />} />
+            <Route path="/admin/manage-to-hop-mon" element={<ManageMajorGroup />} />
+            <Route path="/admin/manage-tin-tuc" element={<ManageNews />} />
+            <Route path="/admin/diem-chuan" element={<ManageScore />} />
+            <Route path="hoi-xoay-dap-xoay" element={<ManageQA />} />
+          </Route>
         </Route>
 
-
         {/** USER PAGE */}
+
         <Route path="/nguoi-dung/truong-yeu-thich" element={<FavoriteUniversity />} />
         <Route path="/user/profile" element={<UserProfile />} />
-
         <Route path="/diem-chuan" element={<AdmissionScore />} />
         <Route path="/tinh-diem" element={<ScoreCalculator />} />
         <Route path="/so-sanh" element={<UniCompare />} />
         {/* Add more routes as needed */}
-        /* Admin routes wrapped in LayoutAdmin */
-
-
         <Route path="/staff" element={<VerifyInfo />} />
       </Routes>
-    </Router>
+    </Router >
   );
 }
 

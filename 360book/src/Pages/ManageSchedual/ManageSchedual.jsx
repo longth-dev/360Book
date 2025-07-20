@@ -30,18 +30,18 @@ const ManageSchedule = () => {
             try {
                 const res = await axios.get("/api/uni/schedule");
                 const dataFromApi = res.data.data || [];
-
                 const newDatesFromApi = EVENTS.map(eventName => {
-                    const found = dataFromApi.find(item => item.eventName === eventName);
+                    const found = dataFromApi.find(item => item.content === eventName);
                     return found
                         ? {
-                            startDate: found.startDate ? found.startDate.slice(0, 10) : "",
-                            endDate: found.endDate ? found.endDate.slice(0, 10) : ""
+                            startDate: found.startDate ? found.startDate.slice(0, 16) : "",
+                            endDate: found.endDate ? found.endDate.slice(0, 16) : ""
                         }
                         : { startDate: "", endDate: "" };
                 });
-
                 setDatesAvailable(newDatesFromApi);
+                console.log("Fetched dates:", newDatesFromApi);
+
             } catch (error) {
                 toast.error("Không thể tải dữ liệu lịch từ server");
                 console.error(error);
@@ -104,15 +104,17 @@ const ManageSchedule = () => {
                         <p>
                             <strong>Ngày có sẵn: </strong>
                             {datesAvailable[selectedIndex].startDate || datesAvailable[selectedIndex].endDate
-                                ? `${datesAvailable[selectedIndex].startDate} - ${datesAvailable[selectedIndex].endDate}`
+                                ? `${datesAvailable[selectedIndex].startDate.slice(0, 10)} - ${datesAvailable[selectedIndex].endDate.slice(0, 10)}`
                                 : <i>Chưa có ngày</i>}
                         </p>
+
                         <div className="mb-3">
                             <label className="form-label">Ngày bắt đầu</label>
                             <input
                                 type="datetime-local"
                                 className="form-control"
                                 value={dates[selectedIndex].startDate || ""}
+                                min={new Date().toISOString().slice(0, 16)}
                                 onChange={(e) => handleDateChange(selectedIndex, "startDate", e.target.value)}
                             />
                         </div>

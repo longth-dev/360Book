@@ -184,7 +184,7 @@ const Home = () => {
                     }}
                 >
                     <h1 className="mb-4" style={{ marginTop: "-100px" }}>Chào mừng bạn đến với 360 BOOK !</h1>
-                    <div className="d-flex flex-wrap justify-content-center gap-3 mb-3" style={{ marginRight: "634px" }}>
+                    <div className="d-flex flex-wrap justify-content-center gap-3 mb-3" style={{ marginRight: "757px" }}>
                         {/* <button
                             onClick={() => { handleClick('PTTS') }}
                             className={`home-button btn btn-outline-light px-4 py-2 fw-semibold hover-yellow ${activeButton === 'PTTS' ? 'active' : ''}`}
