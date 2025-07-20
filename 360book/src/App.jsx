@@ -27,6 +27,7 @@ import ManageScore from "./Pages/ManageScore/ManageScore";
 import UserQA from "./Pages/UserQA/UserQA";
 import ExamSchedule from "./Pages/ExamSchedule/ExamSchedule";
 import UserProfile from "./Pages/UserProfile/UserProfile";
+import FilterUniversities from "./Pages/FilterUniversities/FilterUniversities";
 
 function App() {
   return (
@@ -55,7 +56,8 @@ function App() {
         <Route path="/ai-chatbox" element={<AIChatbox />} />
         <Route path="/danh-sach-truong" element={<ListUniversitiesView />} />
         <Route path="/lich-thi" element={<ExamSchedule />} />
-
+        <Route path="/filter-universities/combo/:comboId" element={<FilterUniversities />} />
+        <Route path="/filter-universities/strength/:strengthId" element={<FilterUniversities />} />
 
 
         {/** MANAGE ADMIN */}
