@@ -28,7 +28,7 @@ const ManageSchedule = () => {
     useEffect(() => {
         const fetchDates = async () => {
             try {
-                const res = await axios.get("/api/schedule");
+                const res = await axios.get("/api/uni/schedule");
                 const dataFromApi = res.data.data || [];
 
                 const newDatesFromApi = EVENTS.map(eventName => {
@@ -60,10 +60,11 @@ const ManageSchedule = () => {
 
         try {
             setLoadingIndexes((prev) => [...prev, index]);
-            await axios.post("/api/schedule", {
-                eventName: EVENTS[index],
+            await axios.post("/api/uni/schedule", {
+                content: EVENTS[index],
                 startDate,
                 endDate,
+                mainSchedule: true
             });
             toast.success(`Lưu lịch "${EVENTS[index]}" thành công!`);
             const newDatesAvailable = [...datesAvailable];
@@ -109,7 +110,7 @@ const ManageSchedule = () => {
                         <div className="mb-3">
                             <label className="form-label">Ngày bắt đầu</label>
                             <input
-                                type="date"
+                                type="datetime-local"
                                 className="form-control"
                                 value={dates[selectedIndex].startDate || ""}
                                 onChange={(e) => handleDateChange(selectedIndex, "startDate", e.target.value)}
@@ -118,7 +119,7 @@ const ManageSchedule = () => {
                         <div className="mb-3">
                             <label className="form-label">Ngày kết thúc</label>
                             <input
-                                type="date"
+                                type="datetime-local"
                                 className="form-control"
                                 value={dates[selectedIndex].endDate || ""}
                                 min={dates[selectedIndex].startDate || ""}

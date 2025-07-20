@@ -20,7 +20,7 @@ const EventCountDown = () => {
 
     const fetchNgayThiTotNghiep = async () => {
         try {
-            const response = await axios.get("/api/ngay-thi-tot-nghiep");
+            const response = await axios.get("/api/uni/countdown");
             setNgayThiTotNghiep(response.data);
             toast.success("fetch ngay thi tot nghiep thanh cong")
         } catch (error) {
