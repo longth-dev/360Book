@@ -5,49 +5,55 @@ import Navbar from "../../Components/Navbar/Navbar";
 import Footer from "../../Components/Footer/Footer";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import lichthi from "../../assets/lich-thi-thpt.png"
-
 
 const PublishScoreDay = () => {
-    const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+     const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
     const [targetDate, setTargetDate] = useState(null);
 
     const fetchNgayCongBoDiemThi = async () => {
         try {
-            const response = await axios.get("/api/ngay-cong-bo-diem-thi")
-            setTargetDate(new Date(response.data));
-            toast.success("fetch thanh cong")
+            const response = await axios.get("/api/uni/v1/countdown");
+            const item = response.data.data.find(
+                (item) => item.content === "Ngày Công bố điểm thi tốt nghiệp THPT 2025"
+            );
+            if (item) {
+                setTargetDate(new Date(item.startTime));
+                toast.success("Fetch thành công");
+            } else {
+                toast.error("Không tìm thấy ngày đăng ký nguyện vọng");
+            }
         } catch (error) {
-            console.log(error)
-            toast.error("fecth e ro")
+            console.log(error);
+            toast.error("Lỗi khi fetch ngày đăng ký nguyện vọng");
         }
-
-    }
+    };
     useEffect(() => {
         fetchNgayCongBoDiemThi();
     }, []);
 
-    useEffect(() => {
-        const timer = setInterval(() => {
-            const now = new Date();
-            const distance = targetDate - now;
+   useEffect(() => {
+    if (!targetDate || isNaN(targetDate.getTime())) return;
 
-            if (distance < 0) {
-                clearInterval(timer);
-                setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-                return;
-            }
+    const timer = setInterval(() => {
+        const now = new Date();
+        const distance = targetDate.getTime() - now.getTime();
 
-            setTimeLeft({
-                days: Math.floor(distance / (1000 * 60 * 60 * 24)),
-                hours: Math.floor((distance / (1000 * 60 * 60)) % 24),
-                minutes: Math.floor((distance / (1000 * 60)) % 60),
-                seconds: Math.floor((distance / 1000) % 60),
-            });
-        }, 1000);
+        if (distance < 0) {
+            clearInterval(timer);
+            setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+            return;
+        }
 
-        return () => clearInterval(timer);
-    }, [targetDate]);
+        setTimeLeft({
+            days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+            hours: Math.floor((distance / (1000 * 60 * 60)) % 24),
+            minutes: Math.floor((distance / (1000 * 60)) % 60),
+            seconds: Math.floor((distance / 1000) % 60),
+        });
+    }, 1000);
+
+    return () => clearInterval(timer);
+}, [targetDate]);
 
     const currentYear = new Date().getFullYear();
 

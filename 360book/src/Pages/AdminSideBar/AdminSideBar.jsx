@@ -37,6 +37,12 @@ const AdminSideBar = () => {
                             </NavLink>
                         </li>
                         <li className="nav-link">
+                            <NavLink to="/admin/manage-to-hop-mon">
+                                <i className="fa-solid fa-chalkboard icon"></i>
+                                <span className="text nav-text">Quản lý tổ hợp môn</span>
+                            </NavLink>
+                        </li>
+                        <li className="nav-link">
                             <NavLink to="/admin/manage-thoi-gian-thi">
                                 <i className="fa-solid fa-calendar-days icon"></i>
                                 <span className="text nav-text">Quản lý lịch thi</span>
@@ -46,18 +52,6 @@ const AdminSideBar = () => {
                             <NavLink to="/admin/manage-tin-tuc">
                                 <i className="fa-solid fa-newspaper icon"></i>
                                 <span className="text nav-text">Quản lý tin tức</span>
-                            </NavLink>
-                        </li>
-                        <li className="nav-link">
-                            <NavLink to="/admin/manage-to-hop-mon">
-                                <i className="fa-solid fa-chalkboard icon"></i>
-                                <span className="text nav-text">Quản lý tổ hợp môn</span>
-                            </NavLink>
-                        </li>
-                        <li className="nav-link">
-                            <NavLink to="/admin/diem-chuan">
-                                <i className="fa-solid fa-star icon"></i>
-                                <span className="text nav-text">Quản lý điểm chuẩn</span>
                             </NavLink>
                         </li>
                         <li className="nav-link">

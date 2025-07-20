@@ -11,9 +11,9 @@ const UniversityList = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get("https://your-api/universities")
+        axios.get("/api/uni/v1")
             .then((res) => {
-                setUniversities(res.data);
+                setUniversities(res.data.data);
                 toast.success("Tải lên danh sách thành công");
                 setLoading(false);
             })
@@ -34,16 +34,16 @@ const UniversityList = () => {
                 {loading ? (
                     <div className="row">
                         <div className="loader-container">
-                            <div className="loader"></div>
+                            <div className="loader"></div> 
                         </div>
                     </div>
                 ) : (
                     <div className="university-list-grid">
                         {universities.map((uni) => (
-                            <div key={uni.id} className="university-list-card">
-                                <img src={uni.thumbnail} alt={uni.name} className="university-list-thumbnail" />
-                                <h3 className="university-list-name">{uni.name}</h3>
-                                <Link to={`/universities/${uni.id}`} className="university-list-detail-link">Xem chi tiết</Link>
+                            <div key={uni.universityId} className="university-list-card">
+                                <img src={uni.thumbnail} alt={uni.universityName} className="university-list-thumbnail" />
+                                <h3 className="university-list-name">{uni.universityName}</h3>
+                                <Link to={`/universities/${uni.universityId}`} className="university-list-detail-link">Xem chi tiết</Link>
                             </div>
                         ))}
                     </div>

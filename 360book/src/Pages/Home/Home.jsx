@@ -10,6 +10,7 @@ import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import NewsCarousel from "./NewsCarousel";
 import AdmissionSlider from "./AdmissionSlider";
+import Select from "react-select";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -33,17 +34,20 @@ const Home = () => {
     const [combos, setCombos] = useState([]);
     const [strengths, setStrengths] = useState([]);
     const [majors, setMajors] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+
 
 
     const handleClick = (btnName) => {
         setActiveButton(btnName);
         if (btnName === "PTTS") {
             setSearchMode("ptts");
-        } else {
-            setSearchMode(null);
-            if (btnName === "THM") fetchTHM();
-            else if (btnName === "TheManh") fetchTheManh();
+        } else if (btnName === "Major") {
+            setSearchMode("major");
+        } else if (btnName === "THM") {
+            setSearchMode("THM");
         }
+        else if (btnName === "TheManh") fetchTheManh();
     };
 
     const handleClickTaiDay = () => {
@@ -54,7 +58,7 @@ const Home = () => {
 
     const fetchTHM = async () => {
         try {
-            const response = await axios.get("/api/get-thm");
+            const response = await axios.get("/api/uni/v1/subject-combo");
             setTHM(response.data.data);
             setActiveData(response.data.data);
             toast.success("fetch success THM");
@@ -63,6 +67,42 @@ const Home = () => {
             toast.error("fail fetch");
         }
     }
+
+    const handleSelectTHM = async (selectedOption) => {
+        const comboId = selectedOption?.value;
+        console.log("Selected comboId:", comboId);
+        if (!comboId) return setActiveData([]);
+        try {
+            const res = await axios.get(`/api/uni/v1/by-combo?comboCode=${comboId}`);
+            setActiveData(res.data.data || []);
+            toast.success("Lấy trường theo tổ hợp thành công");
+        } catch {
+            toast.error("Không thể lấy trường theo tổ hợp");
+        }
+    };
+
+    const fetchMajors = async () => {
+        try {
+            const response = await axios.get("/api/uni/v1/major");
+            setMajors(response.data.data);
+            toast.success("Fetch majors thành công");
+        } catch (error) {
+            console.error("Error fetching majors:", error);
+            toast.error("Không thể lấy danh sách ngành");
+        }
+    };
+
+    const handleSelectMajor = async (selectedOption) => {
+        const majorId = selectedOption?.value;
+        if (!majorId) return setActiveData([]);
+        try {
+            const res = await axios.get(`/api/uni/v1/by-major?major=${majorId}`);
+            setActiveData(res.data.data || []);
+            toast.success("Lấy trường theo ngành thành công");
+        } catch {
+            toast.error("Không thể lấy trường theo ngành");
+        }
+    };
 
     const fetchTheManh = async () => {
         try {
@@ -119,41 +159,17 @@ const Home = () => {
         }
     }
 
-    // Fetch các lựa chọn filter khi load trang
     useEffect(() => {
-        // Giả sử API trả về list combos, strengths, majors
-        axios.get('/api/combos').then(res => setCombos(res.data.data || []));
-        axios.get('/api/strengths').then(res => setStrengths(res.data.data || []));
-        axios.get('/api/majors').then(res => setMajors(res.data.data || []));
-    }, []);
-
-    const handleSearch = async (e) => {
-        e.preventDefault();
-        setSearchLoading(true);
-        setSearchError(null);
-        try {
-            // Gọi API search với các filter
-            const res = await axios.get('/api/universities/search', {
-                params: {
-                    combo: searchCombo,
-                    strength: searchStrength,
-                    major: searchMajor
-                }
-            });
-            setSearchResults(res.data.data || []);
-        } catch (err) {
-            setSearchError('Không thể tìm kiếm trường phù hợp.');
-            setSearchResults([]);
-        } finally {
-            setSearchLoading(false);
-        }
-    };
-
-
-    useEffect(() => {
+        fetchTHM();
+        fetchMajors();
         fetchNews();
     }, []);
 
+    useEffect(() => {
+        setSearchTerm("");
+        setShowDropdown(false);
+        setActiveData([]); // reset kết quả cũ nếu muốn
+    }, [searchMode]);
 
     return (
         <>
@@ -176,21 +192,29 @@ const Home = () => {
                     }}
                 >
                     <h1 className="mb-4" style={{ marginTop: "-100px" }}>Chào mừng bạn đến với 360 BOOK !</h1>
-                    <div className="d-flex flex-wrap justify-content-center gap-3 mb-3" style={{ marginRight: "634px" }}>
-                        <button
+                    <div className="d-flex flex-wrap justify-content-center gap-3 mb-3" style={{ marginRight: "757px" }}>
+                        {/* <button
                             onClick={() => { handleClick('PTTS') }}
                             className={`home-button btn btn-outline-light px-4 py-2 fw-semibold hover-yellow ${activeButton === 'PTTS' ? 'active' : ''}`}
                             style={{ borderRadius: "5px", color: "grey", backgroundColor: "white" }}
                         >
                             Phương thức tuyển sinh
-                        </button>
+                        </button> */}
 
                         <button
-                            onClick={() => { handleClick('THM'); fetchTHM(); }}
+                            onClick={() => { handleClick('THM'); }}
                             className={`home-button btn btn-outline-light px-4 py-2 fw-semibold hover-yellow ${activeButton === 'THM' ? 'active' : ''}`}
                             style={{ borderRadius: "5px", color: "grey", backgroundColor: "white" }}
                         >
                             Khối - tổ hợp môn
+                        </button>
+
+                        <button
+                            onClick={() => handleClick('Major')}
+                            className={`home-button btn btn-outline-light px-4 py-2 fw-semibold hover-yellow ${activeButton === 'Major' ? 'active' : ''}`}
+                            style={{ borderRadius: "5px", color: "grey", backgroundColor: "white" }}
+                        >
+                            Ngành
                         </button>
 
                         <button
@@ -245,16 +269,80 @@ const Home = () => {
 
                             </div>
                         ) : (
-                            <input
-                                type="text"
-                                className="form-control form-control-lg"
-                                placeholder="Tìm kiếm trường, ngành, điểm chuẩn..."
-                                style={{ borderRadius: "5px", paddingLeft: "25px", fontSize: "1.2rem", cursor: "pointer" }}
-                                onFocus={() => setIsInputFocused(true)}
-                                onBlur={() => setIsInputFocused(false)}
-                            />
+                            (searchMode === "major" || searchMode === "THM") ? (
+                                <div style={{ position: "relative", width: "100%" }}>
+                                    <input
+                                        type="text"
+                                        className="form-control form-control-lg"
+                                        placeholder={
+                                            searchMode === "major"
+                                                ? "Chọn ngành..."
+                                                : "Chọn tổ hợp môn..."
+                                        }
+                                        onFocus={() => setShowDropdown(true)}
+                                        onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        value={searchTerm}
+                                    />
+
+                                    {showDropdown && (
+                                        <div
+                                            className="dropdown-menu show"
+                                            style={{
+                                                position: "absolute",
+                                                top: "100%",
+                                                left: 0,
+                                                width: "100%",
+                                                maxHeight: "300px",
+                                                overflowY: "auto",
+                                                marginTop: "8px",
+                                                zIndex: 10
+                                            }}
+                                        >
+                                            {(searchMode === "major" ? majors : THM)
+                                                .filter(item => {
+                                                    const label = searchMode === "major"
+                                                        ? item.majorName
+                                                        : `${item.codeCombination} - ${item.subjectName.join(', ')}`;
+                                                    return label.toLowerCase().includes(searchTerm.toLowerCase());
+                                                })
+                                                .map(item => {
+                                                    const label = searchMode === "major"
+                                                        ? item.majorName
+                                                        : `${item.codeCombination} - ${item.subjectName.join(', ')}`;
+                                                    return (
+                                                        <div
+                                                            key={item.majorId || item.codeCombination}
+                                                            className="dropdown-item"
+                                                            onClick={() => {
+                                                                if (searchMode === "major") {
+                                                                    handleSelectMajor({ value: item.majorId, label });
+                                                                } else {
+                                                                    handleSelectTHM({ value: item.codeCombination, label });
+                                                                }
+                                                                setSearchTerm(label);
+                                                                setShowDropdown(false);
+                                                            }}
+                                                        >
+                                                            {label}
+                                                        </div>
+                                                    );
+                                                })}
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                <input
+                                    type="text"
+                                    className="form-control form-control-lg"
+                                    placeholder="Tìm kiếm trường, ngành, điểm chuẩn..."
+                                    style={{ borderRadius: "5px", paddingLeft: "25px", fontSize: "1.2rem", cursor: "pointer" }}
+                                    onFocus={() => setIsInputFocused(true)}
+                                    onBlur={() => setIsInputFocused(false)}
+                                />
+                            )
                         )}
-                        {activeData.length > 0 && (showDropdown || isInputFocused) && (
+                        {/* {activeData.length > 0 && (showDropdown || isInputFocused) && (
                             <div
                                 className="dropdown-menu show"
                                 style={{
@@ -275,7 +363,7 @@ const Home = () => {
                                     </div>
                                 ))}
                             </div>
-                        )}
+                        )} */}
                     </div>
 
 

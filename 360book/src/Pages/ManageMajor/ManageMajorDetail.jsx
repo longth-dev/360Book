@@ -9,19 +9,14 @@ const ManageMajorDetail = () => {
     const [majorList, setMajorList] = useState([]);
     const [loading, setLoading] = useState(true);
     const location = useLocation();
-    const tenTruong = location.state?.tenTruong || "Đại Học Học Đại";
-    const maTruong = location.state?.maTruong || "Mã Trường";
     const [showModal, setShowModal] = useState(false);
     const [newMaNganh, setNewMaNganh] = useState("");
     const [newTenNganh, setNewTenNganh] = useState("");
-    const [newToHopMon, setNewToHopMon] = useState("");
-    const [toHopMon, setToHopMon] = useState([]);
-    const navigate = useNavigate();
 
 
     const fetchNganhHoc = async () => {
         try {
-            const response = await axios.get(`/api/uni/v1/major/by-uni?universityId=${id}`);
+            const response = await axios.get(`/api/uni/v1/major`);
             setMajorList(response.data.data);
             toast.success("Tải danh sách ngành học thành công");
         } catch (error) {
@@ -33,46 +28,32 @@ const ManageMajorDetail = () => {
         }
     };
 
-    const fetchToHopMon = async () => {
-        try {
-            const response = await axios.get(`/api/uni/v1/major/to-hop-mon?universityId=${id}`);
-            setToHopMon(response.data.data || [])
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-
 
     useEffect(() => {
         fetchNganhHoc();
-        fetchToHopMon();
     }, [id]);
 
 
     const handleAddMajor = async () => {
         try {
-            if (!newMaNganh || !newTenNganh || !newToHopMon) {
+            if (!newTenNganh) {
                 toast.error("Vui lòng nhập đầy đủ thông tin mã ngành và tên ngành");
                 return;
             }
             console.log({
-                codeMajor: newMaNganh,
-                majorName: newTenNganh,
-                codeCombination: newToHopMon
+                majorName: newTenNganh
             });
-            const response = await axios.post(`/api/them-nganh-hoc/${id}`, {
-                codeMajor: newMaNganh,
-                majorName: newTenNganh,
-                codeCombination: newToHopMon
+            const response = await axios.post(`/api/uni/major`, {
+                name: newTenNganh,
             });
 
-            if (response.data.success) {
+            if (response.data.code === 200) {
                 toast.success("Thêm ngành học thành công");
-                setMajorList(prev => [...prev, { maNganh: newMaNganh, tenNganh: newTenNganh }]);
-                setNewMaNganh("");
+                setMajorList(prev => [
+                    ...prev,
+                    { majorName: newTenNganh }
+                ]);
                 setNewTenNganh("");
-                setNewToHopMon("");
                 setShowModal(false);
             } else {
                 toast.error("Thêm ngành học thất bại");
@@ -88,8 +69,7 @@ const ManageMajorDetail = () => {
         <div className="manage-major-detail bg-light min-vh-100 p-4">
             <ToastContainer position="top-right" autoClose={5000} />
             <div className="d-flex justify-content-center align-items-center mb-4 gap-2" style={{ fontSize: '1.5rem', fontWeight: '600' }}>
-                <span>📘 Chi tiết Ngành Học tại</span>
-                <span style={{ color: '#0d6efd' }}> - {tenTruong} ({maTruong})</span>
+                <span>📘Quản lý Ngành Học</span>
             </div>
 
             <div className="buttons mb-2 d-flex justify-content-end mb-3">
@@ -109,7 +89,6 @@ const ManageMajorDetail = () => {
                     <thead className="table-primary">
                         <tr>
                             <th>STT</th>
-                            <th>Mã ngành</th>
                             <th>Tên ngành</th>
 
                         </tr>
@@ -118,7 +97,6 @@ const ManageMajorDetail = () => {
                         {majorList.map((major, index) => (
                             <tr key={major.majorName}>
                                 <td>{index + 1}</td>
-                                <td>{major.maNganh}</td>
                                 <td>{major.majorName}</td>
                             </tr>
                         ))}
@@ -133,43 +111,6 @@ const ManageMajorDetail = () => {
                 <div className="modal-overlay">
                     <div className="modal-content p-4 bg-white rounded shadow">
                         <h5 className="mb-3 text-center">📘 Thêm Ngành Học</h5>
-
-                        <div className="form-group mb-3">
-                            <label><i className="fas fa-layer-group me-2"></i>Tổ Hợp Môn</label>
-                            <select
-                                className="form-control"
-                                value={newToHopMon}
-                                onChange={(e) => setNewToHopMon(e.target.value)}
-                                required
-                            >
-                                <option value="">-- Chọn tổ hợp môn --</option>
-                                {toHopMon.length > 0 ? (
-                                    toHopMon.map((item) => (
-                                        <option key={item.codeCombination} value={item.codeCombination}>
-                                            {item.codeCombination} - {Array.isArray(item.subjectName)
-                                                ? item.subjectName.join(", ")
-                                                : item.subjectName}
-                                        </option>
-                                    ))
-                                ) : (
-                                    <option value="" disabled>
-                                        Không có dữ liệu tổ hợp môn
-                                    </option>
-                                )}
-                            </select>
-                        </div>
-
-
-                        <div className="form-group mb-3">
-                            <label><i className="fas fa-code me-2"></i>Mã Ngành</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                value={newMaNganh}
-                                onChange={(e) => setNewMaNganh(e.target.value)}
-                                required
-                            />
-                        </div>
                         <div className="form-group mb-3">
                             <label><i className="fas fa-book me-2"></i>Tên Ngành</label>
                             <input
@@ -187,13 +128,6 @@ const ManageMajorDetail = () => {
                     </div>
                 </div>
             )}
-
-
-            <div className="text-center mt-4">
-                <button className="btn btn-outline-secondary px-4 py-2" onClick={() => navigate(-1)}>
-                    <i className="bi bi-arrow-left"></i> Trở về
-                </button>
-            </div>
         </div>
     );
 };

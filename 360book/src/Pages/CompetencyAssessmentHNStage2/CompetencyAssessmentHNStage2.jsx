@@ -8,28 +8,36 @@ import { toast, ToastContainer } from "react-toastify";
 
 
 const CompetencyAssessmentHNStage2 = () => {
-    const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
     const [targetDate, setTargetDate] = useState(null);
 
     const fetchNgayDanhGiaNangLucHNLan2 = async () => {
         try {
-            const response = await axios.get("/api/dgnl-hcm-dot2")
-            setTargetDate(new Date(response.data));
-            toast.success("fetch thanh cong")
+            const response = await axios.get("/api/uni/v1/countdown");
+            const item = response.data.data.find(
+                (item) => item.content === "Ngày Đánh Giá Năng Lực - tại Hà Nội - Đợt 2 2025"
+            );
+            if (item) {
+                setTargetDate(new Date(item.startTime));
+                toast.success("Fetch thành công");
+            } else {
+                toast.error("Không tìm thấy ngày đăng ký nguyện vọng");
+            }
         } catch (error) {
-            console.log(error)
-            toast.error("fetch fail")
+            console.log(error);
+            toast.error("Lỗi khi fetch ngày đăng ký nguyện vọng");
         }
-
-    }
+    };
     useEffect(() => {
         fetchNgayDanhGiaNangLucHNLan2();
     }, []);
 
     useEffect(() => {
+        if (!targetDate || isNaN(targetDate.getTime())) return;
+
         const timer = setInterval(() => {
             const now = new Date();
-            const distance = targetDate - now;
+            const distance = targetDate.getTime() - now.getTime();
 
             if (distance < 0) {
                 clearInterval(timer);
