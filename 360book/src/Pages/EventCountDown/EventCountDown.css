@@ -130,6 +130,67 @@
             #d0e6f7 100%);
     color: #333;
 }
+.countdown-box.red {
+    background: repeating-linear-gradient(135deg,
+        #e53935,
+        #e53935 25%,
+        #ef5350 25%,
+        #ef5350 50%,
+        #ef9a9a 50%,
+        #ef9a9a 75%,
+        #ffcdd2 75%,
+        #ffcdd2 100%);
+    color: #333;
+}
+.countdown-box.purple {
+    background: repeating-linear-gradient(135deg,
+        #8e24aa,
+        #8e24aa 25%,
+        #ab47bc 25%,
+        #ab47bc 50%,
+        #ce93d8 50%,
+        #ce93d8 75%,
+        #e1bee7 75%,
+        #e1bee7 100%);
+    color: #333;
+}
+
+.countdown-box.brown {
+    background: repeating-linear-gradient(135deg,
+        #6d4c41,
+        #6d4c41 25%,
+        #8d6e63 25%,
+        #8d6e63 50%,
+        #a1887f 50%,
+        #a1887f 75%,
+        #d7ccc8 75%,
+        #d7ccc8 100%);
+    color: #333;
+}
+.countdown-box.teal {
+    background: repeating-linear-gradient(135deg,
+        #00897b,
+        #00897b 25%,
+        #26a69a 25%,
+        #26a69a 50%,
+        #80cbc4 50%,
+        #80cbc4 75%,
+        #b2dfdb 75%,
+        #b2dfdb 100%);
+    color: #333;
+}
+.countdown-box.indigo {
+    background: repeating-linear-gradient(135deg,
+        #3949ab,
+        #3949ab 25%,
+        #5c6bc0 25%,
+        #5c6bc0 50%,
+        #9fa8da 50%,
+        #9fa8da 75%,
+        #c5cae9 75%,
+        #c5cae9 100%);
+    color: #333;
+}
 
 
 .countdown-box .label {
