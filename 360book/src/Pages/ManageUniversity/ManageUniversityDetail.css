@@ -4,8 +4,6 @@
 .detail-code { font-size: 1.25rem; }
 .detail-info { font-size: 1rem; }
 .majors-section h3 { font-size: 1.5rem; }
-.loader-container { display: flex; justify-content: center; margin-top: 20px; }
-.loader { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 36px; height: 36px; animation: spin 1s linear infinite; }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 .error-message { font-size: 1.1rem; }
 .table { width: 100%; margin-top: 10px; }

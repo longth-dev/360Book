@@ -29,9 +29,9 @@ const AIChatbox = () => {
 
         try {
             // Gửi câu hỏi lên backend
-            const res = await axios.post('/api/ask-ai', { question: input });
+            const res = await axios.post('/api/chatbot/call-gemini', { text: input });
             // Giả sử backend trả về { answer: "..." }
-            const aiMessage = { text: res.data.answer, sender: 'ai' };
+            const aiMessage = { text: res.data.data.answer, sender: 'ai' };
             setMessages(prev => [...prev, aiMessage]);
         } catch (error) {
             console.error('Chat error:', error);

@@ -62,7 +62,7 @@ const Login = () => {
       if (roles === "ADMIN") {
         navigate('/admin')
       } else if (roles === "USER") {
-        navigate('/comment')
+        navigate('/')
       } else {
         navigate('/');
       }
@@ -101,7 +101,7 @@ const Login = () => {
       if (roles === "ADMIN") {
         navigate('/admin');
       } else if (roles === "USER") {
-        navigate('/comment');
+        navigate('/');
       } else {
         navigate('/');
       }

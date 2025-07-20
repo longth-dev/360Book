@@ -73,7 +73,6 @@ input.form-control:focus {
   background-color: #e0a800;
 }
 
-/* Loader fallback nếu danh sách rỗng */
 
 @keyframes spin {
   0% { transform: rotate(0deg); }

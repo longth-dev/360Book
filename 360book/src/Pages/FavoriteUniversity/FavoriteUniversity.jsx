@@ -15,96 +15,19 @@ const FavoriteUniversity = () => {
     const userId = localStorage.getItem("userId");
     const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     const fetchFavorites = async () => {
-    //         setLoading(true);
-    //         try {
-    //             const response = await axios.get(`/api/truong-yeu-thich/${userId}`);
-    //             setFavorites(response.data.data || []);
-    //             toast.success("Tải danh sách trường yêu thích thành công");
-    //         } catch (error) {
-    //             console.error("Lỗi khi tải danh sách trường yêu thích:", error);
-    //             toast.error("Tải danh sách trường yêu thích thất bại");
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     if (userId) {
-    //         fetchFavorites();
-    //     } else {
-    //         setLoading(false);
-    //         toast.error("Bạn chưa đăng nhập");
-    //     }
-    // }, [userId]);
-
-
     useEffect(() => {
-        const mockFavorites = [
-            {
-                id: 1,
-                tenTruong: "Đại học Bách Khoa Hà Nội",
-                maTruong: "BKHN",
-                diaChi: "Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội",
-                theManh: "Top kỹ thuật Việt Nam",
-                thumbnail: "https://picsum.photos/200/150?random=1"
-            },
-            {
-                id: 2,
-                tenTruong: "Đại học Kinh tế Quốc dân",
-                maTruong: "KTQD",
-                diaChi: "207 Giải Phóng, Đồng Tâm, Hai Bà Trưng, Hà Nội",
-                theManh: "Top kinh tế hàng đầu",
-                thumbnail: "https://picsum.photos/200/150?random=2"
-            },
-            {
-                id: 3,
-                tenTruong: "Đại học Quốc gia Hà Nội",
-                maTruong: "QGHN",
-                diaChi: "144 Xuân Thủy, Cầu Giấy, Hà Nội",
-                theManh: "Đa ngành, đa lĩnh vực",
-                thumbnail: "https://picsum.photos/200/150?random=3"
-            },
-            {
-                id: 4,
-                tenTruong: "Đại học FPT",
-                maTruong: "FPTU",
-                diaChi: "FPT City, Hoà Lạc, Hà Nội",
-                theManh: "Công nghệ thông tin, đào tạo quốc tế",
-                thumbnail: "https://picsum.photos/200/150?random=4"
-            },
-            {
-                id: 5,
-                tenTruong: "Đại học Y Hà Nội",
-                maTruong: "YHN",
-                diaChi: "01 Tôn Thất Tùng, Đống Đa, Hà Nội",
-                theManh: "Y khoa hàng đầu Việt Nam",
-                thumbnail: "https://picsum.photos/200/150?random=5"
-            },
-            {
-                id: 6,
-                tenTruong: "Đại học Sư phạm Hà Nội",
-                maTruong: "SPHN",
-                diaChi: "136 Xã Đàn, Đống Đa, Hà Nội",
-                theManh: "Đào tạo giáo viên chất lượng cao",
-                thumbnail: "https://picsum.photos/200/150?random=6"
-            },
-            {
-                id: 7,
-                tenTruong: "Đại học Sư phạm Hà Nội",
-                maTruong: "SPHN",
-                diaChi: "136 Xã Đàn, Đống Đa, Hà Nội",
-                theManh: "Đào tạo giáo viên chất lượng cao",
-                thumbnail: "https://picsum.photos/200/150?random=6"
-            }
-        ];
-        setTimeout(() => {
-            setFavorites(mockFavorites);
-            setLoading(false);
-        }, 1000);
-    }, []);
-
-
+        const fetchFavorites = async () => {
+            try {
+                const response = await axios.get(`/api/truong-yeu-thich/${userId}`);
+                setFavorites(response.data.data || []);
+                toast.success("Tải danh sách trường yêu thích thành công");
+            } catch (error) {
+                console.error("Lỗi khi tải danh sách trường yêu thích:", error);
+                toast.error("Tải danh sách trường yêu thích thất bại");
+            } 
+        };
+        fetchFavorites();
+    }, [userId]);
 
 
     const handleUnlike = async (universityId) => {
@@ -150,7 +73,6 @@ const FavoriteUniversity = () => {
         <div className="min-vh-100 d-flex flex-column bg-light">
             <ToastContainer position="top-right" autoClose={5000} />
             <Navbar />
-
             <main className="flex-grow-1 container py-4">
                 <div className="d-flex justify-content-between align-items-center mb-4">
                     <h1 className="fw-bold fs-3 mb-0">

@@ -53,7 +53,6 @@ const Home = () => {
             const response = await axios.get("/api/uni/v1/subject-combo");
             setTHM(response.data.data);
             setActiveData(response.data.data);
-            toast.success("fetch success THM");
         } catch (error) {
             console.log(error);
             toast.error("fail fetch");
@@ -67,7 +66,6 @@ const Home = () => {
         try {
             const res = await axios.get(`/api/uni/v1/by-combo?comboCode=${comboId}`);
             setActiveData(res.data.data || []);
-            toast.success("Lấy trường theo tổ hợp thành công");
         } catch {
             toast.error("Không thể lấy trường theo tổ hợp");
         }
@@ -77,7 +75,6 @@ const Home = () => {
         try {
             const response = await axios.get("/api/uni/v1/major");
             setMajors(response.data.data);
-            toast.success("Fetch majors thành công");
         } catch (error) {
             console.error("Error fetching majors:", error);
             toast.error("Không thể lấy danh sách ngành");
@@ -90,7 +87,6 @@ const Home = () => {
         try {
             const res = await axios.get(`/api/uni/v1/by-major?major=${majorId}`);
             setActiveData(res.data.data || []);
-            toast.success("Lấy trường theo ngành thành công");
         } catch {
             toast.error("Không thể lấy trường theo ngành");
         }
@@ -101,7 +97,6 @@ const Home = () => {
             const response = await axios.get("/api/the-manh");
             setTheManh(response.data.data)
             setActiveData(response.data.data)
-            toast.success("fetch thanh cong the manh")
         } catch (error) {
             console.log(error)
             toast.error("fail lay len the manh")
@@ -112,7 +107,6 @@ const Home = () => {
         try {
             const response = await axios.get("/api/news");
             setNewsList(response.data.data || []);
-            toast.success("Fetch news thành công!");
         } catch (error) {
             console.error("Error fetching news:", error);
             toast.error("Không thể lấy danh sách tin tức");
