@@ -24,7 +24,7 @@ import LayoutAdmin from "./Pages/Layout/LayoutAdmin";
 import ManageQA from "./Pages/ManageQA/ManageQA";
 import VerifyInfo from "./Pages/VerifyInfo/VerifyInfo";
 import ManageScore from "./Pages/ManageScore/ManageScore";
-import UserQA from "./Pages/UserQA/UserQA"; import UniversityDetail from "./Pages/UniversityDetail/UniversityDetail";
+import UserQA from "./Pages/UserQA/UserQA";
 import ExamSchedule from "./Pages/ExamSchedule/ExamSchedule";
 import UserProfile from "./Pages/UserProfile/UserProfile";
 
@@ -54,7 +54,6 @@ function App() {
         <Route path="/tra-cuu-to-hop-mon" element={<SubjectCombinationViewer />} />
         <Route path="/ai-chatbox" element={<AIChatbox />} />
         <Route path="/danh-sach-truong" element={<ListUniversitiesView />} />
-        <Route path="/university-detail/:comboId/:uniId" element={<UniversityDetail />} />
         <Route path="/lich-thi" element={<ExamSchedule />} />
 
 

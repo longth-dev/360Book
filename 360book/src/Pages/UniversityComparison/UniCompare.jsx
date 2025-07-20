@@ -1,107 +1,194 @@
-import React, { useState } from "react";
+
+import React, { useEffect, useState } from "react";
 import "./UniCompare.css";
 import Navbar from "../../Components/Navbar/Navbar";
 import Footer from "../../Components/Footer/Footer";
-import universities from "../../Data/universitiesMock";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+const accentColor = "#225bbf";
 
 const UniCompare = () => {
-  const [uni1, setUni1] = useState("");
-  const [uni2, setUni2] = useState("");
-  const [major, setMajor] = useState("");
+  const [universities, setUniversities] = useState([]);
+  const [selected1, setSelected1] = useState("");
+  const [selected2, setSelected2] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-  const getUniData = (name) => universities.find((u) => u.name === name);
-  const getMajorInfo = (uni, majorName) =>
-    uni?.majors.find((m) => m.name.toLowerCase() === majorName.toLowerCase());
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await axios.get("/api/universities");
+        setUniversities(res.data.data || []);
+      } catch (err) {
+        setError("Không thể tải danh sách trường.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
-  const uniData1 = getUniData(uni1);
-  const uniData2 = getUniData(uni2);
+  const uni1 = universities.find((u) => u.universityId === Number(selected1));
+  const uni2 = universities.find((u) => u.universityId === Number(selected2));
 
-  const major1 = getMajorInfo(uniData1, major);
-  const major2 = getMajorInfo(uniData2, major);
+  // Lấy ngành điểm cao nhất/thấp nhất cho từng phương thức
+  const getMajorStatsByType = (uni) => {
+    if (!uni || !uni.universityMajors || uni.universityMajors.length === 0) return {};
+    const typeStats = {};
+    uni.universityMajors.forEach((major) => {
+      major.scoreOverview?.forEach((y) => {
+        y.scoreDetails?.forEach((s) => {
+          if (typeof s.score === 'number') {
+            if (!typeStats[s.type]) {
+              typeStats[s.type] = { max: { major, score: s.score }, min: { major, score: s.score } };
+            } else {
+              if (s.score > typeStats[s.type].max.score) {
+                typeStats[s.type].max = { major, score: s.score };
+              }
+              if (s.score < typeStats[s.type].min.score) {
+                typeStats[s.type].min = { major, score: s.score };
+              }
+            }
+          }
+        });
+      });
+    });
+    return typeStats;
+  };
+
+  // Render sao đánh giá
+  const renderStars = (rating) => {
+    const fullStars = Math.floor(rating);
+    const halfStar = rating % 1 >= 0.5;
+    const stars = [];
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(<i key={i} className="bi bi-star-fill" style={{ color: '#FFD700', fontSize: 22 }}></i>);
+    }
+    if (halfStar) {
+      stars.push(<i key="half" className="bi bi-star-half" style={{ color: '#FFD700', fontSize: 22 }}></i>);
+    }
+    while (stars.length < 5) {
+      stars.push(<i key={stars.length} className="bi bi-star" style={{ color: '#FFD700', fontSize: 22 }}></i>);
+    }
+    return stars;
+  };
 
   return (
     <>
       <Navbar />
-      <div className="uni-compare-page">
-        <div className="uni-compare-container">
-          <h1 className="uni-compare-title">So sánh ngành học giữa 2 trường</h1>
-          <p className="uni-compare-description">
-            Nhập tên 2 trường và tên ngành để xem thông tin chi tiết.
+      <div className="uni-compare-page bg-light min-vh-100 py-4">
+        <div className="container">
+          <h1 className="uni-compare-title text-center mb-2" style={{ color: accentColor, fontWeight: 800, fontSize: 36, letterSpacing: 1 }}>
+            So sánh 2 trường đại học
+          </h1>
+          <p className="uni-compare-description text-center mb-4" style={{ fontSize: 18, color: '#444' }}>
+            Chọn 2 trường để xem thông tin so sánh chi tiết.
           </p>
-
-          <div className="uni-compare-inputs">
-            <input
-              type="text"
-              placeholder="Trường thứ 1"
-              value={uni1}
-              onChange={(e) => setUni1(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Trường thứ 2"
-              value={uni2}
-              onChange={(e) => setUni2(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Ngành học"
-              value={major}
-              onChange={(e) => setMajor(e.target.value)}
-            />
-          </div>
-
-          {major1 && major2 ? (
+          {error && <div className="text-danger text-center mb-3">{error}</div>}
+          {loading ? (
+            <div className="list-loader-container" style={{ minHeight: 120 }}>
+              <div className="list-loader"></div>
+            </div>
+          ) : (
             <>
-              <div className="uni-comparison-header">
-                <div className="uni-section">
-                  <img src={uniData1.image} alt={uni1} className="uni-image" />
-                  <p className="uni-name">{uni1}</p>
-                  <p className="rating-label">Ratings</p>
-                  <div className="uni-rating-wrapper">
-                    <span className="uni-rating-number">{major1.rating}</span>
-                  </div>
+              <div className="row g-3 mb-4 justify-content-center">
+                <div className="col-12 col-md-5">
+                  <select
+                    className="form-select mb-2 shadow-sm"
+                    value={selected1}
+                    onChange={e => setSelected1(e.target.value)}
+                    style={{ fontSize: 17, borderColor: accentColor }}
+                  >
+                    <option value="">-- Chọn trường thứ nhất --</option>
+                    {universities.map(u => (
+                      <option key={u.universityId} value={u.universityId} disabled={selected2 && Number(selected2) === u.universityId}>
+                        {u.universityName}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-                <div className="uni-section">
-                  <img src={uniData2.image} alt={uni2} className="uni-image" />
-                  <p className="uni-name">{uni2}</p>
-                  <p className="rating-label">Ratings</p>
-                  <div className="uni-rating-wrapper">
-                    <span className="uni-rating-number">{major2.rating}</span>
-                  </div>
+                <div className="col-12 col-md-5">
+                  <select
+                    className="form-select mb-2 shadow-sm"
+                    value={selected2}
+                    onChange={e => setSelected2(e.target.value)}
+                    style={{ fontSize: 17, borderColor: accentColor }}
+                  >
+                    <option value="">-- Chọn trường thứ hai --</option>
+                    {universities.map(u => (
+                      <option key={u.universityId} value={u.universityId} disabled={selected1 && Number(selected1) === u.universityId}>
+                        {u.universityName}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
-
-              <table className="compare-table">
-                <thead>
-                  <tr>
-                    <th>Tiêu chí</th>
-                    <th>{uni1}</th>
-                    <th>{uni2}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Điểm chuẩn</td>
-                    <td>{major1.admissionScore}</td>
-                    <td>{major2.admissionScore}</td>
-                  </tr>
-                  <tr>
-                    <td>Học phí</td>
-                    <td>{major1.tuition}</td>
-                    <td>{major2.tuition}</td>
-                  </tr>
-                  <tr>
-                    <td>Tỉ lệ việc làm</td>
-                    <td>{major1.employmentRate}</td>
-                    <td>{major2.employmentRate}</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div className="row g-4">
+                {[uni1, uni2].map((uni, idx) => {
+                  const statsByType = getMajorStatsByType(uni);
+                  return (
+                    <div className="col-12 col-md-6" key={idx}>
+                      {uni ? (
+                        <div
+                          className="uni-card card shadow-lg h-100 border-0 position-relative hoverable"
+                          style={{ borderLeft: idx === 0 ? `7px solid ${accentColor}` : undefined, borderRight: idx === 1 ? `7px solid ${accentColor}` : undefined, borderRadius: 18, cursor: 'pointer', transition: 'box-shadow 0.2s' }}
+                          onClick={() => navigate(`/universities/${uni.universityId}`)}
+                        >
+                          <div className="card-body d-flex flex-column align-items-center text-center p-4">
+                            <div className="d-flex align-items-center justify-content-center mb-2" style={{ gap: 8 }}>
+                              <h4 className="card-title fw-bold mb-0" style={{ color: accentColor, fontSize: 26 }}>
+                                {uni.universityName}
+                              </h4>
+                              <i className="bi bi-star-fill ms-2" style={{ color: '#FFD700', fontSize: 28, marginTop: -2 }}></i>
+                            </div>
+                            {/* Đánh giá sao */}
+                            <div className="mb-2 d-flex align-items-center justify-content-center" style={{ gap: 4 }}>
+                              {renderStars(uni.rating)}
+                              <span className="fw-bold ms-2" style={{ color: '#222', fontSize: 20 }}>{uni.rating?.toFixed(1) ?? '--'}</span>
+                            </div>
+                            <div className="mb-1"><span className="badge bg-primary" style={{ fontSize: 15 }}>{uni.code}</span></div>
+                            <div className="mb-1"><i className="bi bi-geo-alt-fill me-1" style={{ color: accentColor }}></i><strong>Địa điểm:</strong> {uni.address || <span className="text-muted">Chưa cập nhật</span>}</div>
+                            <div className="mb-1"><i className="bi bi-lightning-charge-fill me-1" style={{ color: accentColor }}></i><strong>Thế mạnh:</strong> {uni.main || <span className="text-muted">Chưa cập nhật</span>}</div>
+                            <div className="mb-1"><i className="bi bi-list-ol me-1" style={{ color: accentColor }}></i><strong>Số ngành đào tạo:</strong> {uni.universityMajors?.length || 0}</div>
+                            <div className="mb-2 w-100">
+                              <strong style={{ color: accentColor }}>So sánh điểm theo từng phương thức:</strong>
+                              {Object.keys(statsByType).length === 0 ? (
+                                <div className="text-muted mt-2">Không có dữ liệu</div>
+                              ) : (
+                                <div className="row g-2 mt-2">
+                                  {Object.entries(statsByType).map(([type, { max, min }]) => (
+                                    <div className="col-12 col-sm-6" key={type}>
+                                      <div className="method-card card border-0 shadow-sm h-100 p-3 mb-2" style={{ borderRadius: 12, transition: 'box-shadow 0.2s' }}>
+                                        <div className="d-flex align-items-center mb-2">
+                                          <span className="me-2" style={{ fontSize: 22, color: accentColor }}>
+                                            <i className="bi bi-bar-chart-fill"></i>
+                                          </span>
+                                          <span className="fw-bold" style={{ color: accentColor, fontSize: 17 }}>{type}</span>
+                                        </div>
+                                        <div style={{ fontSize: 15 }}>
+                                          <span className="d-block mb-1">• <b>Cao nhất:</b> <span className="badge bg-success" style={{ fontSize: 15 }}>{max.score}</span> <span style={{ color: accentColor }}>{max.major.majorName}</span></span>
+                                          <span className="d-block">• <b>Thấp nhất:</b> <span className="badge bg-danger" style={{ fontSize: 15 }}>{min.score}</span> <span style={{ color: accentColor }}>{min.major.majorName}</span></span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="text-center text-muted uni-card-empty">Chưa chọn trường</div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </>
-          ) : (
-            <p className="compare-hint">
-              Vui lòng nhập chính xác 2 trường và ngành để xem so sánh.
-            </p>
           )}
         </div>
       </div>

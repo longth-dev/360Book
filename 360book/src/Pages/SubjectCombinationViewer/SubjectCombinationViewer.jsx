@@ -131,7 +131,7 @@ export default function SubjectCombinationViewer() {
                                                     </td>
                                                     <td>
                                                         <Link
-                                                            to={`/university-detail/${selectedCombo}/${uni.id}`}
+                                                            to={`/universities/${uni.id}`}
                                                             className="detail-btn"
                                                         >
                                                             Xem chi tiết
