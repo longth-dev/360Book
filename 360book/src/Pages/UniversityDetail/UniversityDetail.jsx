@@ -15,14 +15,14 @@ const UniversityDetail = () => {
     useEffect(() => {
         setLoading(true);
         setError(null);
-        let url = `https://your-api/universities/${uniId}`;
+        let url = `/api/uni/v1/${uniId}`;
         if (comboId) {
             url += `?combo=${comboId}`;
         }
         axios.get(url)
             .then(res => {
-                setUniversity(res.data.university || res.data);
-                setMajors(res.data.majors || []);
+                setUniversity(res.data.data);
+                setMajors(res.data.data.universityMajors || []);
                 setLoading(false);
             })
             .catch(err => {
