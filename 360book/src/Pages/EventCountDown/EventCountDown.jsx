@@ -12,6 +12,10 @@ const EventCountDown = () => {
     const [ngayDangKiNguyenVong, setNgayDangKiNguyenVong] = useState('');
     const [ngayCongBoDiemThi, setNgayCongBoDiemThi] = useState('');
     const [ngayCongBoDiemChuanDot1, setNgayCongBoDiemChuanDot1] = useState('');
+    const [ngayDanhGiaNangLucHCMLan1, setNgayDanhGiaNangLucHCMLan1] = useState('');
+    const [ngayDanhGiaNangLucHCMLan2, setNgayDanhGiaNangLucHCMLan2] = useState('');
+    const [ngayDanhGiaNangLucHNLan1, setNgayDanhGiaNangLucHNLan1] = useState('');
+    const [ngayDanhGiaNangLucHNLan2, setNgayDanhGiaNangLucHNLan2] = useState('');
     const navigate = useNavigate();
 
     const fetchNgayThiTotNghiep = async () => {
@@ -54,13 +58,70 @@ const EventCountDown = () => {
         }
 
     }
+    const fetchNgayDanhGiaNangLucHCMLan1 = async () => {
+        try {
+            const response = await axios.get("/api/dgnl-hcm-dot1");
+            setNgayDanhGiaNangLucHCMLan1(response.data);
+            toast.success("fetchNgayDanhGiaNangLucHCMLan1 thanh cong")
+        } catch (error) {
+            console.log(error);
+        }
+
+    }
+    const fetchNgayDanhGiaNangLucHCMLan2 = async () => {
+        try {
+            const response = await axios.get("/api/dgnl-hcm-dot2");
+            setNgayDanhGiaNangLucHCMLan2(response.data);
+            toast.success("fetchNgayDanhGiaNangLucHCMLan2 thanh cong")
+        } catch (error) {
+            console.log(error);
+        }
+
+    }
+    const fetchNgayDanhGiaNangLucHNLan1 = async () => {
+        try {
+            const response = await axios.get("/api/dgnl-hn-dot1");
+            setNgayDanhGiaNangLucHNLan1(response.data);
+            toast.success("fetchNgayDanhGiaNangLucHNLan1")
+        } catch (error) {
+            console.log(error);
+        }
+
+    }
+    const fetchNgayDanhGiaNangLucHNLan2 = async () => {
+        try {
+            const response = await axios.get("/api/dgnl-hn-dot2");
+            setNgayDanhGiaNangLucHNLan2(response.data);
+            toast.success("fetchNgayDanhGiaNangLucHNLan2")
+        } catch (error) {
+            console.log(error);
+        }
+
+    }
 
     useEffect(() => {
         fetchNgayThiTotNghiep();
         fetchNgayDangKiNguyenVong();
         fetchNgayCongBoDiemThi();
         fetchCongBoDiemChuanDot1();
+        fetchNgayDanhGiaNangLucHCMLan1();
+        fetchNgayDanhGiaNangLucHCMLan2();
+        fetchNgayDanhGiaNangLucHNLan1();
+        fetchNgayDanhGiaNangLucHNLan2();
     })
+
+    const calculateDaysLeft = (dateString) => {
+        const eventDate = new Date(dateString);
+        const today = new Date();
+        eventDate.setHours(0, 0, 0, 0);
+        today.setHours(0, 0, 0, 0);
+    
+        const diffTime = eventDate.getTime() - today.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+        return diffDays;
+    };
+    
 
     const currentYear = new Date().getFullYear();
 
@@ -86,13 +147,13 @@ const EventCountDown = () => {
                         />
                         <div className="event-info">
                             <strong>Đếm ngược ngày Thi tốt nghiệp THPT {currentYear}</strong>
-                            <p className="event-date">Ngày diễn ra: 26 - 27/6/2025</p>       {/* đợi api nè */}
-                            <p className="event-note">→ Xem chi tiết Lịch thi và lưu ý quan trọng</p> {/* đợi api nè */}
+                            <p className="event-date">Ngày diễn ra: {ngayThiTotNghiep || "Đang cập nhật..."}</p>
+                            <p className="event-note">→ Xem chi tiết Lịch thi và lưu ý quan trọng</p> 
                         </div>
                         {/* đợi api nè */}
                         <div className="countdown-box green">
                             <span className="label">Còn</span>
-                            <span className="number">35</span>
+                            <span className="number">{ngayThiTotNghiep ? calculateDaysLeft(ngayThiTotNghiep) : "--"}</span>
                             <span className="label">ngày</span>
                         </div>
                     </div>
@@ -106,13 +167,13 @@ const EventCountDown = () => {
                         />
                         <div className="event-info">
                             <strong>Đếm ngược ngày Đăng ký nguyện vọng xét tuyển ĐH {currentYear}</strong>
-                            <p className="event-date">Ngày diễn ra: 16/7 - 17h 28/7/2025</p>        {/* đợi api nè */}
+                            <p className="event-date">Ngày diễn ra: {ngayDangKiNguyenVong || "Đang cập nhật..."}</p>
                             <p className="event-note">→ Xem chi tiết Thời gian đăng ký và lưu ý quan trọng</p>
                         </div>
                         {/* đợi api nè */}
                         <div className="countdown-box pink">
                             <span className="label">Còn</span>
-                            <span className="number">55</span>
+                            <span className="number">{ngayDangKiNguyenVong ? calculateDaysLeft(ngayDangKiNguyenVong) : "--"}</span>
                             <span className="label">ngày</span>
                         </div>
                     </div>
@@ -126,13 +187,13 @@ const EventCountDown = () => {
                         />
                         <div className="event-info">
                             <strong>Đếm ngược ngày Công bố điểm thi tốt nghiệp THPT {currentYear}</strong>
-                            <p className="event-date">Ngày diễn ra: 8h00 ngày 16/7/2025</p>  {/* đợi api nè */}
+                            <p className="event-date">Ngày diễn ra: {ngayCongBoDiemThi || "Đang cập nhật..."}</p>
                             <p className="event-note">→ Xem chi tiết Ngày công bố điểm và các bước tiếp theo</p>
                         </div>
                         {/* đợi api nè */}
                         <div className="countdown-box orange">
                             <span className="label">Còn</span>
-                            <span className="number">107</span>
+                            <span className="number">{ngayCongBoDiemThi ? calculateDaysLeft(ngayCongBoDiemThi) : "--"}</span>
                             <span className="label">ngày</span>
                         </div>
                     </div>
@@ -146,16 +207,93 @@ const EventCountDown = () => {
                         />
                         <div className="event-info">
                             <strong>Đếm ngược ngày Công bố điểm chuẩn Đại học {currentYear}</strong>
-                            <p className="event-date">Ngày diễn ra: 8h00 ngày 16/7/2025</p> {/* đợi api nè */}
+                            <p className="event-date">Ngày diễn ra: {ngayCongBoDiemChuanDot1 || "Đang cập nhật..."}</p>
                             <p className="event-note">→ Xem chi tiết Ngày công bố điểm và các bước tiếp theo</p>
                         </div>
                         {/* đợi api nè */}
                         <div className="countdown-box blue">
                             <span className="label">Còn</span>
-                            <span className="number">55</span>
+                            <span className="number">{ngayCongBoDiemChuanDot1 ? calculateDaysLeft(ngayCongBoDiemChuanDot1) : "--"}</span>
                             <span className="label">ngày</span>
                         </div>
                     </div>
+                    {/* Sự kiện 5 */}
+                    <div className="event-card" onClick={() => navigate("/dem-nguoc/dgnl-dot1-hcm")}>
+                        <img
+                            src={DongHoCat}
+                            alt="Đồng hồ cát"
+                            className="event-icon"
+                        />
+                        <div className="event-info">
+                            <strong>Đếm ngược ngày Đánh Giá Năng Lực - tại Hồ Chí Minh - Đợt 1 {currentYear}</strong>
+                            <p className="event-date">Ngày diễn ra: {ngayDanhGiaNangLucHCMLan1 || "Đang cập nhật..."}</p>
+                            <p className="event-note">→ Xem chi tiết Ngày công bố điểm và các bước tiếp theo</p>
+                        </div>
+                        {/* đợi api nè */}
+                        <div className="countdown-box red">
+                            <span className="label">Còn</span>
+                            <span className="number">{ngayDanhGiaNangLucHCMLan1 ? calculateDaysLeft(ngayDanhGiaNangLucHCMLan1) : "--"}</span>
+                            <span className="label">ngày</span>
+                        </div>
+                    </div>
+                    {/* Sự kiện 6 */}
+                    <div className="event-card" onClick={() => navigate("/dem-nguoc/dgnl-dot2-hcm")}>
+                        <img
+                            src={DongHoCat}
+                            alt="Đồng hồ cát"
+                            className="event-icon"
+                        />
+                        <div className="event-info">
+                            <strong>Đếm ngược ngày Đánh Giá Năng Lực - tại Hồ Chí Minh - Đợt 2 {currentYear}</strong>
+                            <p className="event-date">Ngày diễn ra: {ngayDanhGiaNangLucHCMLan2 || "Đang cập nhật..."}</p>
+                            <p className="event-note">→ Xem chi tiết Ngày công bố điểm và các bước tiếp theo</p>
+                        </div>
+                        {/* đợi api nè */}
+                        <div className="countdown-box purple">
+                            <span className="label">Còn</span>
+                            <span className="number">{ngayDanhGiaNangLucHCMLan2 ? calculateDaysLeft(ngayDanhGiaNangLucHCMLan2) : "--"}</span>
+                            <span className="label">ngày</span>
+                        </div>
+                    </div>
+                    {/* Sự kiện 7 */}
+                    <div className="event-card" onClick={() => navigate("/dem-nguoc/dgnl-dot1-hn")}>
+                        <img
+                            src={DongHoCat}
+                            alt="Đồng hồ cát"
+                            className="event-icon"
+                        />
+                        <div className="event-info">
+                            <strong>Đếm ngược ngày Đánh Giá Năng Lực - tại Hà Nội - Đợt 1 {currentYear}</strong>
+                            <p className="event-date">Ngày diễn ra: {ngayDanhGiaNangLucHNLan1 || "Đang cập nhật..."}</p>
+                            <p className="event-note">→ Xem chi tiết Ngày công bố điểm và các bước tiếp theo</p>
+                        </div>
+                        {/* đợi api nè */}
+                        <div className="countdown-box brown">
+                            <span className="label">Còn</span>
+                            <span className="number">{ngayDanhGiaNangLucHNLan1 ? calculateDaysLeft(ngayDanhGiaNangLucHNLan1) : "--"}</span>
+                            <span className="label">ngày</span>
+                        </div>
+                    </div>
+                    {/* Sự kiện 8 */}
+                    <div className="event-card" onClick={() => navigate("/dem-nguoc/dgnl-dot2-hn")}>
+                        <img
+                            src={DongHoCat}
+                            alt="Đồng hồ cát"
+                            className="event-icon"
+                        />
+                        <div className="event-info">
+                            <strong>Đếm ngược ngày Đánh Giá Năng Lực - tại Hà Nội - Đợt 2 {currentYear}</strong>
+                            <p className="event-date">Ngày diễn ra: {ngayDanhGiaNangLucHNLan2 || "Đang cập nhật..."}</p>
+                            <p className="event-note">→ Xem chi tiết Ngày công bố điểm và các bước tiếp theo</p>
+                        </div>
+                        {/* đợi api nè */}
+                        <div className="countdown-box teal">
+                            <span className="label">Còn</span>
+                            <span className="number">{ngayDanhGiaNangLucHNLan2 ? calculateDaysLeft(ngayDanhGiaNangLucHNLan2) : "--"}</span>
+                            <span className="label">ngày</span>
+                        </div>
+                    </div>
+
                 </div>
             </div >
             <Footer />

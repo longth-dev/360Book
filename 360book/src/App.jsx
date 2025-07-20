@@ -26,6 +26,10 @@ import ManageQA from "./Pages/ManageQA/ManageQA";
 import VerifyInfo from "./Pages/VerifyInfo/VerifyInfo";
 import ManageScore from "./Pages/ManageScore/ManageScore";
 import UserQA from "./Pages/UserQA/UserQA";
+import CompetencyAssessmentHCMStage1 from "./Pages/CompetencyAssessmentHCMStage1/CompetencyAssessmentHCMStage1";
+import CompetencyAssessmentHCMStage2 from "./Pages/CompetencyAssessmentHCMStage2/CompetencyAssessmentHCMStage2";
+import CompetencyAssessmentHNStage1 from "./Pages/CompetencyAssessmentHNStage1/CompetencyAssessmentHNStage1";
+import CompetencyAssessmentHNStage2 from "./Pages/CompetencyAssessmentHNStage2/CompetencyAssessmentHNStage2";
 import UniversityDetail from "./Pages/UniversityDetail/UniversityDetail";
 import ExamSchedule from "./Pages/ExamSchedule/ExamSchedule";
 import UserProfile from "./Pages/UserProfile/UserProfile";
@@ -37,22 +41,14 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dem-nguoc" element={<EventCountDown />} />
-        <Route
-          path="/dem-nguoc/ngay-thi-tot-nghiep"
-          element={<CountDownExamDay />}
-        />
-        <Route
-          path="/dem-nguoc/ngay-dang-ki-nguyen-vong"
-          element={<CountDownRegisterForAdmission />}
-        />
-        <Route
-          path="/dem-nguoc/cong-bo-diem-thi"
-          element={<PublishScoreDay />}
-        />
-        <Route
-          path="/dem-nguoc/diem-chuan-dot-1"
-          element={<CountDownPublishRealScore />}
-        />
+        <Route path="/dem-nguoc/ngay-thi-tot-nghiep" element={<CountDownExamDay />}/>
+        <Route path="/dem-nguoc/ngay-dang-ki-nguyen-vong" element={<CountDownRegisterForAdmission />} />
+        <Route path="/dem-nguoc/cong-bo-diem-thi" element={<PublishScoreDay />}/>
+        <Route path="/dem-nguoc/diem-chuan-dot-1" element={<CountDownPublishRealScore />} />
+        <Route path="/dem-nguoc/dgnl-dot1-hcm" element={<CompetencyAssessmentHCMStage1 />} />
+        <Route path="/dem-nguoc/dgnl-dot2-hcm" element={<CompetencyAssessmentHCMStage2 />} />
+        <Route path="/dem-nguoc/dgnl-dot1-hn" element={<CompetencyAssessmentHNStage1 />} />
+        <Route path="/dem-nguoc/dgnl-dot2-hn" element={<CompetencyAssessmentHNStage2 />} />
         <Route path="/tra-cuu-to-hop-mon" element={<SubjectCombinationViewer />} />
         <Route path="/ai-chatbox" element={<AIChatbox />} />
         <Route path="/danh-sach-truong" element={<ListUniversitiesView />} />

@@ -74,21 +74,6 @@ input.form-control:focus {
 }
 
 /* Loader fallback nếu danh sách rỗng */
-.loader-container {
-  width: 100%;
-  padding: 3rem;
-  text-align: center;
-}
-
-.loader {
-  border: 6px solid #f3f3f3;
-  border-top: 6px solid #003366;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-  margin: auto;
-}
 
 @keyframes spin {
   0% { transform: rotate(0deg); }
