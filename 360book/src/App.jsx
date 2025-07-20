@@ -14,7 +14,6 @@ import FavoriteUniversity from "./Pages/FavoriteUniversity/FavoriteUniversity";
 import ManageMajorDetail from "./Pages/ManageMajor/ManageMajorDetail";
 import SubjectCombinationViewer from "./Pages/SubjectCombinationViewer/SubjectCombinationViewer";
 import ManageUniversityDetail from "./Pages/ManageUniversity/ManageUniversityDetai";
-import SubjectCombinationViewer from "./Pages/SubjectCombinationViewer/SubjectCombinationView";
 import ManageMajorGroup from "./Pages/ManageMajorGroup/ManageMajorGroup";
 import ManageNews from "./Pages/ManageNews/ManageNews";
 import ListUniversitiesView from "./Pages/UniversityList/ListUniversitiesView";
@@ -31,7 +30,6 @@ import CompetencyAssessmentHCMStage1 from "./Pages/CompetencyAssessmentHCMStage1
 import CompetencyAssessmentHCMStage2 from "./Pages/CompetencyAssessmentHCMStage2/CompetencyAssessmentHCMStage2";
 import CompetencyAssessmentHNStage1 from "./Pages/CompetencyAssessmentHNStage1/CompetencyAssessmentHNStage1";
 import CompetencyAssessmentHNStage2 from "./Pages/CompetencyAssessmentHNStage2/CompetencyAssessmentHNStage2";
-import UniversityDetail from "./Pages/UniversityDetail/UniversityDetail";
 import ExamSchedule from "./Pages/ExamSchedule/ExamSchedule";
 import UserProfile from "./Pages/UserProfile/UserProfile";
 import FilterUniversities from "./Pages/FilterUniversities/FilterUniversities";
