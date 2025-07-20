@@ -3,75 +3,110 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
+const EVENTS = [
+    "Kỳ thi tốt nghiệp THPT",
+    "Mở đăng ký nguyện vọng",
+    "Hạn cuối đăng ký nguyện vọng",
+    "Công bố điểm thi",
+    "Công bố điểm chuẩn",
+    "Xét tuyển bổ sung",
+    "Nhập học đợt 1",
+    "Nhập học đợt 2",
+];
+
 const ManageSchedule = () => {
-    const [schedules, setSchedules] = useState([]);
+    const [dates, setDates] = useState(Array(EVENTS.length).fill(""));
+    const [loadingIndexes, setLoadingIndexes] = useState([]);
+    const [datesAvailable, setDatesFromApi] = useState(Array(EVENTS.length).fill(""));
+
+    const handleDateChange = (index, value) => {
+        const newDates = [...dates];
+        newDates[index] = value;
+        setDates(newDates);
+    };
 
     useEffect(() => {
-        fetchSchedules();
+        const fetchDates = async () => {
+            try {
+                const res = await axios.get("/api/schedule");
+                const dataFromApi = res.data.data || [];
+                const newDatesFromApi = EVENTS.map(eventName => {
+                    const found = dataFromApi.find(item => item.eventName === eventName);
+                    return found ? found.eventDate.slice(0,10) : "";
+                });
+
+                setDatesFromApi(newDatesFromApi);
+            } catch (error) {
+                toast.error("Không thể tải dữ liệu lịch từ server");
+                console.error(error);
+            }
+        };
+
+        fetchDates();
     }, []);
 
-    const fetchSchedules = async () => {
-        try {
-            const response = await axios.get("/api/schedule/all");
-            setSchedules(response.data.data || []);
-        } catch (error) {
-            toast.error("Không thể tải lịch thi.");
-            console.error(error);
+
+    const handleSave = async (index) => {
+        const date = dates[index];
+        if (!date) {
+            toast.error("Vui lòng chọn ngày cho sự kiện.");
+            return;
         }
-    };
-
-    const handleDateChange = (index, date) => {
-        const newSchedules = [...schedules];
-        newSchedules[index].eventDate = date;
-        setSchedules(newSchedules);
-    };
-
-    const handleSave = async () => {
         try {
-            const response = await axios.post("/api/schedule/update", schedules);
-            if (response.data.success) {
-                toast.success("Cập nhật lịch thi thành công!");
-            } else {
-                toast.error("Cập nhật thất bại.");
-            }
+            setLoadingIndexes((prev) => [...prev, index]);
+            await axios.post("/api/schedule", {
+                    eventName: EVENTS[index],
+                    eventDate: date,
+            });
+            toast.success(`Tạo lịch "${EVENTS[index]}" thành công!`);
         } catch (error) {
-            toast.error("Lỗi khi cập nhật lịch thi.");
             console.error(error);
+            toast.error(`Lỗi khi tạo lịch "${EVENTS[index]}".`);
+        } finally {
+            setLoadingIndexes((prev) => prev.filter(i => i !== index));
         }
     };
 
     return (
         <div className="container mt-4">
             <ToastContainer />
-            <h2 className="mb-4 text-center">📅 Quản lý Lịch thi - Ngày đếm ngược</h2>
+            <h2 className="text-center mb-4">🗓️ Trang Admin - Tạo lịch đếm ngược</h2>
 
             <table className="table table-bordered">
                 <thead className="table-light">
                     <tr>
                         <th>Sự kiện</th>
-                        <th>Ngày</th>
+                        <th>Ngày Có Sẵn</th>
+                        <th>Chọn ngày</th>
+                        <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {schedules.map((item, index) => (
-                        <tr key={item.id}>
-                            <td>{item.eventName}</td>
+                    {EVENTS.map((event, index) => (
+                        <tr key={index}>
+                            <td>{event}</td>
+                            <td>{datesAvailable[index] || <i>Chưa có ngày</i>}</td>
                             <td>
                                 <input
                                     type="date"
                                     className="form-control"
-                                    value={item.eventDate ? item.eventDate.slice(0, 10) : ""}
+                                    value={dates[index]}
                                     onChange={(e) => handleDateChange(index, e.target.value)}
                                 />
+                            </td>
+                            <td>
+                                <button
+                                    className="btn btn-success"
+                                    disabled={loadingIndexes.includes(index)}
+                                    onClick={() => handleSave(index)}
+                                >
+                                    {loadingIndexes.includes(index) ? "Đang lưu..." : "Lưu"}
+                                </button>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
-
-            <div className="text-end">
-                <button className="btn btn-primary" onClick={handleSave}>💾 Lưu thay đổi</button>
-            </div>
         </div>
     );
 };

@@ -96,24 +96,6 @@
     font-weight: bold;
 }
 
-.loading-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 4rem 1rem;
-    color: #333;
-}
-
-.loading-spinner {
-    width: 50px;
-    height: 50px;
-    border: 4px solid #b3c6ff; /* xanh nhạt nổi bật hơn */
-    border-top: 4px solid #ff9800; /* vàng cam nổi bật */
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 1rem;
-}
 
 @keyframes spin {
     0% { transform: rotate(0deg); }
