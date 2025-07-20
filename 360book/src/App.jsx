@@ -12,7 +12,7 @@ import ManageMajor from "./Pages/ManageMajor/ManageMajor";
 import ManageSchedual from "./Pages/ManageSchedual/ManageSchedual";
 import FavoriteUniversity from "./Pages/FavoriteUniversity/FavoriteUniversity";
 import ManageMajorDetail from "./Pages/ManageMajor/ManageMajorDetail";
-import SubjectCombinationViewer from "./Pages/SubjectCombinationViewer/SubjectCombinationView";
+import SubjectCombinationViewer from "./Pages/SubjectCombinationViewer/SubjectCombinationViewer";
 import ManageMajorGroup from "./Pages/ManageMajorGroup/ManageMajorGroup";
 import ManageNews from "./Pages/ManageNews/ManageNews";
 import ListUniversitiesView from "./Pages/UniversityList/ListUniversitiesView";
@@ -32,6 +32,7 @@ import CompetencyAssessmentHNStage2 from "./Pages/CompetencyAssessmentHNStage2/C
 import UniversityDetail from "./Pages/UniversityDetail/UniversityDetail";
 import ExamSchedule from "./Pages/ExamSchedule/ExamSchedule";
 import UserProfile from "./Pages/UserProfile/UserProfile";
+import FilterUniversities from "./Pages/FilterUniversities/FilterUniversities";
 
 function App() {
   return (
@@ -40,9 +41,9 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dem-nguoc" element={<EventCountDown />} />
-        <Route path="/dem-nguoc/ngay-thi-tot-nghiep" element={<CountDownExamDay />}/>
+        <Route path="/dem-nguoc/ngay-thi-tot-nghiep" element={<CountDownExamDay />} />
         <Route path="/dem-nguoc/ngay-dang-ki-nguyen-vong" element={<CountDownRegisterForAdmission />} />
-        <Route path="/dem-nguoc/cong-bo-diem-thi" element={<PublishScoreDay />}/>
+        <Route path="/dem-nguoc/cong-bo-diem-thi" element={<PublishScoreDay />} />
         <Route path="/dem-nguoc/diem-chuan-dot-1" element={<CountDownPublishRealScore />} />
         <Route path="/dem-nguoc/dgnl-dot1-hcm" element={<CompetencyAssessmentHCMStage1 />} />
         <Route path="/dem-nguoc/dgnl-dot2-hcm" element={<CompetencyAssessmentHCMStage2 />} />
@@ -51,9 +52,9 @@ function App() {
         <Route path="/tra-cuu-to-hop-mon" element={<SubjectCombinationViewer />} />
         <Route path="/ai-chatbox" element={<AIChatbox />} />
         <Route path="/danh-sach-truong" element={<ListUniversitiesView />} />
-        <Route path="/university-detail/:comboId/:uniId" element={<UniversityDetail />} />
         <Route path="/lich-thi" element={<ExamSchedule />} />
-
+        <Route path="/filter-universities/combo/:comboId" element={<FilterUniversities />} />
+        <Route path="/filter-universities/strength/:strengthId" element={<FilterUniversities />} />
 
 
         {/** MANAGE ADMIN */}

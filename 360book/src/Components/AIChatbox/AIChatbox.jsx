@@ -1,36 +1,7 @@
-import React, { useState, useCallback } from 'react';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import React, { useState } from 'react';
+import axios from 'axios';
 import logo from '../../assets/BGSEARCH.png';
 import './AIChatbox.css';
-
-// Initialize the AI model
-const genAI = new GoogleGenerativeAI('AIzaSyAZGrz0DTRkDA3yWHXA1K_lRXmDw-RDOfU');
-const model = genAI.getGenerativeModel({
-    model: "gemini-pro",
-    generationConfig: {
-        temperature: 0.7,
-        topP: 0.8,
-        topK: 40
-    }
-});
-
-// Chat history context to maintain conversation flow
-const chat = model.startChat({
-    history: [
-        {
-            role: "user",
-            parts: [{
-                text: "Bạn là tư vấn viên tuyển sinh của 360BOOK. Hãy trả lời các câu hỏi liên quan đến tuyển sinh đại học tại Việt Nam."
-            }]
-        },
-        {
-            role: "model",
-            parts: [{
-                text: "Tôi hiểu rồi. Tôi sẽ giúp tư vấn về tuyển sinh đại học tại Việt Nam."
-            }]
-        }
-    ]
-});
 
 const AIChatbox = () => {
     const [messages, setMessages] = useState([]);
@@ -57,14 +28,10 @@ const AIChatbox = () => {
         setIsLoading(true);
 
         try {
-            // Send message to chat and get response
-            const result = await chat.sendMessage([{
-                role: "user",
-                parts: [{ text: input }]
-            }]);
-            const response = await result.response;
-            const aiMessage = { text: response.text(), sender: 'ai' };
-
+            // Gửi câu hỏi lên backend
+            const res = await axios.post('/api/ask-ai', { question: input });
+            // Giả sử backend trả về { answer: "..." }
+            const aiMessage = { text: res.data.answer, sender: 'ai' };
             setMessages(prev => [...prev, aiMessage]);
         } catch (error) {
             console.error('Chat error:', error);

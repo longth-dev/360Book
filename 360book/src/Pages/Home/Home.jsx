@@ -24,6 +24,15 @@ const Home = () => {
     const [searchMode, setSearchMode] = useState(null);
     const [diem, setDiem] = useState("");
     const [phuongThuc, setPhuongThuc] = useState("TNTHPTQG");
+    const [searchCombo, setSearchCombo] = useState("");
+    const [searchStrength, setSearchStrength] = useState("");
+    const [searchMajor, setSearchMajor] = useState("");
+    const [searchResults, setSearchResults] = useState([]);
+    const [searchLoading, setSearchLoading] = useState(false);
+    const [searchError, setSearchError] = useState(null);
+    const [combos, setCombos] = useState([]);
+    const [strengths, setStrengths] = useState([]);
+    const [majors, setMajors] = useState([]);
 
 
     const handleClick = (btnName) => {
@@ -109,6 +118,36 @@ const Home = () => {
             toast.error("fail fetch");
         }
     }
+
+    // Fetch các lựa chọn filter khi load trang
+    useEffect(() => {
+        // Giả sử API trả về list combos, strengths, majors
+        axios.get('/api/combos').then(res => setCombos(res.data.data || []));
+        axios.get('/api/strengths').then(res => setStrengths(res.data.data || []));
+        axios.get('/api/majors').then(res => setMajors(res.data.data || []));
+    }, []);
+
+    const handleSearch = async (e) => {
+        e.preventDefault();
+        setSearchLoading(true);
+        setSearchError(null);
+        try {
+            // Gọi API search với các filter
+            const res = await axios.get('/api/universities/search', {
+                params: {
+                    combo: searchCombo,
+                    strength: searchStrength,
+                    major: searchMajor
+                }
+            });
+            setSearchResults(res.data.data || []);
+        } catch (err) {
+            setSearchError('Không thể tìm kiếm trường phù hợp.');
+            setSearchResults([]);
+        } finally {
+            setSearchLoading(false);
+        }
+    };
 
 
     useEffect(() => {
@@ -290,6 +329,72 @@ const Home = () => {
             </div>
             <Footer />
             <AIChatbox />
+            <div className="container my-5">
+                <div className="card shadow p-4 mb-4" style={{ borderRadius: 16 }}>
+                    <h3 className="mb-3" style={{ color: '#225bbf' }}>Tìm kiếm trường đại học phù hợp</h3>
+                    <form className="row g-3 align-items-end" onSubmit={handleSearch}>
+                        <div className="col-12 col-md-4">
+                            <label className="form-label">Khối tổ hợp môn</label>
+                            <select className="form-select" value={searchCombo} onChange={e => setSearchCombo(e.target.value)}>
+                                <option value="">-- Chọn --</option>
+                                {combos.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                            </select>
+                        </div>
+                        <div className="col-12 col-md-4">
+                            <label className="form-label">Thế mạnh</label>
+                            <select className="form-select" value={searchStrength} onChange={e => setSearchStrength(e.target.value)}>
+                                <option value="">-- Chọn --</option>
+                                {strengths.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                            </select>
+                        </div>
+                        <div className="col-12 col-md-4">
+                            <label className="form-label">Ngành</label>
+                            <select className="form-select" value={searchMajor} onChange={e => setSearchMajor(e.target.value)}>
+                                <option value="">-- Chọn --</option>
+                                {majors.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+                            </select>
+                        </div>
+                        <div className="col-12 text-end">
+                            <button className="btn btn-primary px-4" type="submit" disabled={searchLoading}>
+                                {searchLoading ? 'Đang tìm...' : 'Tìm kiếm'}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                {/* Kết quả tìm kiếm */}
+                {searchError && <div className="alert alert-danger">{searchError}</div>}
+                {searchResults.length > 0 && (
+                    <div className="card shadow p-4" style={{ borderRadius: 16 }}>
+                        <h5 className="mb-3" style={{ color: '#225bbf' }}>Kết quả tìm kiếm</h5>
+                        <div className="table-responsive">
+                            <table className="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Tên trường</th>
+                                        <th>Mã trường</th>
+                                        <th>Thế mạnh</th>
+                                        <th>Ngành nổi bật</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {searchResults.map(uni => (
+                                        <tr key={uni.universityId} style={{ cursor: 'pointer' }} onClick={() => navigate(`/universities/${uni.universityId}`)}>
+                                            <td style={{ color: '#225bbf', fontWeight: 600 }}>{uni.universityName}</td>
+                                            <td>{uni.code}</td>
+                                            <td>{uni.strength || 'Chưa cập nhật'}</td>
+                                            <td>{uni.majors ? uni.majors.join(', ') : 'Chưa cập nhật'}</td>
+                                            <td>
+                                                <button className="btn btn-outline-primary btn-sm">Xem chi tiết</button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )}
+            </div>
         </>
     );
 };

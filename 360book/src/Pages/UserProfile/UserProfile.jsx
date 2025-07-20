@@ -3,6 +3,7 @@ import axios from "axios";
 import Navbar from "../../Components/Navbar/Navbar";
 import Footer from "../../Components/Footer/Footer";
 import "./UserProfile.css";
+import { useNavigate } from "react-router-dom";
 
 const defaultAvatar = "https://ui-avatars.com/api/?name=Nguyen+Van+A&background=ffecb3&color=2d3a8c&size=128";
 
@@ -14,6 +15,7 @@ export default function UserProfile() {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [avatarFile, setAvatarFile] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         // TODO: Thay URL này bằng API thật khi có
@@ -64,16 +66,6 @@ export default function UserProfile() {
             .catch(err => alert("Gửi email xác thực thất bại!"));
     };
 
-    const handleRemoveFavorite = idx => {
-        // TODO: Thay URL này bằng API thật khi có
-        // axios.delete(`URL_API_REMOVE_FAVORITE_UNI/${user.favoriteUniversities[idx]}`)
-        //     .then(res => { ... })
-        setUser({
-            ...user,
-            favoriteUniversities: user.favoriteUniversities.filter((_, i) => i !== idx)
-        });
-    };
-
     const handleAvatarChange = e => {
         const file = e.target.files[0];
         if (file) {
@@ -97,7 +89,16 @@ export default function UserProfile() {
         <>
             <Navbar />
             <div className="user-profile-page">
-                <h1 className="profile-title">Thông tin cá nhân</h1>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+                    <h1 className="profile-title">Thông tin cá nhân</h1>
+                    <button
+                        className="btn btn-outline-primary"
+                        style={{ borderRadius: 8, fontWeight: 500 }}
+                        onClick={() => navigate('/nguoi-dung/truong-yeu-thich')}
+                    >
+                        Trường yêu thích
+                    </button>
+                </div>
                 <div className="profile-card">
                     <div className="profile-avatar-block">
                         <img
@@ -175,23 +176,6 @@ export default function UserProfile() {
                             <button type="submit" className="profile-btn">Lưu mật khẩu</button>
                         </form>
                     )}
-                    <div className="profile-field">
-                        <span className="profile-label">Trường yêu thích:</span>
-                        <div className="profile-favorites">
-                            {user.favoriteUniversities.length === 0 && <span className="profile-fav-tag">Chưa có trường nào</span>}
-                            {user.favoriteUniversities.map((uni, idx) => (
-                                <span className="profile-fav-tag" key={idx}>
-                                    {uni}
-                                    <button
-                                        className="profile-fav-remove"
-                                        title="Xóa trường này"
-                                        onClick={() => handleRemoveFavorite(idx)}
-                                        type="button"
-                                    >×</button>
-                                </span>
-                            ))}
-                        </div>
-                    </div>
                 </div>
             </div>
             <Footer />
