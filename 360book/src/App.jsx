@@ -54,10 +54,10 @@ function App() {
         <Route path="/tra-cuu-to-hop-mon" element={<SubjectCombinationViewer />} />
         <Route path="/ai-chatbox" element={<AIChatbox />} />
         <Route path="/danh-sach-truong" element={<ListUniversitiesView />} />
-         <Route path="/danh-sach-truong/:id" element={<UniversitiesGeneralDetail />} />
+        <Route path="/danh-sach-truong/:id" element={<UniversitiesGeneralDetail />} />
         <Route path="/lich-thi" element={<ExamSchedule />} />
-        <Route path="/filter-universities/combo/:comboId" element={<FilterUniversities />} />
-        <Route path="/filter-universities/strength/:strengthId" element={<FilterUniversities />} />
+        <Route path="/filter-universities/:type/:id" element={<FilterUniversities />} />
+
         <Route path="/hoi-va-dap" element={<UserQA />} />
 
 
