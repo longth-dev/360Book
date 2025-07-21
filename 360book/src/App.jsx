@@ -16,7 +16,6 @@ import SubjectCombinationViewer from "./Pages/SubjectCombinationViewer/SubjectCo
 import ManageUniversityDetail from "./Pages/ManageUniversity/ManageUniversityDetai";
 import ManageMajorGroup from "./Pages/ManageMajorGroup/ManageMajorGroup";
 import ManageNews from "./Pages/ManageNews/ManageNews";
-import ListUniversitiesView from "./Pages/UniversityList/ListUniversitiesView";
 import AIChatbox from "./Components/AIChatbox/AIChatbox";
 import AdmissionScore from "./Pages/AdmissionScore/AdmissionScore";
 import ScoreCalculator from "./Pages/ScoreCalculator/ScoreCalculator";
@@ -35,6 +34,7 @@ import UserProfile from "./Pages/UserProfile/UserProfile";
 import FilterUniversities from "./Pages/FilterUniversities/FilterUniversities";
 import ProtectedRoutesAdmin from "./Utils/ProtectedRoutesAdmin";
 import UniversitiesGeneralDetail from "./Pages/UniversityList/UniversitiesGeneralDetail";
+import ListUniversitiesView from "./Pages/UniversityList/ListUniversitiesView";
 
 function App() {
   return (
@@ -54,10 +54,11 @@ function App() {
         <Route path="/tra-cuu-to-hop-mon" element={<SubjectCombinationViewer />} />
         <Route path="/ai-chatbox" element={<AIChatbox />} />
         <Route path="/danh-sach-truong" element={<ListUniversitiesView />} />
-         <Route path="/danh-sach-truong/:id" element={<UniversitiesGeneralDetail />} />
+        <Route path="/danh-sach-truong/:id" element={<UniversitiesGeneralDetail />} />
         <Route path="/lich-thi" element={<ExamSchedule />} />
-        <Route path="/filter-universities/combo/:comboId" element={<FilterUniversities />} />
-        <Route path="/filter-universities/strength/:strengthId" element={<FilterUniversities />} />
+        <Route path="/filter-universities/:type/:id" element={<FilterUniversities />} />
+
+        <Route path="/hoi-va-dap" element={<UserQA />} />
 
 
         {/** MANAGE ADMIN */}

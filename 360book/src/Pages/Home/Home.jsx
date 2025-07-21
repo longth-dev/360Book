@@ -28,6 +28,12 @@ const Home = () => {
     const [majors, setMajors] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
 
+    // Hàm chuyển trang sang FilterUniversities
+    const handleGoToFilterUniversities = (type, valueObj) => {
+        navigate(`/filter-universities/${type}/${valueObj.value}`, {
+            state: { selected: valueObj }
+        });
+    };
 
 
     const handleClick = (btnName) => {
@@ -303,8 +309,10 @@ const Home = () => {
                                                             onClick={() => {
                                                                 if (searchMode === "major") {
                                                                     handleSelectMajor({ value: item.majorId, label });
+                                                                    handleGoToFilterUniversities("major", { value: item.majorId, label });
                                                                 } else {
                                                                     handleSelectTHM({ value: item.codeCombination, label });
+                                                                    handleGoToFilterUniversities("combo", { value: item.codeCombination, label });
                                                                 }
                                                                 setSearchTerm(label);
                                                                 setShowDropdown(false);
