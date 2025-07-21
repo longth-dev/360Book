@@ -61,9 +61,10 @@ export default function SubjectCombinationViewer() {
                 <div className="subject-combination-container">
                     <div className="subject-combination-header">
                         <h2>Tra cứu tổ hợp môn xét tuyển</h2>
-                        <p>Chọn tổ hợp môn để xem danh sách các trường đại học xét tuyển</p>
+                        {/* <p>Chọn tổ hợp môn để xem danh sách các trường đại học xét tuyển</p> */}
                     </div>
-                    <div className="subject-selector-wrapper">
+                    {/* XÓA PHẦN CHỌN TỔ HỢP MÔN */}
+                    {/* <div className="subject-selector-wrapper">
                         <div className="subject-selector-label">
                             Chọn tổ hợp môn xét tuyển
                         </div>
@@ -86,12 +87,13 @@ export default function SubjectCombinationViewer() {
                                 <small className="text-muted">Đang tải danh sách tổ hợp môn...</small>
                             </div>
                         )}
-                    </div>
+                    </div> */}
                     {error && (
                         <div className="alert alert-warning" role="alert">
                             <strong>Lưu ý:</strong> {error}
                         </div>
                     )}
+                    {/* Giữ lại phần hiển thị kết quả nếu có selectedCombo, hoặc empty-state nếu không có */}
                     {selectedCombo ? (
                         <div className="results-section">
                             <div className="results-header">
