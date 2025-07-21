@@ -16,7 +16,6 @@ import SubjectCombinationViewer from "./Pages/SubjectCombinationViewer/SubjectCo
 import ManageUniversityDetail from "./Pages/ManageUniversity/ManageUniversityDetai";
 import ManageMajorGroup from "./Pages/ManageMajorGroup/ManageMajorGroup";
 import ManageNews from "./Pages/ManageNews/ManageNews";
-import ListUniversitiesView from "./Pages/UniversityList/ListUniversitiesView";
 import AIChatbox from "./Components/AIChatbox/AIChatbox";
 import AdmissionScore from "./Pages/AdmissionScore/AdmissionScore";
 import ScoreCalculator from "./Pages/ScoreCalculator/ScoreCalculator";
@@ -35,6 +34,7 @@ import UserProfile from "./Pages/UserProfile/UserProfile";
 import FilterUniversities from "./Pages/FilterUniversities/FilterUniversities";
 import ProtectedRoutesAdmin from "./Utils/ProtectedRoutesAdmin";
 import UniversitiesGeneralDetail from "./Pages/UniversityList/UniversitiesGeneralDetail";
+import ListUniversitiesView from "./Pages/UniversityList/ListUniversitiesView";
 
 function App() {
   return (

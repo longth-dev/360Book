@@ -73,7 +73,7 @@ const Navbar = () => {
             <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span className="navbar-toggler-icon"></span>
             </button>
-            <div className="collapse navbar-collapse" id="navbarNav" style={{ marginRight: "180px" }}>
+            <div className="collapse navbar-collapse" id="navbarNav" style={{ marginRight: "250px" }}>
                 <ul className="navbar-nav ms-auto gap-4">
                     <li className="nav-item">
                         <Link className="nav-link" to="/tinh-diem">

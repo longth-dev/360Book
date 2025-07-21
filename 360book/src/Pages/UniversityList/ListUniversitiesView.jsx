@@ -6,7 +6,7 @@ import Navbar from "../../Components/Navbar/Navbar";
 import Footer from "../../Components/Footer/Footer";
 import "./ListUniversitiesView.css";
 
-const UniversityList = () => {
+const ListUniversitiesView = () => {
     const [universities, setUniversities] = useState([]);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
@@ -99,4 +99,4 @@ const UniversityList = () => {
     );
 };
 
-export default UniversityList; 
+export default ListUniversitiesView; 
