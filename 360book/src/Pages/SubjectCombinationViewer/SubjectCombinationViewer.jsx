@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../../Components/Navbar/Navbar";
 import Footer from "../../Components/Footer/Footer";
 import "./SubjectCombinationViewer.css";
 
 export default function SubjectCombinationViewer() {
-    const [selectedCombo, setSelectedCombo] = useState("");
+    const location = useLocation();
+    // Nếu được truyền từ Home, sẽ có comboCode ở location.state.selected.value
+    const initialCombo = location.state?.selected?.value || "";
+    const [selectedCombo, setSelectedCombo] = useState(initialCombo);
     const [subjectCombinations, setSubjectCombinations] = useState([]);
     const [universities, setUniversities] = useState([]);
     const [loadingCombos, setLoadingCombos] = useState(false);
@@ -38,7 +41,8 @@ export default function SubjectCombinationViewer() {
         setError(null);
         axios.get(`/api/uni/v1/by-combo?comboCode=${selectedCombo}`)
             .then(res => {
-                const detailList = res.data.data.detailResponseList || [];
+                // Nếu data là object trường đại học (1 trường), đưa vào mảng
+                const detailList = res.data.data?.detailResponseList || [];
                 const mapped = detailList.map(item => ({
                     ...item.university,
                     total: item.total
@@ -52,7 +56,7 @@ export default function SubjectCombinationViewer() {
             .finally(() => setLoadingUniversities(false));
     }, [selectedCombo]);
 
-    const selectedComboData = subjectCombinations.find(combo => combo.id === selectedCombo);
+    const selectedComboData = subjectCombinations.find(combo => combo.codeCombination === selectedCombo);
 
     return (
         <>
@@ -63,30 +67,9 @@ export default function SubjectCombinationViewer() {
                         <h2>Tra cứu tổ hợp môn xét tuyển</h2>
                         {/* <p>Chọn tổ hợp môn để xem danh sách các trường đại học xét tuyển</p> */}
                     </div>
-                    {/* XÓA PHẦN CHỌN TỔ HỢP MÔN */}
+                    {/* Nếu muốn cho phép chọn lại tổ hợp môn, mở lại phần này */}
                     {/* <div className="subject-selector-wrapper">
-                        <div className="subject-selector-label">
-                            Chọn tổ hợp môn xét tuyển
-                        </div>
-                        <select
-                            className="subject-selector"
-                            value={selectedCombo}
-                            onChange={e => setSelectedCombo(e.target.value)}
-                            disabled={loadingCombos}
-                        >
-                            <option value="">-- Chọn tổ hợp môn --</option>
-                            {subjectCombinations.map((combo) => (
-                                <option key={combo.codeCombination} value={combo.codeCombination}>
-                                    {combo.codeCombination} - {combo.subjectName.join(", ")}
-                                </option>
-
-                            ))}
-                        </select>
-                        {loadingCombos && (
-                            <div className="text-center mt-2">
-                                <small className="text-muted">Đang tải danh sách tổ hợp môn...</small>
-                            </div>
-                        )}
+                        ...
                     </div> */}
                     {error && (
                         <div className="alert alert-warning" role="alert">
@@ -133,9 +116,9 @@ export default function SubjectCombinationViewer() {
                                                     <td className="university-name">{uni.universityName}</td>
                                                     <td>{uni.code}</td>
                                                     <td className="majors-list">
-                                                        {Array.isArray(uni.majors)
-                                                            ? uni.majors.join(", ")
-                                                            : uni.majors || 'Chưa cập nhật'}
+                                                        {uni.universityMajors
+                                                            ? uni.universityMajors.map(m => m.majorName).join(", ")
+                                                            : 'Chưa cập nhật'}
                                                     </td>
                                                     <td>
                                                         <Link
