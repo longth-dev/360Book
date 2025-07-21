@@ -2,92 +2,103 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./VerifyInfo.css";
 
+const TYPE_LABELS = {
+  university: "Trường đại học",
+  major: "Ngành học",
+  subjectGroup: "Tổ hợp môn",
+  examSchedule: "Lịch thi",
+  news: "Tin tức",
+  qa: "Hỏi đáp",
+};
+
 const VerifyInfo = () => {
-  const [pendingUsers, setPendingUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [pendingItems, setPendingItems] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
   const [note, setNote] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
 
   useEffect(() => {
-    const fetchPendingUsers = async () => {
+    const fetchPendingItems = async () => {
       try {
-        const response = await axios.get("/api/user-qa");
-        setPendingUsers(response.data);
+        const res = await axios.get("/api/pending-verification-items");
+        setPendingItems(res.data);
       } catch (error) {
-        console.error("Failed to fetch users:", error);
+        console.error("Failed to fetch pending items:", error);
       }
     };
-
-    fetchPendingUsers();
+    fetchPendingItems();
   }, []);
 
-  const handleSelectUser = (user) => {
-    setSelectedUser(user);
+  const handleSelectItem = (item) => {
+    setSelectedItem(item);
     setNote("");
     setStatusMessage("");
   };
 
   const handleVerification = async (status) => {
-    if (!selectedUser) return;
+    if (!selectedItem) return;
     try {
-      await axios.post("/api/user-verification", {
-        userId: selectedUser.id,
-        status: status,
-        note: note,
+      await axios.post("/api/verify-item", {
+        itemId: selectedItem.id,
+        status,
+        note,
       });
 
-      setStatusMessage(`User ${status === "approved" ? "approved" : "rejected"} successfully.`);
-      setPendingUsers((prev) => prev.filter((u) => u.id !== selectedUser.id));
-      setSelectedUser(null);
+      setStatusMessage(`Đã ${status === "approved" ? "duyệt" : "từ chối"} thành công.`);
+      setPendingItems((prev) => prev.filter((item) => item.id !== selectedItem.id));
+      setSelectedItem(null);
     } catch (error) {
       console.error("Verification failed:", error);
-      setStatusMessage("Verification failed. Please try again.");
+      setStatusMessage("Lỗi xác minh. Vui lòng thử lại.");
     }
   };
 
   return (
     <div className="verify-wrapper">
-      <h2 className="page-title">Pending Verifications</h2>
+      <h2 className="page-title">Xác minh thông tin mới / cập nhật</h2>
       <div className="verify-panel">
         <div className="verify-sidebar">
-          <h3>Users</h3>
+          <h3>Mục cần xác minh</h3>
           <ul className="user-list">
-            {pendingUsers.length === 0 && <p>No pending verifications</p>}
-            {pendingUsers.map((user) => (
+            {pendingItems.length === 0 && <p>Không có mục nào chờ xác minh</p>}
+            {pendingItems.map((item) => (
               <li
-                key={user.id}
-                className={selectedUser?.id === user.id ? "active" : ""}
-                onClick={() => handleSelectUser(user)}
+                key={item.id}
+                className={selectedItem?.id === item.id ? "active" : ""}
+                onClick={() => handleSelectItem(item)}
               >
-                <strong>{user.name}</strong>
+                <strong>{TYPE_LABELS[item.type] || "Khác"}:</strong> {item.title}
                 <br />
-                <span>{user.email}</span>
+                <span>{item.description}</span>
               </li>
             ))}
           </ul>
         </div>
 
         <div className="verify-details">
-          {selectedUser ? (
+          {selectedItem ? (
             <div className="details-card">
-              <h3>Review Information</h3>
-              <div className="info-row"><strong>Name:</strong> {selectedUser.name}</div>
-              <div className="info-row"><strong>Email:</strong> {selectedUser.email}</div>
-              <div className="info-row"><strong>ID Document:</strong> {selectedUser.idDocument}</div>
-              <div className="info-row"><strong>Info:</strong> {selectedUser.info}</div>
+              <h3>Thông tin chi tiết</h3>
+              <div className="info-row"><strong>Loại:</strong> {TYPE_LABELS[selectedItem.type]}</div>
+              <div className="info-row"><strong>Tiêu đề:</strong> {selectedItem.title}</div>
+              <div className="info-row"><strong>Mô tả:</strong> {selectedItem.description}</div>
+
+              <div className="info-json">
+                <pre>{JSON.stringify(selectedItem.data, null, 2)}</pre>
+              </div>
 
               <textarea
-                placeholder="Optional note (e.g. reason for rejection)"
+                placeholder="Ghi chú (nếu có)"
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
               />
 
               <div className="btn-group">
                 <button className="btn-approve" onClick={() => handleVerification("approved")}>
-                  Approve
+                  Duyệt
                 </button>
                 <button className="btn-reject" onClick={() => handleVerification("rejected")}>
-                  Reject
+                  Từ chối
                 </button>
               </div>
 
@@ -95,7 +106,7 @@ const VerifyInfo = () => {
             </div>
           ) : (
             <div className="empty-card">
-              <p>Select a user from the list to review.</p>
+              <p>Chọn một mục để xem chi tiết và xác minh.</p>
             </div>
           )}
         </div>
