@@ -28,11 +28,15 @@ const Home = () => {
     const [majors, setMajors] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
 
-    // Hàm chuyển trang sang FilterUniversities
-    const handleGoToFilterUniversities = (type, valueObj) => {
-        navigate(`/filter-universities/${type}/${valueObj.value}`, {
-            state: { selected: valueObj }
-        });
+    // Hàm chuyển trang sang FilterUniversities hoặc SubjectCombinationViewer
+    const handleGoToFilterPage = (type, valueObj) => {
+        if (type === "combo") {
+            navigate("/tra-cuu-to-hop-mon");
+        } else {
+            navigate(`/filter-universities/${type}/${valueObj.value}`, {
+                state: { selected: valueObj }
+            });
+        }
     };
 
 
@@ -309,10 +313,10 @@ const Home = () => {
                                                             onClick={() => {
                                                                 if (searchMode === "major") {
                                                                     handleSelectMajor({ value: item.majorId, label });
-                                                                    handleGoToFilterUniversities("major", { value: item.majorId, label });
-                                                                } else {
+                                                                    handleGoToFilterPage("major", { value: item.majorId, label });
+                                                                } else if (searchMode === "THM") {
                                                                     handleSelectTHM({ value: item.codeCombination, label });
-                                                                    handleGoToFilterUniversities("combo", { value: item.codeCombination, label });
+                                                                    handleGoToFilterPage("combo", { value: item.codeCombination, label });
                                                                 }
                                                                 setSearchTerm(label);
                                                                 setShowDropdown(false);
