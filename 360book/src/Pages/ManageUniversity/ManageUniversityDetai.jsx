@@ -243,12 +243,13 @@ const ManageUniversityDetail = () => {
                     <button className="btn btn-success" onClick={openAddModal}>Thêm ngành</button>
                 </div>
                 <table className="table table-hover">
-                    <thead><tr><th>STT</th><th>Ngành</th><th>Tổ hợp</th><th>Điểm chuẩn</th><th>HĐ</th></tr></thead>
+                    <thead><tr><th>STT</th><th>Ngành</th><th>Mã Ngành</th><th>Tổ hợp</th><th>Điểm chuẩn</th><th>HĐ</th></tr></thead>
                     <tbody>
                         {majorList.map((m, idx) => (
                             <tr key={m.majorId}>
                                 <td>{idx + 1}</td>
                                 <td>{m.majorName}</td>
+                                <td>{m.majorCode}</td>
                                 <td>{m.combo.map(c => c.codeCombination).join(', ')}</td>
                                 <td><button className="btn btn-link p-0" onClick={() => openScoreModal(m)}>Xem chi tiết</button></td>
                                 <td><button className="btn btn-sm btn-outline-primary" onClick={() => openEditModal(m)}>Edit</button></td>

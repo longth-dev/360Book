@@ -105,7 +105,7 @@ const Home = () => {
 
     const fetchNews = async () => {
         try {
-            const response = await axios.get("/api/new/GetAll");
+            const response = await axios.get("/api/news/GetAll");
             setNewsList(response.data.data.news || []);
         } catch (error) {
             console.error("Error fetching news:", error);
