@@ -51,7 +51,11 @@ const ManageUniversityDetail = () => {
     // Edit Major modal
     const [showEditModal, setShowEditModal] = useState(false);
     const [editMajor, setEditMajor] = useState(null);
-    const [formEdit, setFormEdit] = useState({ name: '', selectedCombos: [] });
+    const [formEdit, setFormEdit] = useState({
+        name: '',
+        majorCode: '',
+        selectedCombos: []
+    });
     const [updating, setUpdating] = useState(false);
 
     // Options
@@ -111,7 +115,10 @@ const ManageUniversityDetail = () => {
         setEditMajor(major);
         setFormEdit({
             name: major.majorName,
-            selectedCombos: combosOptions.filter(c => major.combo.some(mc => mc.codeCombination === c.value))
+            majorCode: major.majorCode,  // ← thêm dòng này
+            selectedCombos: combosOptions.filter(c =>
+                major.combo.some(mc => mc.codeCombination === c.value)
+            )
         });
         setShowEditModal(true);
     };
@@ -149,7 +156,7 @@ const ManageUniversityDetail = () => {
         setUpdating(true);
         try {
             await axios.put(`/api/uni/v1/${id}/major`, {
-                codeMajor: formEdit.name,
+                codeMajor: formEdit.majorCode,
                 combos: formEdit.selectedCombos.map(c => c.value)
             });
             toast.success('Cập nhật ngành thành công');
@@ -294,6 +301,18 @@ const ManageUniversityDetail = () => {
                 <div className="modal-overlay" onClick={closeEditModal}>
                     <div className="modal-content p-4 bg-white rounded shadow-lg" onClick={e => e.stopPropagation()}>
                         <h5 className="text-center mb-3">Chỉnh sửa Ngành: {formEdit.name}</h5>
+                        <div className="form-group mb-3">
+                            <label>Mã ngành</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={formEdit.majorCode}
+                                onChange={e => setFormEdit(prev => ({
+                                    ...prev,
+                                    majorCode: e.target.value
+                                }))}
+                            />
+                        </div>
                         <div className="form-group mb-3">
                             <label>Chọn tổ hợp môn</label>
                             <Select options={combosOptions} value={formEdit.selectedCombos} onChange={opts => setFormEdit(prev => ({ ...prev, selectedCombos: opts || [] }))} isMulti placeholder="-- chọn tổ hợp --" />
