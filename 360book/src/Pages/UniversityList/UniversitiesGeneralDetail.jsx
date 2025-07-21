@@ -18,7 +18,7 @@ const UniversitiesGeneralDetail = () => {
             setLoading(true);
             setError(null);
             try {
-                const res = await axios.get(`/api/universities/${id}`);
+                const res = await axios.get(`/api/uni/v1/${id}`);
                 setData(res.data.data);
             } catch (err) {
                 setError('Không thể tải dữ liệu trường.');

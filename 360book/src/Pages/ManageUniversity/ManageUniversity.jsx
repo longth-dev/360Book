@@ -43,8 +43,8 @@ const ManageUniversity = () => {
             if (formData.thumbnail) {
                 dataToSend.append("thumbnail", formData.thumbnail);
             }
-
-            await axios.post('/api/tao-moi-truong-dai-hoc', dataToSend, {
+            console.log(formData)
+            await axios.post('/api/uni', dataToSend, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
 
@@ -78,7 +78,7 @@ const ManageUniversity = () => {
                 dataToSend.append("thumbnail", updatedForm.thumbnail);
             }
 
-            await axios.put(`/api/cap-nhat-truong-dai-hoc/${updatedForm.maTruong}`, dataToSend, {
+            await axios.put(`/api/uni/${updatedForm.id}`, dataToSend, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
 
@@ -150,10 +150,12 @@ const ManageUniversity = () => {
                         <div className="col-md-6 col-lg-4 mb-4" key={university.universityId}>
                             <div className="card h-100 shadow-sm card-hover">
                                 <img
-                                    src={university.thumbnail || `https://picsum.photos/200/150?random=${index}`}
-                                    className="card-img-top"
+                                    src={university.thumbnail ? encodeURI(university.thumbnail) : `https://picsum.photos/200/150?random=${index}`}
                                     alt={university.universityName}
                                     style={{ height: "150px", objectFit: "cover" }}
+                                    onError={e => {
+                                        e.currentTarget.src = `https://picsum.photos/200/150?random=${index}`;
+                                    }}
                                 />
                                 <div className="card-body">
                                     <h5 className="card-title">{university.universityName} - {university.code}</h5>

@@ -77,7 +77,7 @@ const UniversityList = () => {
                             <div key={uni.universityId} className="university-list-card">
                                 <img src={uni.thumbnail} alt={uni.universityName} className="university-list-thumbnail" />
                                 <h3 className="university-list-name">{uni.universityName}</h3>
-                                <Link to={`/universities/${uni.universityId}`} className="university-list-detail-link">Xem chi tiết</Link>
+                                <Link to={`/danh-sach-truong/${uni.universityId}`} className="university-list-detail-link">Xem chi tiết</Link>
                             </div>
                         ))}
                     </div>

@@ -12,28 +12,31 @@ const FavoriteUniversity = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 6;
     const [searchTerm, setSearchTerm] = useState("");
-    const userId = localStorage.getItem("userId");
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchFavorites = async () => {
             try {
-                const response = await axios.get(`/api/truong-yeu-thich/${userId}`);
+                setLoading(true); // bổ sung đây
+                const response = await axios.get("/api/uni/v2/favorite");
                 setFavorites(response.data.data || []);
                 toast.success("Tải danh sách trường yêu thích thành công");
             } catch (error) {
                 console.error("Lỗi khi tải danh sách trường yêu thích:", error);
                 toast.error("Tải danh sách trường yêu thích thất bại");
-            } 
-        };
+            }
+            finally {
+                setLoading(false);
+            }
+        }
         fetchFavorites();
-    }, [userId]);
+    }, []);
 
 
     const handleUnlike = async (universityId) => {
         try {
-            await axios.post(`/api/xoa-truong-yeu-thich/${userId}/${universityId}`);
-            setFavorites(prev => prev.filter(u => u.id !== universityId));
+            await axios.post(`/api/xoa-truong-yeu-thich/${universityId}`);
+            setFavorites(prev => prev.filter(u => u.universityId !== universityId));
             toast.success("Đã xoá trường khỏi danh sách yêu thích");
         } catch (error) {
             console.error("Lỗi khi unlike trường:", error);
@@ -43,7 +46,7 @@ const FavoriteUniversity = () => {
 
 
     const filteredFavorites = favorites.filter(university =>
-        university.tenTruong.toLowerCase().includes(searchTerm.toLowerCase())
+        university.universityName.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const totalPages = Math.ceil(filteredFavorites.length / itemsPerPage);
@@ -98,18 +101,18 @@ const FavoriteUniversity = () => {
                     <>
                         <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
                             {currentItems.map(university => (
-                                <div key={university.id} className="col">
+                                <div key={university.universityId} className="col">
                                     <div
                                         className="card h-100 shadow-sm rounded-4 card-hover position-relative"
                                         style={{ cursor: "pointer" }}
-                                        onClick={() => handleCardClick(university.id)}
+                                        onClick={() => handleCardClick(university.universityId)}
                                     >
                                         <i
                                             className="fa-solid fa-heart position-absolute top-0 end-0 m-2 text-danger"
                                             style={{ fontSize: '1.4rem', zIndex: 1 }}
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                handleUnlike(university.id);
+                                                handleUnlike(university.universityId);
                                             }}
                                             title="Bỏ yêu thích"
                                         ></i>
@@ -117,24 +120,22 @@ const FavoriteUniversity = () => {
                                         <img
                                             src={university.thumbnail || "https://picsum.photos/200/150"}
                                             className="card-img-top rounded-top-4"
-                                            alt={university.tenTruong}
+                                            alt={university.universityName}
                                             style={{ height: '150px', objectFit: 'cover' }}
                                         />
                                         <div className="card-body">
                                             <h5 className="card-title">
-                                                {university.tenTruong} - {university.maTruong}
+                                                {university.universityName} - {university.code}
                                             </h5>
-                                            <p className="card-text text-muted">📍 {university.diaChi}</p>
-                                            {university.theManh && (
-                                                <p className="card-text text-muted">⚡ {university.theManh}</p>
+                                            <p className="card-text text-muted">📍 {university.address}</p>
+                                            {university.main && (
+                                                <p className="card-text text-muted">⚡ {university.main}</p>
                                             )}
                                         </div>
                                     </div>
                                 </div>
                             ))}
                         </div>
-
-
                         {/* Pagination */}
                         <nav className="mt-4 d-flex justify-content-center">
                             <ul className="pagination">

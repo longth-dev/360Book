@@ -12,6 +12,7 @@ const theManhOptions = [
 
 const UpdateUniversityPopUp = ({ university, onClose, onUpdate }) => {
   const [form, setForm] = useState({
+    id: null,
     tenTruong: "",
     maTruong: "",
     diaChi: "",
@@ -23,10 +24,11 @@ const UpdateUniversityPopUp = ({ university, onClose, onUpdate }) => {
   useEffect(() => {
     if (university) {
       setForm({
-        tenTruong: university.tenTruong || "",
-        maTruong: university.maTruong || "",
-        diaChi: university.diaChi || "",
-        theManh: university.theManh || "",
+        id: university.universityId,
+        tenTruong: university.universityName || "",
+        maTruong: university.code || "",
+        diaChi: university.address || "",
+        theManh: university.main || "",
         thumbnail: null,
         existingThumbnail: university.thumbnail || "",
       });

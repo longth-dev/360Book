@@ -17,7 +17,7 @@ export default function SubjectCombinationViewer() {
     useEffect(() => {
         setLoadingCombos(true);
         setError(null);
-        axios.get("https://your-api/subject-combinations")
+        axios.get("api/uni/v1/subject-combo")
             .then(res => {
                 setSubjectCombinations(res.data.data || []);
             })
@@ -36,9 +36,14 @@ export default function SubjectCombinationViewer() {
         }
         setLoadingUniversities(true);
         setError(null);
-        axios.get(`https://your-api/universities?combo=${selectedCombo}`)
+        axios.get(`/api/uni/v1/by-combo?comboCode=${selectedCombo}`)
             .then(res => {
-                setUniversities(res.data.data || []);
+                const detailList = res.data.data.detailResponseList || [];
+                const mapped = detailList.map(item => ({
+                    ...item.university,
+                    total: item.total
+                }));
+                setUniversities(mapped);
             })
             .catch(err => {
                 setError("Không thể tải danh sách trường đại học. Vui lòng thử lại sau.");
@@ -70,9 +75,10 @@ export default function SubjectCombinationViewer() {
                         >
                             <option value="">-- Chọn tổ hợp môn --</option>
                             {subjectCombinations.map((combo) => (
-                                <option key={combo.id} value={combo.id}>
-                                    {combo.id} - {combo.name}
+                                <option key={combo.codeCombination} value={combo.codeCombination}>
+                                    {combo.codeCombination} - {combo.subjectName.join(", ")}
                                 </option>
+
                             ))}
                         </select>
                         {loadingCombos && (
@@ -120,10 +126,10 @@ export default function SubjectCombinationViewer() {
                                         </thead>
                                         <tbody>
                                             {universities.map((uni, index) => (
-                                                <tr key={uni.id}>
+                                                <tr key={uni.universityId}>
                                                     <td>{index + 1}</td>
-                                                    <td className="university-name">{uni.tenTruong}</td>
-                                                    <td>{uni.maTruong}</td>
+                                                    <td className="university-name">{uni.universityName}</td>
+                                                    <td>{uni.code}</td>
                                                     <td className="majors-list">
                                                         {Array.isArray(uni.majors)
                                                             ? uni.majors.join(", ")
@@ -131,7 +137,7 @@ export default function SubjectCombinationViewer() {
                                                     </td>
                                                     <td>
                                                         <Link
-                                                            to={`/universities/${uni.id}`}
+                                                            to={`/danh-sach-truong/${uni.universityId}`}
                                                             className="detail-btn"
                                                         >
                                                             Xem chi tiết

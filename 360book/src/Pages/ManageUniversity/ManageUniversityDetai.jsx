@@ -17,17 +17,17 @@ const scoreTypeOptions = [
 const currentYear = new Date().getFullYear();
 
 axios.interceptors.request.use(
-  config => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers = {
-        ...config.headers,
-        Authorization: `Bearer ${token}`
-      };
-    }
-    return config;
-  },
-  error => Promise.reject(error)
+    config => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers = {
+                ...config.headers,
+                Authorization: `Bearer ${token}`
+            };
+        }
+        return config;
+    },
+    error => Promise.reject(error)
 );
 
 const ManageUniversityDetail = () => {
@@ -41,7 +41,11 @@ const ManageUniversityDetail = () => {
 
     // Add Major modal
     const [showAddModal, setShowAddModal] = useState(false);
-    const [formAdd, setFormAdd] = useState({ selectedMajor: null, selectedCombos: [] });
+    const [formAdd, setFormAdd] = useState({
+        selectedMajor: null,
+        selectedCombos: [],
+        majorCode: ""
+    });
     const [adding, setAdding] = useState(false);
 
     // Edit Major modal
@@ -120,9 +124,10 @@ const ManageUniversityDetail = () => {
         }
         setAdding(true);
         try {
-            await axios.post(`/api/uni/v1/${id}/major`, {
-                codeMajor: formAdd.selectedMajor.value,
-                combos: formAdd.selectedCombos.map(c => c.value)
+            await axios.post(`/api/uni/v1/major/by-uni?universityId=${id}`, {
+                codeMajor: formAdd.majorCode,
+                majorName: formAdd.selectedMajor.value,
+                codeCombinations: formAdd.selectedCombos.map(c => c.value)
             });
             toast.success('Thêm ngành thành công');
             const res = await axios.get(`/api/uni/v1/${id}`);
@@ -258,6 +263,15 @@ const ManageUniversityDetail = () => {
                 <div className="modal-overlay" onClick={closeAddModal}>
                     <div className="modal-content p-4 bg-white rounded shadow-lg" onClick={e => e.stopPropagation()}>
                         <h5 className="text-center mb-3">📘 Thêm Ngành Học</h5>
+                        <div className="form-group mb-3">
+                            <label>Nhập mã ngành</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={formAdd.majorCode}
+                                onChange={e => setFormAdd(prev => ({ ...prev, majorCode: e.target.value }))}
+                            />
+                        </div>
                         <div className="form-group mb-3">
                             <label>Chọn ngành</label>
                             <Select options={majorsOptions} value={formAdd.selectedMajor} onChange={opt => setFormAdd(prev => ({ ...prev, selectedMajor: opt }))} placeholder="-- chọn ngành --" isClearable />

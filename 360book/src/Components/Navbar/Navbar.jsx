@@ -56,6 +56,11 @@ const Navbar = () => {
             navigate('/login');
         }
     }
+        const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        window.location.reload();
+    };
 
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4">
@@ -68,7 +73,7 @@ const Navbar = () => {
             <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span className="navbar-toggler-icon"></span>
             </button>
-            <div className="collapse navbar-collapse" id="navbarNav" style={{ marginRight: "550px" }}>
+            <div className="collapse navbar-collapse" id="navbarNav" style={{ marginRight: "180px" }}>
                 <ul className="navbar-nav ms-auto gap-4">
                     <li className="nav-item">
                         <Link className="nav-link" to="/tinh-diem">
@@ -84,9 +89,6 @@ const Navbar = () => {
                         <Link className="nav-link" to="/danh-sach-truong">Danh sách trường</Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link" to="/nganh-dao-tao">Ngành đào tạo</Link>
-                    </li>
-                    <li className="nav-item">
                         <Link className="nav-link" to="/diem-chuan">Điểm chuẩn đại học</Link>
                     </li>
                     <li className="nav-item">
@@ -97,7 +99,6 @@ const Navbar = () => {
                             Xem thêm
                         </spaan>
                         <ul className="dropdown-menu" style={{ borderRadius: "10px", marginTop: "20px" }}>
-                            <li><Link className="dropdown-item" to="/gioi-thieu">Giới thiệu</Link></li>
                             <li><Link className="dropdown-item" to="/dem-nguoc">Đếm ngược ngày thi</Link></li>
                             <li><Link className="dropdown-item" to="/hoi-va-dap">Hỏi xoáy đáp xoay</Link></li>
                             <li><Link className="dropdown-item" to="/tra-cuu-to-hop-mon">Tra cứu tổ hợp môn</Link></li>
@@ -109,9 +110,21 @@ const Navbar = () => {
             </div>
             <div className="d-flex align-items-center ms-auto">
                 {isLogined ? (
-                    <button className="btn btn-outline-primary rounded-pill d-flex align-items-center gap-2" onClick={handleClickProfile}>
-                        <i className="fa-solid fa-user"></i> Cá nhân
-                    </button>
+                    <>
+                        <button
+                            className="btn btn-outline-primary rounded-pill d-flex align-items-center gap-2"
+                            onClick={handleClickProfile}
+                        >
+                            <i className="fa-solid fa-user"></i> Cá nhân
+                        </button>
+
+                        <button
+                            className="btn btn-outline-danger rounded-pill d-flex align-items-center gap-2"
+                            onClick={handleLogout}
+                        >
+                            <i className="fa-solid fa-right-from-bracket"></i> Logout
+                        </button>
+                    </>
                 ) : (
                     <Link to="/login" className="btn btn-primary rounded-pill px-4 py-2 fw-semibold">
                         <i className="fa-solid fa-right-to-bracket me-2"></i> Login

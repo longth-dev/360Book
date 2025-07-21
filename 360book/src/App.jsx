@@ -34,6 +34,7 @@ import ExamSchedule from "./Pages/ExamSchedule/ExamSchedule";
 import UserProfile from "./Pages/UserProfile/UserProfile";
 import FilterUniversities from "./Pages/FilterUniversities/FilterUniversities";
 import ProtectedRoutesAdmin from "./Utils/ProtectedRoutesAdmin";
+import UniversitiesGeneralDetail from "./Pages/UniversityList/UniversitiesGeneralDetail";
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function App() {
         <Route path="/tra-cuu-to-hop-mon" element={<SubjectCombinationViewer />} />
         <Route path="/ai-chatbox" element={<AIChatbox />} />
         <Route path="/danh-sach-truong" element={<ListUniversitiesView />} />
+         <Route path="/danh-sach-truong/:id" element={<UniversitiesGeneralDetail />} />
         <Route path="/lich-thi" element={<ExamSchedule />} />
         <Route path="/filter-universities/combo/:comboId" element={<FilterUniversities />} />
         <Route path="/filter-universities/strength/:strengthId" element={<FilterUniversities />} />
