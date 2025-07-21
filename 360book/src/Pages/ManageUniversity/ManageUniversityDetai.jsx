@@ -156,6 +156,7 @@ const ManageUniversityDetail = () => {
         setUpdating(true);
         try {
             await axios.put(`/api/uni/v1/${id}/major`, {
+                majorName: formEdit.name,
                 codeMajor: formEdit.majorCode,
                 combos: formEdit.selectedCombos.map(c => c.value)
             });
