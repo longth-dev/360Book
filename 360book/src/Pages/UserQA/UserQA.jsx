@@ -52,9 +52,6 @@ const UserQA = () => {
         <div className="qa-list row">
           {currentItems.length === 0 ? (
             <div className="text-center w-100 py-5">
-              <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Đang tải...</span>
-              </div>
               <p className="mt-3">Không tìm thấy dữ liệu phù hợp.</p>
             </div>
           ) : (

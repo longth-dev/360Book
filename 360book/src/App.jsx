@@ -58,6 +58,7 @@ function App() {
         <Route path="/lich-thi" element={<ExamSchedule />} />
         <Route path="/filter-universities/combo/:comboId" element={<FilterUniversities />} />
         <Route path="/filter-universities/strength/:strengthId" element={<FilterUniversities />} />
+        <Route path="/hoi-va-dap" element={<UserQA />} />
 
 
         {/** MANAGE ADMIN */}
