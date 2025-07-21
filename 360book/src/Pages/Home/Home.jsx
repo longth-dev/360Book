@@ -32,8 +32,12 @@ const Home = () => {
     const handleGoToFilterPage = (type, valueObj) => {
         if (type === "combo") {
             navigate("/tra-cuu-to-hop-mon");
-        } else {
-            navigate(`/filter-universities/${type}/${valueObj.value}`, {
+        } else if (type === "major") {
+            navigate(`/filter-universities/major/${valueObj.value}`, {
+                state: { selected: valueObj }
+            });
+        } else if (type === "strength") {
+            navigate(`/filter-universities/strength/${valueObj.value}`, {
                 state: { selected: valueObj }
             });
         }
@@ -317,6 +321,9 @@ const Home = () => {
                                                                 } else if (searchMode === "THM") {
                                                                     handleSelectTHM({ value: item.codeCombination, label });
                                                                     handleGoToFilterPage("combo", { value: item.codeCombination, label });
+                                                                } else if (searchMode === "strength") {
+                                                                    // Nếu có dropdown strength thì xử lý ở đây
+                                                                    // handleGoToFilterPage("strength", { value: item.strengthId, label });
                                                                 }
                                                                 setSearchTerm(label);
                                                                 setShowDropdown(false);

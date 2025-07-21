@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import Navbar from '../../Components/Navbar/Navbar';
 import Footer from '../../Components/Footer/Footer';
 import './FilterUniversities.css';
@@ -8,7 +8,8 @@ import axios from 'axios';
 const accentColor = '#225bbf';
 
 const FilterUniversities = () => {
-    const { comboId, strengthId } = useParams();
+    const { type, id } = useParams();
+    const location = useLocation();
     const [universities, setUniversities] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -21,14 +22,27 @@ const FilterUniversities = () => {
             setError(null);
             try {
                 let res;
-                if (comboId) {
-                    res = await axios.get(`/api/universities/by-combo/${comboId}`);
-                    setFilterName(res.data.comboName || 'Khối tổ hợp môn');
-                } else if (strengthId) {
-                    res = await axios.get(`/api/universities/by-strength/${strengthId}`);
-                    setFilterName(res.data.strengthName || 'Thế mạnh');
+                if (type === "combo") {
+                    res = await axios.get(`/api/uni/v1/by-combo?comboCode=${id}`);
+                    setFilterName(location.state?.selected?.label || "Khối tổ hợp môn");
+                    setUniversities((res.data.data?.detailResponseList || []).map(item => item.university));
+                } else if (type === "major") {
+                    res = await axios.get(`/api/uni/v1/by-major?major=${id}`);
+                    setFilterName(location.state?.selected?.label || "Ngành");
+                    // Nếu trả về 1 object, đưa vào mảng; nếu là mảng thì giữ nguyên
+                    const data = res.data.data;
+                    if (Array.isArray(data)) {
+                        setUniversities(data);
+                    } else if (data && typeof data === 'object') {
+                        setUniversities([data]);
+                    } else {
+                        setUniversities([]);
+                    }
+                } else if (type === "strength") {
+                    res = await axios.get(`/api/universities/by-strength/${id}`);
+                    setFilterName(location.state?.selected?.label || "Thế mạnh");
+                    setUniversities(res.data.data || []);
                 }
-                setUniversities(res.data.data || []);
             } catch (err) {
                 setError('Không thể tải danh sách trường.');
                 setUniversities([]);
@@ -37,7 +51,7 @@ const FilterUniversities = () => {
             }
         };
         fetchData();
-    }, [comboId, strengthId]);
+    }, [type, id, location.state]);
 
     return (
         <>
@@ -45,7 +59,7 @@ const FilterUniversities = () => {
             <div className="container py-4 min-vh-100">
                 <div className="card shadow p-4 mb-4" style={{ borderRadius: 16 }}>
                     <h3 className="mb-3" style={{ color: accentColor }}>
-                        Danh sách trường theo {comboId ? 'Khối tổ hợp môn' : 'Thế mạnh'}: <span style={{ color: '#111' }}>{filterName}</span>
+                        Danh sách trường theo {type === "combo" ? 'Khối tổ hợp môn' : type === "major" ? 'Ngành' : 'Thế mạnh'}: <span style={{ color: '#111' }}>{filterName}</span>
                     </h3>
                     {loading ? (
                         <div className="text-center py-5">
@@ -63,7 +77,7 @@ const FilterUniversities = () => {
                                     <tr>
                                         <th>Tên trường</th>
                                         <th>Mã trường</th>
-                                        <th>Thế mạnh</th>
+                                        <th>Địa chỉ</th>
                                         <th>Ngành nổi bật</th>
                                         <th></th>
                                     </tr>
@@ -73,8 +87,12 @@ const FilterUniversities = () => {
                                         <tr key={uni.universityId} style={{ cursor: 'pointer' }} onClick={() => navigate(`/universities/${uni.universityId}`)}>
                                             <td style={{ color: accentColor, fontWeight: 600 }}>{uni.universityName}</td>
                                             <td>{uni.code}</td>
-                                            <td>{uni.strength || 'Chưa cập nhật'}</td>
-                                            <td>{uni.majors ? uni.majors.join(', ') : 'Chưa cập nhật'}</td>
+                                            <td>{uni.address || 'Chưa cập nhật'}</td>
+                                            <td>
+                                                {uni.universityMajors
+                                                    ? uni.universityMajors.map(m => m.majorName).join(', ')
+                                                    : 'Chưa cập nhật'}
+                                            </td>
                                             <td>
                                                 <button className="btn btn-outline-primary btn-sm">Xem chi tiết</button>
                                             </td>
