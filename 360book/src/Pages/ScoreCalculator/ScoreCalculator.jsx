@@ -1,12 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import "./ScoreCalculator.css";
-import scoreEnglish from "../../assets/Scores/score-with-english.png"; // Replace with actual image path
-import scoreCalculator from "../../assets/Scores/score-calculator.png"; // Replace with actual image path
-import scoreAverage from "../../assets/Scores/average score.png"; // Replace with actual image path
+import scoreEnglish from "../../assets/Scores/score-with-english.png";
+import scoreCalculator from "../../assets/Scores/score-calculator.png";
+import scoreAverage from "../../assets/Scores/average score.png";
 import Navbar from "../../Components/Navbar/Navbar";
 import Footer from "../../Components/Footer/Footer";
 import ScoreForm from "./ScoreForm";
+
+const SUBJECTS = [
+  "Toán",
+  "Văn",
+  "Anh",
+  "Lý",
+  "Hóa",
+  "Sinh",
+  "Sử",
+  "Địa",
+  "GDCD",
+  "Tin",
+  "Công nghệ",
+];
+
 const ScoreCalculator = () => {
+  const [tab, setTab] = useState(0);
+  // State dùng chung cho 2 tab
+  const [selectedSubjects, setSelectedSubjects] = useState([
+    "Toán",
+    "Văn",
+    "Anh",
+  ]);
+
   return (
     <>
       <Navbar />
@@ -91,9 +114,53 @@ const ScoreCalculator = () => {
               </li>
             </ul>
           </article>
-       
-              <ScoreForm />
-         
+
+          {/* Tab paging */}
+          <div className="scorecalc-tab-bar">
+            <button
+              className={
+                tab === 0
+                  ? "scorecalc-tab-btn active"
+                  : "scorecalc-tab-btn"
+              }
+              onClick={() => setTab(0)}
+            >
+              Nhập điểm học bạ (10, 11, 12)
+            </button>
+            <button
+              className={
+                tab === 1
+                  ? "scorecalc-tab-btn active"
+                  : "scorecalc-tab-btn"
+              }
+              onClick={() => setTab(1)}
+            >
+              Nhập điểm xét tuyển (5 môn + ưu tiên)
+            </button>
+          </div>
+          <div className="scorecalc-tab-content">
+            {tab === 0 ? (
+              <div>
+                <h3 className="scorecalc-tab-title">Nhập điểm học bạ từng kỳ</h3>
+                <ScoreForm
+                  type="hocba"
+                  selectedSubjects={selectedSubjects}
+                  setSelectedSubjects={setSelectedSubjects}
+                />
+              </div>
+            ) : (
+              <div>
+                <h3 className="scorecalc-tab-title">
+                  Nhập điểm xét tuyển
+                </h3>
+                <ScoreForm
+                  type="xettuyen"
+                  selectedSubjects={selectedSubjects}
+                  setSelectedSubjects={setSelectedSubjects}
+                />
+              </div>
+            )}
+          </div>
         </section>
       </div>
       <Footer />
