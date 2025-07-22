@@ -80,6 +80,7 @@ function App() {
         <Route path="/nguoi-dung/truong-yeu-thich" element={<FavoriteUniversity />} />
         <Route path="/user/profile" element={<UserProfile />} />
         <Route path="/diem-chuan" element={<AdmissionScore />} />
+        <Route path="/diem-chuan/:id" element={<AdmissionScore />} />
         <Route path="/tinh-diem" element={<ScoreCalculator />} />
         <Route path="/so-sanh" element={<UniCompare />} />
         {/* Add more routes as needed */}

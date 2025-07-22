@@ -49,10 +49,16 @@ const ManageMajorDetail = () => {
 
             if (response.data.code === 200) {
                 toast.success("Thêm ngành học thành công");
-                setMajorList(prev => [
-                    ...prev,
-                    { majorName: newTenNganh }
-                ]);
+
+
+
+                const newMajor = {
+                    majorId: response.data.data.id || response.data.data.majorId, // tùy theo backend trả id
+                    majorName: newTenNganh,
+                    totalUni: 0 // đảm bảo hiển thị đúng
+                };
+
+                setMajorList(prev => [...prev, newMajor]);
                 setNewTenNganh("");
                 setShowModal(false);
             } else {
@@ -64,6 +70,23 @@ const ManageMajorDetail = () => {
             toast.error("Thêm ngành học thất bại");
         }
     }
+
+    const handleDeleteMajor = async (majorId) => {
+        if (!window.confirm("Bạn có chắc chắn muốn xóa ngành này không?")) return;
+
+        try {
+            const response = await axios.delete(`/api/uni/v1/major/${majorId}`);
+            if (response.data.code === 200) {
+                toast.success("Xóa ngành học thành công");
+                setMajorList(prev => prev.filter(m => m.majorId !== majorId));
+            } else {
+                toast.error("Xóa ngành học thất bại");
+            }
+        } catch (error) {
+            console.error("Lỗi khi xóa ngành học:", error);
+            toast.error("Xóa ngành học thất bại");
+        }
+    };
 
     return (
         <div className="manage-major-detail bg-light min-vh-100 p-4">
@@ -88,16 +111,27 @@ const ManageMajorDetail = () => {
                 <table className="table table-striped table-hover">
                     <thead className="table-primary">
                         <tr>
-                            <th>STT</th>
-                            <th>Tên ngành</th>
-
+                            <th className="text-center">STT</th>
+                            <th className="text-center">Tên ngành</th>
+                            <th className="text-center">Số lượng trường xét tuyển</th>
+                            <th className="text-center">HĐ</th>
                         </tr>
                     </thead>
                     <tbody>
                         {majorList.map((major, index) => (
-                            <tr key={major.majorName}>
-                                <td>{index + 1}</td>
-                                <td>{major.majorName}</td>
+                            <tr key={major.majorId}>
+                                <td className="text-center">{index + 1}</td>
+                                <td className="text-center">{major.majorName}</td>
+                                <td className="text-center">{major.totalUni}</td>
+                                <td className="text-center">
+                                    {major.totalUni === 0 ? (
+                                        <button className="btn btn-danger btn-sm" onClick={() => handleDeleteMajor(major.majorId)}>
+                                            Xóa
+                                        </button>
+                                    ) : (
+                                        <span className="text-muted">Không thể xóa</span>
+                                    )}
+                                </td>
                             </tr>
                         ))}
                     </tbody>

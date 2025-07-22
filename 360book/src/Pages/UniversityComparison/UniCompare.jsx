@@ -15,13 +15,15 @@ const UniCompare = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [uni1, setUni1] = useState(null);
+  const [uni2, setUni2] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await axios.get("/api/universities");
+        const res = await axios.get("/api/uni/v1");
         setUniversities(res.data.data || []);
       } catch (err) {
         setError("Không thể tải danh sách trường.");
@@ -32,8 +34,30 @@ const UniCompare = () => {
     fetchData();
   }, []);
 
-  const uni1 = universities.find((u) => u.universityId === Number(selected1));
-  const uni2 = universities.find((u) => u.universityId === Number(selected2));
+  const fetchUniversityById = async (id, setter) => {
+    try {
+      const res = await axios.get(`/api/uni/v1/${id}`);
+      setter(res.data.data);
+    } catch (err) {
+      console.error(`Lỗi khi lấy dữ liệu trường ID ${id}:`, err);
+    }
+  };
+
+  useEffect(() => {
+    if (selected1) {
+      fetchUniversityById(selected1, setUni1);
+    } else {
+      setUni1(null);
+    }
+  }, [selected1]);
+
+  useEffect(() => {
+    if (selected2) {
+      fetchUniversityById(selected2, setUni2);
+    } else {
+      setUni2(null);
+    }
+  }, [selected2]);
 
   // Lấy ngành điểm cao nhất/thấp nhất cho từng phương thức
   const getMajorStatsByType = (uni) => {
@@ -136,7 +160,7 @@ const UniCompare = () => {
                         <div
                           className="uni-card card shadow-lg h-100 border-0 position-relative hoverable"
                           style={{ borderLeft: idx === 0 ? `7px solid ${accentColor}` : undefined, borderRight: idx === 1 ? `7px solid ${accentColor}` : undefined, borderRadius: 18, cursor: 'pointer', transition: 'box-shadow 0.2s' }}
-                          onClick={() => navigate(`/universities/${uni.universityId}`)}
+                          onClick={() => navigate(`/danh-sach-truong/${uni.universityId}`)}
                         >
                           <div className="card-body d-flex flex-column align-items-center text-center p-4">
                             <div className="d-flex align-items-center justify-content-center mb-2" style={{ gap: 8 }}>

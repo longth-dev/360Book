@@ -117,7 +117,7 @@ const ManageUniversity = () => {
                 <input
                     type="text"
                     className="form-control mb-2"
-                    style={{ maxWidth: '300px' }}
+                    style={{ maxWidth: '400px' }}
                     placeholder="🔍 Tìm kiếm theo tên hoặc mã trường..."
                     value={searchTerm}
                     onChange={(e) => {

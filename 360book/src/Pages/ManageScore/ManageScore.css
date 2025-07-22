@@ -24,7 +24,7 @@ input.form-control:focus {
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
-.buttons .btn {
+/* .buttons .btn {
   background-color: #003366;
   color: #fff;
   border-radius: 10px;
@@ -32,7 +32,7 @@ input.form-control:focus {
   border: none;
   font-weight: 500;
   transition: background-color 0.3s;
-}
+} */
 
 .buttons .btn:hover {
   background-color: #0055aa;

@@ -27,11 +27,14 @@ const Home = () => {
     const [phuongThuc, setPhuongThuc] = useState("TNTHPTQG");
     const [majors, setMajors] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
+    const [selectedComboOption, setSelectedComboOption] = useState(null);
 
     // Hàm chuyển trang sang FilterUniversities hoặc SubjectCombinationViewer
     const handleGoToFilterPage = (type, valueObj) => {
         if (type === "combo") {
-            navigate("/tra-cuu-to-hop-mon");
+            navigate(`/tra-cuu-to-hop-mon?comboCode=${valueObj.value}`, {
+                state: valueObj
+            });
         } else if (type === "major") {
             navigate(`/filter-universities/major/${valueObj.value}`, {
                 state: { selected: valueObj }

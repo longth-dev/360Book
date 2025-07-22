@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../../Components/Navbar/Navbar';
 import Footer from '../../Components/Footer/Footer';
@@ -12,6 +12,7 @@ const UniversitiesGeneralDetail = () => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -54,65 +55,88 @@ const UniversitiesGeneralDetail = () => {
     return (
         <>
             <Navbar />
-            <div className="container py-4" style={{ minHeight: '70vh' }}>
-                <div
-                    className="shadow-sm p-4 mb-4 bg-white rounded"
-                    style={{ borderLeft: `6px solid ${accentColor}`, maxWidth: 700, margin: '0 auto' }}
-                >
-                    <h2 className="fw-bold mb-2" style={{ color: accentColor }}>
-                        {data.universityName}{' '}
-                        <span className="badge" style={{ background: accentColor, color: '#fff', fontSize: 18 }}>
-                            {data.code}
-                        </span>
-                    </h2>
-                    <div className="mb-1">
-                        <strong>Địa chỉ:</strong> {data.address || <span className="text-muted">Chưa cập nhật</span>}
+            <div className="container py-5" style={{ minHeight: '70vh' }}>
+                {/* Header */}
+                <div className="row align-items-center mb-5">
+                    {data.thumbnail && (
+                        <div className="col-md-3 text-center mb-3 mb-md-0">
+                            <img
+                                src={data.thumbnail}
+                                alt={data.universityName}
+                                className="img-fluid rounded shadow-sm"
+                                style={{ maxHeight: 200, objectFit: 'contain' }}
+                            />
+                        </div>
+                    )}
+                    <div className="col-md-6">
+                        <h2 className="fw-bold" style={{ color: accentColor }}>
+                            {data.universityName}{' '}
+                            <span className="badge bg-primary">{data.code}</span>
+                        </h2>
+                        <p className="mb-1">
+                            <strong>Địa chỉ:</strong>{' '}
+                            {data.address || <span className="text-muted">Chưa cập nhật</span>}
+                        </p>
+                        <p className="mb-0">
+                            <strong>Loại trường:</strong>{' '}
+                            {data.main || <span className="text-muted">Chưa cập nhật</span>}
+                        </p>
                     </div>
-                    <div className="mb-1">
-                        <strong>Loại trường:</strong> {data.main || <span className="text-muted">Chưa cập nhật</span>}
+                    <div className="col-md-3 text-md-end text-center mt-3 mt-md-0">
+                        <button
+                            className="btn btn-primary"
+                            onClick={() =>
+                                navigate('/diem-chuan', {
+                                    state: { universityId: data.universityId },
+                                })
+                            }
+                        >
+                            Xem điểm chuẩn
+                        </button>
                     </div>
                 </div>
-                <h4 className="mb-3" style={{ color: accentColor, fontWeight: 700 }}>Danh sách ngành đào tạo</h4>
+
+                {/* Major list */}
+                <h4 className="mb-3 fw-bold" style={{ color: accentColor }}>
+                    Danh sách ngành đào tạo
+                </h4>
                 <div className="table-responsive">
-                    <table
-                        className="table align-middle"
-                        style={{ borderRadius: 16, overflow: 'hidden', boxShadow: '0 2px 12px rgba(34,91,191,0.07)' }}
-                    >
-                        <thead style={{ background: accentColor, color: '#fff' }}>
+                    <table className="table table-bordered table-hover align-middle shadow-sm bg-white">
+                        <thead className="table-primary">
                             <tr>
-                                <th style={{ minWidth: 160 }}>Tên ngành</th>
-                                <th style={{ minWidth: 180 }}>Tổ hợp môn</th>
-                                <th style={{ minWidth: 220 }}>Điểm chuẩn các năm</th>
+                                <th style={{ width: '20%' }}>Mã ngành</th>
+                                <th style={{ width: '40%' }}>Tên ngành</th>
+                                <th style={{ width: '40%' }}>Tổ hợp môn</th>
                             </tr>
                         </thead>
                         <tbody>
                             {data.universityMajors.map((major) => (
-                                <tr key={major.majorId} style={{ background: '#f8fafd' }}>
-                                    <td className="fw-semibold" style={{ color: accentColor }}>{major.majorName}</td>
+                                <tr key={major.majorId}>
+                                    <td style={{ color: accentColor }}>
+                                        <strong>{major.majorCode}</strong>
+                                    </td>
+                                    <td style={{ color: accentColor }}>
+                                        <strong>{major.majorName}</strong>
+                                    </td>
                                     <td>
                                         {major.combo.map((c) => (
-                                            <div key={c.codeCombination} style={{ marginBottom: 2 }}>
+                                            <div
+                                                key={c.codeCombination}
+                                                className="mb-1 d-flex align-items-start"
+                                            >
                                                 <span
-                                                    className="badge me-1"
-                                                    style={{ background: accentColor, color: '#fff', fontWeight: 500 }}
+                                                    className="badge me-2"
+                                                    style={{
+                                                        background: accentColor,
+                                                        color: '#fff',
+                                                        fontWeight: 500,
+                                                    }}
                                                 >
                                                     {c.codeCombination}
                                                 </span>
-                                                <span style={{ color: '#333' }}>{c.subjectName.join(', ')}</span>
-                                            </div>
-                                        ))}
-                                    </td>
-                                    <td>
-                                        {major.scoreOverview.map((yearObj) => (
-                                            <div key={yearObj.year} className="mb-2">
-                                                <div className="fw-bold" style={{ color: accentColor }}>Năm {yearObj.year}:</div>
-                                                <ul className="mb-0 ps-3">
-                                                    {yearObj.scoreDetails.map((s, idx) => (
-                                                        <li key={s.type + idx}>
-                                                            <span style={{ color: accentColor, fontWeight: 600 }}>{s.type}</span>: <span className="fw-semibold">{s.score}</span>
-                                                        </li>
-                                                    ))}
-                                                </ul>
+                                                <span style={{ color: '#333' }}>
+                                                    {c.subjectName.join(', ')}
+                                                </span>
                                             </div>
                                         ))}
                                     </td>

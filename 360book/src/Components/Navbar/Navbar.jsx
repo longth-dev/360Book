@@ -95,9 +95,9 @@ const Navbar = () => {
                         <Link className="nav-link" to="/lich-thi">Lịch thi</Link>
                     </li>
                     <li className="nav-item dropdown">
-                        <spaan className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" style={{ color: "blue" }}>
+                        <span className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" style={{ color: "blue" }}>
                             Xem thêm
-                        </spaan>
+                        </span>
                         <ul className="dropdown-menu" style={{ borderRadius: "10px", marginTop: "20px" }}>
                             <li><Link className="dropdown-item" to="/dem-nguoc">Đếm ngược ngày thi</Link></li>
                             <li><Link className="dropdown-item" to="/hoi-va-dap">Hỏi xoáy đáp xoay</Link></li>

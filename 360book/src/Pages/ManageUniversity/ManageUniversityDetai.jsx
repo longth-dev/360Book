@@ -38,6 +38,7 @@ const ManageUniversityDetail = () => {
     const [majorList, setMajorList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isEditingScore, setIsEditingScore] = useState(false);
 
     // Add Major modal
     const [showAddModal, setShowAddModal] = useState(false);
@@ -190,14 +191,24 @@ const ManageUniversityDetail = () => {
         }
         setAddingScore(true);
         try {
-            // 1. Gọi API thêm điểm
-            await axios.post('/api/uni/v1/score', {
-                universityId: Number(id),
-                majorId: scoreDetails.majorId,
-                year: Number(newScore.year),
-                score: parseFloat(newScore.score),
-                type: newScore.type.value
-            });
+            if (isEditingScore !== true) {
+                // 1. Gọi API thêm điểm
+                await axios.post('/api/uni/v1/score', {
+                    universityId: Number(id),
+                    majorId: scoreDetails.majorId,
+                    year: Number(newScore.year),
+                    score: parseFloat(newScore.score),
+                    type: newScore.type.value
+                });
+            } else {
+                await axios.put('/api/uni/v1/score', {
+                    universityId: Number(id),
+                    majorId: scoreDetails.majorId,
+                    year: Number(newScore.year),
+                    score: parseFloat(newScore.score),
+                    type: newScore.type.value
+                });
+            }
 
             toast.success('Thêm điểm thành công');
 
@@ -217,12 +228,43 @@ const ManageUniversityDetail = () => {
 
             // 4. Xóa form
             setNewScore({ year: '', type: null, score: '' });
+            setIsEditingScore(false); // 👈 reset mode về thêm mới
 
         } catch (err) {
             console.error(err);
             toast.error('Lỗi khi thêm điểm');
         } finally {
             setAddingScore(false);
+        }
+    };
+
+    const handleDeleteScore = async (year, type) => {
+        if (!window.confirm(`Xoá điểm ${type} của năm ${year}?`)) return;
+        try {
+            await axios.delete(`/api/uni/v1/score`, {
+                params: {
+                    universityId: id,
+                    majorId: scoreDetails.majorId,
+                    year,
+                    type
+                }
+            });
+
+            toast.success("Xoá điểm thành công");
+
+            // Cập nhật lại dữ liệu
+            const res = await axios.get(`/api/uni/v1/${id}`);
+            const updatedMajors = res.data.data.universityMajors || [];
+            setMajorList(updatedMajors);
+
+            const updatedMajor = updatedMajors.find(m => m.majorId === scoreDetails.majorId);
+            setScoreDetails(prev => ({
+                ...prev,
+                scoreOverview: updatedMajor ? updatedMajor.scoreOverview || [] : prev.scoreOverview
+            }));
+        } catch (err) {
+            console.error(err);
+            toast.error("Xoá điểm thất bại");
         }
     };
 
@@ -338,7 +380,7 @@ const ManageUniversityDetail = () => {
                             <div className="d-flex gap-2 align-items-end">
                                 <div className="form-group col-4">
                                     <label>Loại</label>
-                                    <Select options={scoreTypeOptions} value={newScore.type} onChange={opt => setNewScore(prev => ({ ...prev, type: opt }))} placeholder="chọn loại" />
+                                    <Select options={scoreTypeOptions} value={newScore.type} onChange={opt => setNewScore(prev => ({ ...prev, type: opt }))} placeholder="chọn loại" isDisabled={isEditingScore} />
                                 </div>
                                 <div className="form-group col-2">
                                     <label>Năm</label>
@@ -355,6 +397,7 @@ const ManageUniversityDetail = () => {
                                         placeholderText="chọn năm"
                                         className="form-control"
                                         maxDate={new Date(currentYear, 11)}
+                                        disabled={isEditingScore}
                                     />
                                 </div>
                                 <div className="form-group col-2">
@@ -383,14 +426,38 @@ const ManageUniversityDetail = () => {
                                             <tr key={i}>
                                                 <td>{type}</td>
                                                 <td>{score}</td>
-                                                <td><button className="btn btn-sm btn-outline-primary">Edit</button></td>
+                                                <td>
+                                                    <button
+                                                        className="btn btn-sm btn-outline-primary me-2"
+                                                        onClick={() => {
+                                                            setNewScore({
+                                                                year: year.toString(),
+                                                                type: scoreTypeOptions.find(opt => opt.value === type),
+                                                                score: score.toString()
+                                                            });
+                                                            setIsEditingScore(true);
+                                                        }}
+                                                    >
+                                                        Edit
+                                                    </button>
+                                                    <button
+                                                        className="btn btn-sm btn-outline-danger me-2"
+                                                        onClick={() => handleDeleteScore(year, type)}
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </td>
                                             </tr>
                                         ))}
                                     </tbody>
                                 </table>
                             </div>
                         ))}
-                        <div className="text-end"><button className="btn btn-secondary" onClick={() => setShowScoreModal(false)}>Đóng</button></div>
+                        <div className="text-end"><button className="btn btn-secondary" onClick={() => {
+                            setShowScoreModal(false);
+                            setIsEditingScore(false);
+                            setNewScore({ year: '', type: null, score: '' });
+                        }}>Đóng</button></div>
                     </div>
                 </div>
             )}

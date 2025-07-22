@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../../Components/Navbar/Navbar";
 import Footer from "../../Components/Footer/Footer";
 import { Spinner } from "react-bootstrap";
 import "./AdmissionScore.css";
+import { useLocation } from 'react-router-dom';
 
 const scoreTypeMap = {
   DGNLHCM: "Đánh giá năng lực HCM",
@@ -14,9 +16,14 @@ const scoreTypeMap = {
 };
 
 const AdmissionScore = () => {
+  const { id } = useParams();
+  const location = useLocation();
+  const { universityId } = location.state || {};
   const [universities, setUniversities] = useState([]);
-  const [selectedUniversityId, setSelectedUniversityId] = useState("");
+  const [selectedUniversityId, setSelectedUniversityId] = useState(universityId || "");
   const [loading, setLoading] = useState(true);
+
+
 
   // pivot data per-year
   const [majorsByYear, setMajorsByYear] = useState({});
@@ -31,7 +38,11 @@ const AdmissionScore = () => {
       .then(res => {
         const data = res.data.data || [];
         setUniversities(data);
-        if (data.length) setSelectedUniversityId(data[0].universityId);
+        let initialId = id || universityId || (data[0]?.universityId ?? "");
+        if (initialId) {
+          setSelectedUniversityId(initialId);
+          fetchMajors(initialId);
+        }
       })
       .catch(err => console.error(err));
   }, []);
@@ -39,9 +50,12 @@ const AdmissionScore = () => {
   // 2. Khi chọn trường, fetch và pivot majors
   useEffect(() => {
     if (!selectedUniversityId) return;
-    setLoading(true);
+    fetchMajors(selectedUniversityId);
+  }, [selectedUniversityId]);
 
-    axios.get(`/api/uni/v1/major/by-uni?universityId=${selectedUniversityId}`)
+  const fetchMajors = (uniId) => {
+    setLoading(true);
+    axios.get(`/api/uni/v1/major/by-uni?universityId=${uniId}`)
       .then(res => {
         const raw = res.data.data || [];
         const byYear = {};
@@ -53,11 +67,9 @@ const AdmissionScore = () => {
             : [{ codeCombination: "Chưa rõ", subjectName: ["Chưa rõ"] }];
 
           (major.scoreOverview || []).forEach(({ year, scoreDetails }) => {
-            // init containers
             if (!byYear[year]) byYear[year] = [];
             if (!typesYear[year]) typesYear[year] = new Set();
 
-            // build map type→score
             const scoresMap = {};
             scoreDetails.forEach(({ type, score }) => {
               typesYear[year].add(type);
@@ -74,7 +86,6 @@ const AdmissionScore = () => {
           });
         });
 
-        // chuyển Set → Array và sort năm
         const typesByYearArr = {};
         Object.keys(typesYear).forEach(y => {
           typesByYearArr[y] = Array.from(typesYear[y]);
@@ -83,9 +94,7 @@ const AdmissionScore = () => {
         setMajorsByYear(byYear);
         setTypesByYear(typesByYearArr);
         setYears(
-          Object
-            .keys(byYear)
-            .sort((a, b) => parseInt(b) - parseInt(a))
+          Object.keys(byYear).sort((a, b) => parseInt(b) - parseInt(a))
         );
       })
       .catch(err => {
@@ -95,7 +104,7 @@ const AdmissionScore = () => {
         setYears([]);
       })
       .finally(() => setLoading(false));
-  }, [selectedUniversityId]);
+  };
 
   return (
     <>
