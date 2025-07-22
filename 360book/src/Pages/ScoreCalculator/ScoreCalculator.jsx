@@ -6,6 +6,7 @@ import scoreAverage from "../../assets/Scores/average score.png";
 import Navbar from "../../Components/Navbar/Navbar";
 import Footer from "../../Components/Footer/Footer";
 import ScoreForm from "./ScoreForm";
+import { useNavigate } from "react-router-dom";
 
 const SUBJECTS = [
   "Toán",
@@ -23,12 +24,12 @@ const SUBJECTS = [
 
 const ScoreCalculator = () => {
   const [tab, setTab] = useState(0);
-  // State dùng chung cho 2 tab
   const [selectedSubjects, setSelectedSubjects] = useState([
     "Toán",
     "Văn",
     "Anh",
   ]);
+  const navigate = useNavigate(); // Thêm dòng này
 
   return (
     <>
@@ -136,6 +137,13 @@ const ScoreCalculator = () => {
               onClick={() => setTab(1)}
             >
               Nhập điểm xét tuyển (5 môn + ưu tiên)
+            </button>
+            <button
+              className="scorecalc-tab-btn"
+              onClick={() => navigate("/goi-y-dai-hoc")}
+              style={{ marginLeft: 8 }}
+            >
+              Gợi ý trường đại học
             </button>
           </div>
           <div className="scorecalc-tab-content">
