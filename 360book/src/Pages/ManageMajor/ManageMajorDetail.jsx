@@ -12,6 +12,9 @@ const ManageMajorDetail = () => {
     const [showModal, setShowModal] = useState(false);
     const [newMaNganh, setNewMaNganh] = useState("");
     const [newTenNganh, setNewTenNganh] = useState("");
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [editingMajor, setEditingMajor] = useState(null);
+    const [updatedTenNganh, setUpdatedTenNganh] = useState("");
 
 
     const fetchNganhHoc = async () => {
@@ -88,6 +91,43 @@ const ManageMajorDetail = () => {
         }
     };
 
+    const handleEditClick = (major) => {
+        setEditingMajor(major);
+        setUpdatedTenNganh(major.majorName);
+        setShowEditModal(true);
+    };
+
+    const handleUpdateMajor = async () => {
+        if (!updatedTenNganh) {
+            toast.error("Tên ngành không được để trống");
+            return;
+        }
+
+        try {
+            const response = await axios.put(`/api/uni/v1/major/${editingMajor.majorId}`, {
+                name: updatedTenNganh
+            });
+
+            if (response.data.code === 200) {
+                toast.success("Cập nhật ngành học thành công");
+                setMajorList(prev =>
+                    prev.map(m =>
+                        m.majorId === editingMajor.majorId
+                            ? { ...m, majorName: updatedTenNganh }
+                            : m
+                    )
+                );
+                setShowEditModal(false);
+                setEditingMajor(null);
+            } else {
+                toast.error("Cập nhật thất bại");
+            }
+        } catch (error) {
+            console.error("Lỗi cập nhật ngành:", error);
+            toast.error("Cập nhật thất bại");
+        }
+    };
+
     return (
         <div className="manage-major-detail bg-light min-vh-100 p-4">
             <ToastContainer position="top-right" autoClose={5000} />
@@ -125,11 +165,16 @@ const ManageMajorDetail = () => {
                                 <td className="text-center">{major.totalUni}</td>
                                 <td className="text-center">
                                     {major.totalUni === 0 ? (
-                                        <button className="btn btn-danger btn-sm" onClick={() => handleDeleteMajor(major.majorId)}>
-                                            Xóa
-                                        </button>
+                                        <>
+                                            <button className="btn btn-warning btn-sm me-2" onClick={() => handleEditClick(major)}>
+                                                Sửa
+                                            </button>
+                                            <button className="btn btn-danger btn-sm" onClick={() => handleDeleteMajor(major.majorId)}>
+                                                Xóa
+                                            </button>
+                                        </>
                                     ) : (
-                                        <span className="text-muted">Không thể xóa</span>
+                                        <span className="text-muted">Không thể xóa/sửa</span>
                                     )}
                                 </td>
                             </tr>
@@ -158,6 +203,27 @@ const ManageMajorDetail = () => {
                         <div className="d-flex justify-content-end gap-2">
                             <button className="btn btn-secondary" onClick={() => setShowModal(false)}>Hủy</button>
                             <button className="btn btn-primary" onClick={handleAddMajor}>Thêm</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showEditModal && (
+                <div className="modal-overlay">
+                    <div className="modal-content p-4 bg-white rounded shadow">
+                        <h5 className="mb-3 text-center">✏️ Sửa Ngành Học</h5>
+                        <div className="form-group mb-3">
+                            <label><i className="fas fa-book me-2"></i>Tên Ngành</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={updatedTenNganh}
+                                onChange={(e) => setUpdatedTenNganh(e.target.value)}
+                            />
+                        </div>
+                        <div className="d-flex justify-content-end gap-2">
+                            <button className="btn btn-secondary" onClick={() => setShowEditModal(false)}>Hủy</button>
+                            <button className="btn btn-primary" onClick={handleUpdateMajor}>Lưu</button>
                         </div>
                     </div>
                 </div>
