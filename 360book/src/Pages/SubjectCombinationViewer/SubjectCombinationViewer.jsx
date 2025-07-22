@@ -114,28 +114,25 @@ export default function SubjectCombinationViewer() {
                                     <table className="universities-table">
                                         <thead>
                                             <tr>
-                                                <th>STT</th>
-                                                <th>Tên trường</th>
-                                                <th>Mã trường</th>
-                                                <th>Ngành xét tuyển</th>
-                                                <th>Thao tác</th>
+                                                <th className="text-center">STT</th>
+                                                <th className="text-center">Tên trường</th>
+                                                <th className="text-center">Mã trường</th>
+                                                <th className="text-center">Số lượng ngành xét tuyển tổ hợp</th>
+                                                <th className="text-center">Thao tác</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {universities.map((uni, index) => (
                                                 <tr key={uni.universityId}>
-                                                    <td>{index + 1}</td>
-                                                    <td className="university-name">{uni.universityName}</td>
-                                                    <td>{uni.code}</td>
-                                                    <td>
-                                                        {uni.universityMajors?.length > 0
-                                                            ? uni.universityMajors.map(m => m.majorName).join(", ")
-                                                            : 'Chưa cập nhật'}
-                                                    </td>
-                                                    <td>
+                                                    <td className="text-center">{index + 1}</td>
+                                                    <td className="university-name text-center">{uni.universityName}</td>
+                                                    <td className="text-center">{uni.code}</td>
+                                                    <td className="text-center">{uni.total}</td>
+                                                    <td className="text-center">
                                                         <Link
                                                             to={`/danh-sach-truong/${uni.universityId}`}
                                                             className="detail-btn"
+                                                            state={{ selectedCombo }}
                                                         >
                                                             Xem chi tiết
                                                         </Link>

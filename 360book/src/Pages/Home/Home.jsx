@@ -33,7 +33,7 @@ const Home = () => {
     const handleGoToFilterPage = (type, valueObj) => {
         if (type === "combo") {
             navigate(`/tra-cuu-to-hop-mon?comboCode=${valueObj.value}`, {
-                state: valueObj
+                state: { selected: valueObj }
             });
         } else if (type === "major") {
             navigate(`/filter-universities/major/${valueObj.value}`, {

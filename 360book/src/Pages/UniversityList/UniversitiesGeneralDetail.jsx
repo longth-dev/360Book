@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../../Components/Navbar/Navbar';
 import Footer from '../../Components/Footer/Footer';
@@ -13,6 +13,9 @@ const UniversitiesGeneralDetail = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const location = useLocation();
+    const preselectedCombo = location.state?.selectedCombo || '';
+    const [selectedComboCode, setSelectedComboCode] = useState(preselectedCombo);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -51,6 +54,9 @@ const UniversitiesGeneralDetail = () => {
         );
     }
     if (!data) return null;
+
+    const allCombos = data.universityMajors.flatMap(major => major.combo || []);
+    const uniqueComboCodes = [...new Set(allCombos.map(c => c.codeCombination))];
 
     return (
         <>
@@ -95,11 +101,27 @@ const UniversitiesGeneralDetail = () => {
                         </button>
                     </div>
                 </div>
-
                 {/* Major list */}
                 <h4 className="mb-3 fw-bold" style={{ color: accentColor }}>
                     Danh sách ngành đào tạo
                 </h4>
+                <div className="mb-3">
+                    <select
+                        id="comboFilter"
+                        className="form-select"
+                        value={selectedComboCode}
+                        onChange={(e) => setSelectedComboCode(e.target.value)}
+                    >
+                        <option value="">-- Hiển thị tất cả --</option>
+                        {[...new Map(
+                            allCombos.map(c => [c.codeCombination, c])
+                        )].map(([code, combo]) => (
+                            <option key={code} value={code}>
+                                {code} – {combo.subjectName.join(", ")}
+                            </option>
+                        ))}
+                    </select>
+                </div>
                 <div className="table-responsive">
                     <table className="table table-bordered table-hover align-middle shadow-sm bg-white">
                         <thead className="table-primary">
@@ -110,38 +132,45 @@ const UniversitiesGeneralDetail = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {data.universityMajors.map((major) => (
-                                <tr key={major.majorId}>
-                                    <td style={{ color: accentColor }}>
-                                        <strong>{major.majorCode}</strong>
-                                    </td>
-                                    <td style={{ color: accentColor }}>
-                                        <strong>{major.majorName}</strong>
-                                    </td>
-                                    <td>
-                                        {major.combo.map((c) => (
-                                            <div
-                                                key={c.codeCombination}
-                                                className="mb-1 d-flex align-items-start"
-                                            >
-                                                <span
-                                                    className="badge me-2"
-                                                    style={{
-                                                        background: accentColor,
-                                                        color: '#fff',
-                                                        fontWeight: 500,
-                                                    }}
+                            {data.universityMajors
+                                .filter(major =>
+                                    !selectedComboCode ||
+                                    major.combo.some(c => c.codeCombination === selectedComboCode)
+                                )
+                                .map((major) => (
+                                    <tr key={major.majorId}>
+                                        <td style={{ color: accentColor }}>
+                                            <strong>{major.majorCode}</strong>
+                                        </td>
+                                        <td style={{ color: accentColor }}>
+                                            <strong>{major.majorName}</strong>
+                                        </td>
+                                        <td>
+                                            {major.combo.map((c) => (
+                                                <div
+                                                    key={c.codeCombination}
+                                                    className="mb-1 d-flex align-items-start"
                                                 >
-                                                    {c.codeCombination}
-                                                </span>
-                                                <span style={{ color: '#333' }}>
-                                                    {c.subjectName.join(', ')}
-                                                </span>
-                                            </div>
-                                        ))}
-                                    </td>
-                                </tr>
-                            ))}
+                                                    <span
+                                                        className="badge me-2"
+                                                        style={{
+                                                            background: accentColor,
+                                                            color: '#fff',
+                                                            fontWeight: 500,
+                                                        }}
+                                                    >
+                                                        {c.codeCombination}
+                                                    </span>
+                                                    <span style={{ color: '#333' }}>
+                                                        {c.subjectName.join(', ')}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </td>
+                                    </tr>
+                                ))
+                            }
+
                         </tbody>
                     </table>
                 </div>
