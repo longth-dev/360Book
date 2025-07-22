@@ -94,34 +94,60 @@ const ManageMajorGroup = () => {
 
     const handleSubmit = async e => {
         e.preventDefault();
+
         if (!formData.codeCombination || formData.subjectNames.length === 0) {
             toast.error("Vui lòng điền đầy đủ thông tin");
             return;
         }
+
         try {
             if (editingCombo) {
-                await axios.put(`/api/tohopmon/${formData.id}`, formData);
+                // Update
+                await axios.put(`/api/uni/v1/subject-combo/${formData.id}`, formData);
                 toast.success("Cập nhật thành công!");
+
+                setSubjectCombinations(prev =>
+                    prev.map(combo =>
+                        combo.id === formData.id
+                            ? {
+                                ...combo,
+                                subjectNames: formData.subjectNames
+                            }
+                            : combo
+                    )
+                );
             } else {
-                await axios.post("/api/uni/v1/subject-combo", formData);
+                // Create
+                const response = await axios.post("/api/uni/v1/subject-combo", formData);
+
+                const newCombo = {
+                    id: formData.codeCombination,
+                    codeCombination: formData.codeCombination,
+                    subjectNames: formData.subjectNames,
+                    totalMajor: 0 // vì vừa tạo nên chưa có ngành nào
+                };
+
+                setSubjectCombinations(prev => [...prev, newCombo]);
                 toast.success("Thêm thành công!");
             }
-            fetchSubjectCombinations();
+
             setShowModal(false);
             setShowUpdateModal(false);
             resetForm();
             setEditingCombo(null);
         } catch (error) {
+            console.error("Lỗi khi submit:", error);
             toast.error("Thao tác thất bại!");
         }
     };
 
     const handleDelete = async id => {
         if (!window.confirm("Xác nhận xóa?")) return;
+
         try {
-            await axios.delete(`/api/tohopmon/${id}`);
+            await axios.delete(`/api/uni/v1/subject-combo/${id}`);
             toast.success("Xóa thành công!");
-            fetchSubjectCombinations();
+            setSubjectCombinations(prev => prev.filter(c => c.id !== id));
         } catch {
             toast.error("Xóa thất bại!");
         }
@@ -164,12 +190,12 @@ const ManageMajorGroup = () => {
                 </div>
             </div>
             {loading ? (
-                <div className="text-center">
-                    <div className="spinner-border" role="status"></div>
+                <div className="loader-container">
+                    <div className="loader"></div>
                 </div>
             ) : (
                 <table className="table table-striped">
-                    <thead>
+                    <thead className="table-primary">
                         <tr>
                             <th className="text-center">Mã</th>
                             <th className="text-center">Môn</th>
@@ -184,18 +210,25 @@ const ManageMajorGroup = () => {
                                 <td className="text-center">{c.subjectNames.join(", ")}</td>
                                 <td className="text-center">{c.totalMajor}</td>
                                 <td className="text-center">
-                                    <button
-                                        onClick={() => handleEditClick(c)}
-                                        className="btn btn-sm btn-warning me-2"
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(c.id)}
-                                        className="btn btn-sm btn-danger"
-                                    >
-                                        Delete
-                                    </button>
+                                    {c.totalMajor === 0 ? (
+                                        <>
+                                            <button
+                                                onClick={() => handleEditClick(c)}
+                                                className="btn btn-sm btn-warning me-2"
+                                            >
+                                                Edit
+                                            </button>
+
+                                            <button
+                                                onClick={() => handleDelete(c.id)}
+                                                className="btn btn-sm btn-danger"
+                                            >
+                                                Delete
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <span className="text-muted">Không thể xóa/sửa</span>
+                                    )}
                                 </td>
                             </tr>
                         ))}

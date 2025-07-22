@@ -15,6 +15,9 @@ const ManageMajorDetail = () => {
     const [showEditModal, setShowEditModal] = useState(false);
     const [editingMajor, setEditingMajor] = useState(null);
     const [updatedTenNganh, setUpdatedTenNganh] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 8;
 
 
     const fetchNganhHoc = async () => {
@@ -128,6 +131,15 @@ const ManageMajorDetail = () => {
         }
     };
 
+    const filteredMajors = majorList.filter(major =>
+        major.majorName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    const totalPages = Math.ceil(filteredMajors.length / itemsPerPage);
+    const currentItems = filteredMajors.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
     return (
         <div className="manage-major-detail bg-light min-vh-100 p-4">
             <ToastContainer position="top-right" autoClose={5000} />
@@ -135,11 +147,26 @@ const ManageMajorDetail = () => {
                 <span>📘Quản lý Ngành Học</span>
             </div>
 
-            <div className="buttons mb-2 d-flex justify-content-end mb-3">
-                <button className="btn" onClick={() => setShowModal(true)}>
-                    <span></span>
-                    <p data-start="good luck!" data-text="start!" data-title="Thêm Ngành"></p>
-                </button>
+            <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+                <div className="mb-2">
+                    <input
+                        type="text"
+                        className="form-control"
+                        style={{ maxWidth: '400px' }}
+                        placeholder="🔍 Tìm kiếm ngành học..."
+                        value={searchTerm}
+                        onChange={(e) => {
+                            setSearchTerm(e.target.value);
+                            setCurrentPage(1); // reset về trang đầu khi tìm
+                        }}
+                    />
+                </div>
+                <div className="buttons mb-2">
+                    <button className="btn" onClick={() => setShowModal(true)}>
+                        <span></span>
+                        <p data-start="good luck!" data-text="start!" data-title="Thêm Ngành"></p>
+                    </button>
+                </div>
             </div>
 
 
@@ -158,9 +185,9 @@ const ManageMajorDetail = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {majorList.map((major, index) => (
+                        {currentItems.map((major, index) => (
                             <tr key={major.majorId}>
-                                <td className="text-center">{index + 1}</td>
+                                <td className="text-center">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                                 <td className="text-center">{major.majorName}</td>
                                 <td className="text-center">{major.totalUni}</td>
                                 <td className="text-center">
@@ -184,7 +211,23 @@ const ManageMajorDetail = () => {
                 </table>
 
             )}
-
+            {totalPages > 1 && (
+                <nav className="d-flex justify-content-center mt-3">
+                    <ul className="pagination">
+                        <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+                            <button className="page-link" onClick={() => setCurrentPage(currentPage - 1)}>&laquo;</button>
+                        </li>
+                        {Array.from({ length: totalPages }, (_, i) => (
+                            <li key={i + 1} className={`page-item ${currentPage === i + 1 ? "active" : ""}`}>
+                                <button className="page-link" onClick={() => setCurrentPage(i + 1)}>{i + 1}</button>
+                            </li>
+                        ))}
+                        <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
+                            <button className="page-link" onClick={() => setCurrentPage(currentPage + 1)}>&raquo;</button>
+                        </li>
+                    </ul>
+                </nav>
+            )}
 
             {showModal && (
                 <div className="modal-overlay">
