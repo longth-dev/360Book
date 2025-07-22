@@ -34,9 +34,9 @@ input.form-control:focus {
   transition: background-color 0.3s;
 } */
 
-.buttons .btn:hover {
+/* .buttons .btn:hover {
   background-color: #0055aa;
-}
+} */
 
 .card {
   border-radius: 12px;

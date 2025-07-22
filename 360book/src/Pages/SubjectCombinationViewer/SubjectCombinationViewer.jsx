@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../../Components/Navbar/Navbar";
 import Footer from "../../Components/Footer/Footer";
 import "./SubjectCombinationViewer.css";
 
 export default function SubjectCombinationViewer() {
-    const [selectedCombo, setSelectedCombo] = useState("");
+    const location = useLocation();
+    // Nếu được truyền từ Home, sẽ có comboCode ở location.state.selected.value
+    const initialCombo = location.state?.selected?.value || "";
+    const [selectedCombo, setSelectedCombo] = useState(initialCombo);
     const [subjectCombinations, setSubjectCombinations] = useState([]);
     const [universities, setUniversities] = useState([]);
     const [loadingCombos, setLoadingCombos] = useState(false);
@@ -38,8 +41,8 @@ export default function SubjectCombinationViewer() {
         setError(null);
         axios.get(`/api/uni/v1/by-combo?comboCode=${selectedCombo}`)
             .then(res => {
-                const detailList = res.data.data.detailResponseList || [];
-                // Mỗi item: { university: { ... }, total }
+                // Nếu data là object trường đại học (1 trường), đưa vào mảng
+                const detailList = res.data.data?.detailResponseList || [];
                 const mapped = detailList.map(item => ({
                     ...item.university, // spread trực tiếp các trường vào object
                     total: item.total  // thêm trường total
@@ -52,6 +55,8 @@ export default function SubjectCombinationViewer() {
             })
             .finally(() => setLoadingUniversities(false));
     }, [selectedCombo]);
+
+    const selectedComboData = subjectCombinations.find(combo => combo.codeCombination === selectedCombo);
 
     return (
         <>
@@ -144,9 +149,47 @@ export default function SubjectCombinationViewer() {
                                                     </Link>
                                                 </td>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            {universities.map((uni, index) => (
+                                                <tr key={uni.universityId}>
+                                                    <td>{index + 1}</td>
+                                                    <td className="university-name">{uni.universityName}</td>
+                                                    <td>{uni.code}</td>
+                                                    <td className="majors-list">
+                                                        {uni.universityMajors
+                                                            ? uni.universityMajors.map(m => m.majorName).join(", ")
+                                                            : 'Chưa cập nhật'}
+                                                    </td>
+                                                    <td>
+                                                        <Link
+                                                            to={`/danh-sach-truong/${uni.universityId}`}
+                                                            className="detail-btn"
+                                                        >
+                                                            Xem chi tiết
+                                                        </Link>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ) : (
+                                <div className="empty-state">
+                                    <div className="empty-state-icon">🏫</div>
+                                    <div className="empty-state-text">Không có trường nào</div>
+                                    <div className="empty-state-subtext">
+                                        Chưa có trường đại học nào xét tuyển tổ hợp môn này
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <div className="empty-state">
+                            <div className="empty-state-icon">📚</div>
+                            <div className="empty-state-text">Chưa có dữ liệu</div>
+                            <div className="empty-state-subtext">
+                                Vui lòng chọn tổ hợp môn để xem kết quả tra cứu
                             </div>
                         ) : (
                             <div className="empty-state">

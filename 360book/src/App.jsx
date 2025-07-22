@@ -62,7 +62,7 @@ function App() {
 
 
         {/** MANAGE ADMIN */}
-        <Route element={<ProtectedRoutesAdmin />}>
+        {/* <Route element={<ProtectedRoutesAdmin />}> */}
           <Route path='/admin' element={<LayoutAdmin />}>
             <Route path="/admin/manage-dai-hoc" element={<ManageUniversity />} />
             <Route path="/admin/universities/:id" element={<ManageUniversityDetail />} />
@@ -72,7 +72,7 @@ function App() {
             <Route path="/admin/manage-tin-tuc" element={<ManageNews />} />
             <Route path="/admin/diem-chuan" element={<ManageScore />} />
             <Route path="hoi-xoay-dap-xoay" element={<ManageQA />} />
-          </Route>
+          {/* </Route> */}
         </Route>
 
         {/** USER PAGE */}
