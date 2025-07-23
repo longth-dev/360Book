@@ -24,7 +24,7 @@ import LayoutAdmin from "./Pages/Layout/LayoutAdmin";
 import ManageQA from "./Pages/ManageQA/ManageQA";
 import VerifyInfo from "./Pages/VerifyInfo/VerifyInfo";
 import ManageScore from "./Pages/ManageScore/ManageScore";
-import UserQA from "./Pages/UserQA/UserQA";
+import CommunityChat from "./Pages/CommunityChat/CommunityChat";
 import CompetencyAssessmentHCMStage1 from "./Pages/CompetencyAssessmentHCMStage1/CompetencyAssessmentHCMStage1";
 import CompetencyAssessmentHCMStage2 from "./Pages/CompetencyAssessmentHCMStage2/CompetencyAssessmentHCMStage2";
 import CompetencyAssessmentHNStage1 from "./Pages/CompetencyAssessmentHNStage1/CompetencyAssessmentHNStage1";
@@ -58,8 +58,7 @@ function App() {
         <Route path="/lich-thi" element={<ExamSchedule />} />
         <Route path="/filter-universities/:type/:id" element={<FilterUniversities />} />
         <Route path="/goi-y-dai-hoc" element={<UniversitySuggest />} />
-        <Route path="/hoi-va-dap" element={<UserQA />} />
-
+        <Route path="/hoi-va-dap" element={<CommunityChat />} />
 
         {/** MANAGE ADMIN */}
         {/* <Route element={<ProtectedRoutesAdmin />}> */}
