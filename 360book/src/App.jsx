@@ -35,7 +35,7 @@ import FilterUniversities from "./Pages/FilterUniversities/FilterUniversities";
 import ProtectedRoutesAdmin from "./Utils/ProtectedRoutesAdmin";
 import UniversitiesGeneralDetail from "./Pages/UniversityList/UniversitiesGeneralDetail";
 import ListUniversitiesView from "./Pages/UniversityList/ListUniversitiesView";
-
+import UniversitySuggest from "./Pages/UniversitySuggest/UniversitySuggest";
 function App() {
   return (
     <Router>
@@ -57,21 +57,21 @@ function App() {
         <Route path="/danh-sach-truong/:id" element={<UniversitiesGeneralDetail />} />
         <Route path="/lich-thi" element={<ExamSchedule />} />
         <Route path="/filter-universities/:type/:id" element={<FilterUniversities />} />
-
+        <Route path="/goi-y-dai-hoc" element={<UniversitySuggest />} />
         <Route path="/hoi-va-dap" element={<UserQA />} />
 
 
         {/** MANAGE ADMIN */}
         {/* <Route element={<ProtectedRoutesAdmin />}> */}
-          <Route path='/admin' element={<LayoutAdmin />}>
-            <Route path="/admin/manage-dai-hoc" element={<ManageUniversity />} />
-            <Route path="/admin/universities/:id" element={<ManageUniversityDetail />} />
-            <Route path="/admin/manage-nganh-hoc" element={<ManageMajorDetail />} />
-            <Route path="/admin/manage-thoi-gian-thi" element={<ManageSchedual />} />
-            <Route path="/admin/manage-to-hop-mon" element={<ManageMajorGroup />} />
-            <Route path="/admin/manage-tin-tuc" element={<ManageNews />} />
-            <Route path="/admin/diem-chuan" element={<ManageScore />} />
-            <Route path="hoi-xoay-dap-xoay" element={<ManageQA />} />
+        <Route path='/admin' element={<LayoutAdmin />}>
+          <Route path="/admin/manage-dai-hoc" element={<ManageUniversity />} />
+          <Route path="/admin/universities/:id" element={<ManageUniversityDetail />} />
+          <Route path="/admin/manage-nganh-hoc" element={<ManageMajorDetail />} />
+          <Route path="/admin/manage-thoi-gian-thi" element={<ManageSchedual />} />
+          <Route path="/admin/manage-to-hop-mon" element={<ManageMajorGroup />} />
+          <Route path="/admin/manage-tin-tuc" element={<ManageNews />} />
+          <Route path="/admin/diem-chuan" element={<ManageScore />} />
+          <Route path="hoi-xoay-dap-xoay" element={<ManageQA />} />
           {/* </Route> */}
         </Route>
 

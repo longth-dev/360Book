@@ -1,246 +1,262 @@
 import { useState } from "react";
 import "./ScoreForm.css";
 
-const ScoreForm = () => {
-  const [data, setData] = useState({
-    literature: "",
-    math: "",
-    elective: "",
-    english: "",
-    isEnglishExempted: false,
-    bonus: "",
-    priority: "",
-    result: null,
-  });
+const SUBJECTS = [
+  "Toán", "Văn", "Anh", "Lý", "Hóa", "Sinh", "Sử", "Địa", "GDCD", "Tin", "Công nghệ"
+];
 
-  const [grades, setGrades] = useState({
-    grade10: {},
-    grade11: {},
-    grade12: {},
-  });
+export default function ScoreForm({ type, selectedSubjects, setSelectedSubjects }) {
+  const [scores, setScores] = useState({});
+  const [hocba, setHocba] = useState({ "10": {}, "11": {}, "12": {} });
+  const [khuyenKhich, setKhuyenKhich] = useState("");
+  const [uuTien, setUuTien] = useState("");
+  const [mienNgoaiNgu, setMienNgoaiNgu] = useState(false);
+  const [result, setResult] = useState(null);
 
-  const [errors, setErrors] = useState({});
+  // Đổi môn xét tuyển, không cho chọn trùng
+  const handleSubjectChange = (idx, value) => {
+    if (selectedSubjects.includes(value)) return;
+    const newSubjects = [...selectedSubjects];
+    newSubjects[idx] = value;
+    setSelectedSubjects(newSubjects);
+  };
 
-  const subjects = [
-    "Văn",
-    "Toán",
-    "Tiếng Anh",
-    "Sử",
-    "Địa",
-    "GDKTPL",
-    "Lí",
-    "Hóa",
-    "Sinh",
-    "Tin",
-    "Công nghệ",
-  ];
+  // Validate điểm: chỉ cho phép 0-10, không cho <0, >10, =0 thì hợp lệ
+  const validateScore = (value) => {
+    if (value === "" || value === null) return true;
+    const num = parseFloat(value);
+    if (isNaN(num) || num < 0 || num > 10) {
+      alert("Chỉ được nhập số từ 0 đến 10");
+      return false;
+    }
+    return true;
+  };
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    const val = type === "checkbox" ? checked : value;
+  // Nhập điểm xét tuyển
+  const handleScoreChange = (subject, value) => {
+    if (!validateScore(value)) return;
+    setScores({ ...scores, [subject]: value });
+  };
 
-    if (type !== "checkbox") {
-      const num = parseFloat(val);
-      if (isNaN(num) || num < 0 || num > 10) {
-        setErrors((prev) => ({ ...prev, [name]: "Điểm phải từ 0 đến 10" }));
-      } else {
-        setErrors((prev) => ({ ...prev, [name]: null }));
+  // Nhập điểm học bạ
+  const handleHocbaChange = (grade, hk, value) => {
+    if (!validateScore(value)) return;
+    setHocba({
+      ...hocba,
+      [grade]: {
+        ...hocba[grade],
+        [hk]: value
+      }
+    });
+  };
+
+  // Validate điểm khuyến khích, ưu tiên
+  const handleKhuyenKhichChange = (value) => {
+    if (!validateScore(value)) return;
+    setKhuyenKhich(value);
+  };
+  const handleUuTienChange = (value) => {
+    if (!validateScore(value)) return;
+    setUuTien(value);
+  };
+
+  // Tính điểm xét tuyển (ví dụ đơn giản)
+  const calcXetTuyen = () => {
+    let sum = 0, count = 0;
+    for (let subj of selectedSubjects) {
+      let v;
+      if (mienNgoaiNgu && subj === "Anh") v = 10;
+      else v = parseFloat(scores[subj]);
+      if (v === 0 || (v && v > 0 && v <= 10)) {
+        sum += v;
+        count++;
+      } else if (v !== undefined && v !== null && v !== "") {
+        alert("Chỉ được nhập số từ 0 đến 10");
+        return;
       }
     }
-
-    setData((prev) => ({ ...prev, [name]: val }));
-  };
-
-  const handleGradeChange = (e, year, subject) => {
-    const value = e.target.value;
-    const num = parseFloat(value);
-
-    if (isNaN(num) || num < 0 || num > 10) {
-      setErrors((prev) => ({
-        ...prev,
-        [`${year}-${subject}`]: "Điểm phải từ 0 đến 10",
-      }));
-    } else {
-      setErrors((prev) => ({
-        ...prev,
-        [`${year}-${subject}`]: null,
-      }));
+    let total = count > 0 ? (sum / count) : 0;
+    let kk = parseFloat(khuyenKhich);
+    let ut = parseFloat(uuTien);
+    if ((khuyenKhich !== "" && (isNaN(kk) || kk < 0 || kk > 10)) ||
+      (uuTien !== "" && (isNaN(ut) || ut < 0 || ut > 10))) {
+      alert("Chỉ được nhập số từ 0 đến 10");
+      return;
     }
-
-    setGrades((prev) => ({
-      ...prev,
-      [year]: {
-        ...prev[year],
-        [subject]: value,
-      },
-    }));
+    if (khuyenKhich) total += kk || 0;
+    if (uuTien) total += ut || 0;
+    setResult(count > 0 ? total.toFixed(2) : "Chưa đủ dữ liệu");
   };
 
-  const calculate = () => {
-    const {
-      literature,
-      math,
-      elective,
-      english,
-      isEnglishExempted,
-      bonus,
-      priority,
-    } = data;
-
-    const lit = parseFloat(literature) || 0;
-    const mat = parseFloat(math) || 0;
-    const ele = parseFloat(elective) || 0;
-    const eng = parseFloat(english) || 0;
-    const kk = parseFloat(bonus) || 0;
-    const ut = parseFloat(priority) || 0;
-
-    const avgYear = (grade) => {
-      const values = Object.values(grades[grade])
-        .map((v) => parseFloat(v))
-        .filter((v) => !isNaN(v));
-      if (values.length === 0) return 0;
-      return values.reduce((a, b) => a + b, 0) / values.length;
-    };
-
-    const avg10 = avgYear("grade10");
-    const avg11 = avgYear("grade11");
-    const avg12 = avgYear("grade12");
-
-    const avgSchoolYears = (avg10 + avg11 * 2 + avg12 * 3) / 6;
-
-    let avgExam = 0;
-    if (isEnglishExempted) {
-      avgExam = (lit + mat + ele) / 3 + kk / 4;
-    } else {
-      avgExam = (lit + mat + ele + eng + kk) / 4;
+  // Tính điểm TB học bạ (ví dụ đơn giản)
+  const calcHocBa = () => {
+    let sum = 0, count = 0;
+    for (let grade of ["10", "11", "12"]) {
+      for (let hk of ["hk1", "hk2"]) {
+        const v = parseFloat(hocba[grade]?.[hk] || "");
+        if (v === 0 || (v && v > 0 && v <= 10)) {
+          sum += v;
+          count++;
+        } else if (hocba[grade]?.[hk] !== undefined && hocba[grade]?.[hk] !== "") {
+          alert("Chỉ được nhập số từ 0 đến 10");
+          return;
+        }
+      }
     }
-
-    const total = ((avgExam + avgSchoolYears) / 2 + ut).toFixed(2);
-    setData((prev) => ({ ...prev, result: total }));
+    setResult(count > 0 ? (sum / count).toFixed(2) : "Chưa đủ dữ liệu");
   };
 
-  return (
-    <div className="scoreform-wrapper">
-      <h2>5. Tính điểm xét tốt nghiệp</h2>
-      <form className="scoreform-grid">
-        <div className="scoreform-group">
-          <label>Điểm Ngữ văn:</label>
-          <input
-            type="number"
-            name="literature"
-            step="0.01"
-            onChange={handleChange}
-          />
-          {errors.literature && <p className="error-msg">{errors.literature}</p>}
+  // --- FORM XÉT TUYỂN ---
+  if (type === "xettuyen") {
+    return (
+      <div className="scoreform-wrapper">
+        <h2>Chọn tối đa 5 môn xét tuyển và nhập điểm</h2>
+        <div className="scoreform-xettuyen-list">
+          {[0, 1, 2, 3, 4].map(idx => (
+            <div className="scoreform-group" key={idx}>
+              <label>Môn {idx + 1}:</label>
+              <select
+                value={selectedSubjects[idx] || ""}
+                onChange={e => handleSubjectChange(idx, e.target.value)}
+              >
+                <option value="">--Chọn môn--</option>
+                {SUBJECTS.map(subj => {
+                  // Ẩn các môn đã chọn ở dropdown khác
+                  const isSelectedElsewhere =
+                    selectedSubjects.includes(subj) && selectedSubjects[idx] !== subj;
+                  return (
+                    <option key={subj} value={subj} disabled={isSelectedElsewhere}>
+                      {subj}
+                    </option>
+                  );
+                })}
+              </select>
+              {/* Nếu là Anh và tick miễn thì disable, value=10 */}
+              {selectedSubjects[idx] === "Anh" ? (
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="number"
+                    min="0"
+                    max="10"
+                    step="0.01"
+                    placeholder="Điểm"
+                    value={mienNgoaiNgu ? 10 : (scores["Anh"] || "")}
+                    onChange={e => handleScoreChange("Anh", e.target.value)}
+                    disabled={mienNgoaiNgu}
+                  />
+                  <label style={{ fontSize: 13 }}>
+                    <input
+                      type="checkbox"
+                      checked={mienNgoaiNgu}
+                      onChange={e => setMienNgoaiNgu(e.target.checked)}
+                      style={{ marginRight: 4 }}
+                    />
+                    Miễn ngoại ngữ
+                  </label>
+                </div>
+              ) : (
+                <input
+                  type="number"
+                  min="0"
+                  max="10"
+                  step="0.01"
+                  placeholder="Điểm"
+                  value={scores[selectedSubjects[idx]] || ""}
+                  onChange={e => handleScoreChange(selectedSubjects[idx], e.target.value)}
+                  disabled={!selectedSubjects[idx]}
+                />
+              )}
+            </div>
+          ))}
         </div>
-        <div className="scoreform-group">
-          <label>Điểm Toán:</label>
-          <input
-            type="number"
-            name="math"
-            step="0.01"
-            onChange={handleChange}
-          />
-          {errors.math && <p className="error-msg">{errors.math}</p>}
-        </div>
-        <div className="scoreform-group">
-          <label>Điểm môn tự chọn:</label>
-          <input
-            type="number"
-            name="elective"
-            step="0.01"
-            onChange={handleChange}
-          />
-          {errors.elective && <p className="error-msg">{errors.elective}</p>}
-        </div>
-        <div className="scoreform-group scoreform-checkbox">
-          <input
-            type="checkbox"
-            name="isEnglishExempted"
-            onChange={handleChange}
-          />
-          <label>Miễn thi môn tiếng Anh?</label>
-        </div>
-        {!data.isEnglishExempted && (
-          <div className="scoreform-group">
-            <label>Điểm tiếng Anh:</label>
-            <input
-              type="number"
-              name="english"
-              step="0.01"
-              onChange={handleChange}
-            />
-            {errors.english && <p className="error-msg">{errors.english}</p>}
-          </div>
-        )}
         <div className="scoreform-group">
           <label>Điểm khuyến khích (nếu có):</label>
           <input
             type="number"
-            name="bonus"
+            min="0"
+            max="10"
             step="0.01"
-            onChange={handleChange}
+            value={khuyenKhich}
+            onChange={e => handleKhuyenKhichChange(e.target.value)}
           />
-          {errors.bonus && <p className="error-msg">{errors.bonus}</p>}
         </div>
         <div className="scoreform-group">
-          <label>Điểm ưu tiên (nếu có):</label>
+          <label>Điểm ưu tiên:</label>
           <input
             type="number"
-            name="priority"
+            min="0"
+            max="10"
             step="0.01"
-            onChange={handleChange}
+            value={uuTien}
+            onChange={e => handleUuTienChange(e.target.value)}
           />
-          {errors.priority && <p className="error-msg">{errors.priority}</p>}
         </div>
-      </form>
+        <button className="scoreform-btn" type="button" onClick={calcXetTuyen}>
+          Tính điểm xét tuyển
+        </button>
+        {result && (
+          <p className="scoreform-result">
+            ✅ Tổng điểm xét tuyển: <strong>{result}</strong>
+          </p>
+        )}
+      </div>
+    );
+  }
 
-      <h3>Bảng điểm trung bình các môn học</h3>
-      {["grade10", "grade11", "grade12"].map((yearKey, i) => (
-        <div key={yearKey}>
-          <h4>Lớp {i + 10}</h4>
-          <table className="scoreform-table">
-            <thead>
-              <tr>
-                {subjects.map((subj) => (
-                  <th key={subj}>{subj}</th>
-                ))}
+  // --- FORM HỌC BẠ TỪNG KỲ ---
+  return (
+    <div className="scoreform-wrapper">
+      <h2>Nhập điểm học kỳ 1, 2 cho từng lớp</h2>
+      <div className="scoreform-hocba-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Lớp</th>
+              <th>HK1</th>
+              <th>HK2</th>
+            </tr>
+          </thead>
+          <tbody>
+            {["10", "11", "12"].map(grade => (
+              <tr key={grade}>
+                <td>{grade}</td>
+                <td>
+                  <input
+                    type="number"
+                    min="0"
+                    max="10"
+                    step="0.01"
+                    value={hocba[grade]?.hk1 || ""}
+                    onChange={e =>
+                      handleHocbaChange(grade, "hk1", e.target.value)
+                    }
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    min="0"
+                    max="10"
+                    step="0.01"
+                    value={hocba[grade]?.hk2 || ""}
+                    onChange={e =>
+                      handleHocbaChange(grade, "hk2", e.target.value)
+                    }
+                  />
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              <tr>
-                {subjects.map((subj) => (
-                  <td key={subj}>
-                    <input
-                      type="number"
-                      step="0.01"
-                      value={grades[yearKey][subj] || ""}
-                      onChange={(e) => handleGradeChange(e, yearKey, subj)}
-                    />
-                    {errors[`${yearKey}-${subj}`] && (
-                      <p className="error-msg">
-                        {errors[`${yearKey}-${subj}`]}
-                      </p>
-                    )}
-                  </td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      ))}
-
-      <button className="scoreform-btn" onClick={calculate}>
-        Tính điểm
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <button className="scoreform-btn" type="button" onClick={calcHocBa}>
+        Tính điểm TB học bạ 6 kỳ
       </button>
-
-      {data.result && (
+      {result && (
         <p className="scoreform-result">
-          ✅ Điểm xét tốt nghiệp của bạn là: <strong>{data.result}</strong>
+          ✅ Điểm TB học bạ 6 kỳ: <strong>{result}</strong>
         </p>
       )}
     </div>
   );
-};
-
-export default ScoreForm;
+}
