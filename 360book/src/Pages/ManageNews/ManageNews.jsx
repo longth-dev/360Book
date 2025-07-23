@@ -14,27 +14,41 @@ const ManageNews = () => {
         categoryId: ""
     });
 
-    // Fetch categories từ backend
     const fetchCategories = async () => {
         try {
-            const res = await axios.get("/api/Categories/getAll");
-            setCategories(res.data || []);
+            const res = await axios.get("/api/categories/getAll");
+            let arr = [];
+
+            if (Array.isArray(res.data?.data?.categories)) {
+                arr = res.data.data.categories;
+            }
+
+            const mapped = arr.map(cat => ({
+                id: cat.categoryId,
+                name: cat.categoryName
+            }));
+            setCategories(mapped);
         } catch {
             setCategories([]);
             toast.error("Không thể tải danh mục!");
         }
     };
 
-    // Fetch news
     const fetchNews = async () => {
         try {
             setLoading(true);
             const response = await axios.get("/api/news/GetAll");
-            setNewsList(response.data.data || []);
+            let arr = [];
+            if (Array.isArray(response.data?.data?.newDetailResponseList)) {
+                arr = response.data.data.newDetailResponseList;
+            }
+            setNewsList(arr);
             setLoading(false);
-        } catch {
+        } catch (err) {
+            console.error("FETCH FAILED", err);
             setLoading(false);
             toast.error("Tải danh sách tin tức thất bại");
+            setNewsList([]);
         }
     };
 
@@ -43,7 +57,6 @@ const ManageNews = () => {
         fetchNews();
     }, []);
 
-    // Xử lý input
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -52,10 +65,8 @@ const ManageNews = () => {
         }));
     };
 
-    // Reset form
     const resetForm = () => setFormData({ link: "", categoryId: "" });
 
-    // Thêm news mới
     const handleAddNews = async (e) => {
         e.preventDefault();
         if (!formData.link || !formData.categoryId) {
@@ -76,11 +87,10 @@ const ManageNews = () => {
         }
     };
 
-    // Thêm hàm xóa news
     const handleDeleteNews = async (newsId) => {
         if (!window.confirm("Bạn có chắc chắn muốn xóa bài viết này?")) return;
         try {
-            await axios.delete(`/api/news/newDetail/${newsId}`);
+            await axios.delete(`/api/news/delete/${newsId}`); // ✅ Sửa đúng endpoint ở đây
             toast.success("Xóa bài viết thành công!");
             fetchNews();
         } catch {
@@ -88,7 +98,6 @@ const ManageNews = () => {
         }
     };
 
-    // Hiển thị tên category theo id
     const getCategoryName = (id) => {
         const cat = categories.find(c => c.id === id);
         return cat ? cat.name : "Không rõ danh mục";
@@ -112,16 +121,15 @@ const ManageNews = () => {
                 </div>
             ) : (
                 <div className="news-grid">
-                    {newsList.length === 0 ? (
+                    {Array.isArray(newsList) && newsList.length === 0 ? (
                         <div className="empty-state">
                             <div className="empty-icon">📰</div>
                             <h3>Không có dữ liệu</h3>
                         </div>
                     ) : (
                         newsList.map((news) => (
-                            <div key={news.id} className="news-card">
+                            <div key={news.newId} className="news-card">
                                 <div className="news-content">
-                                    {/* Thumbnail */}
                                     {news.thumbnail && (
                                         <div style={{ marginBottom: 10 }}>
                                             <img
@@ -131,7 +139,6 @@ const ManageNews = () => {
                                             />
                                         </div>
                                     )}
-                                    {/* Title */}
                                     {news.title && (
                                         <div style={{ marginBottom: 8 }}>
                                             <strong>Tiêu đề:</strong> {news.title}
@@ -139,13 +146,13 @@ const ManageNews = () => {
                                     )}
                                     <div>
                                         <strong>Link:</strong>{" "}
-                                        <a href={news.link} target="_blank" rel="noopener noreferrer">{news.link}</a>
+                                        <a href={news.link} target="_blank" rel="noopener noreferrer">
+                                            {news.link}
+                                        </a>
                                     </div>
                                     <div>
                                         <strong>Chuyên mục:</strong>{" "}
-                                        {news.categoryName
-                                            ? news.categoryName
-                                            : getCategoryName(news.categoryId)}
+                                        {news.categoryName || "Không rõ danh mục"}
                                     </div>
                                     <div>
                                         <strong>Bình luận:</strong>{" "}
@@ -164,7 +171,7 @@ const ManageNews = () => {
                                     <div style={{ marginTop: 12 }}>
                                         <button
                                             className="delete-btn"
-                                            onClick={() => handleDeleteNews(news.id)}
+                                            onClick={() => handleDeleteNews(news.newId)}
                                             style={{
                                                 background: "#ff4d4f",
                                                 color: "#fff",
@@ -184,7 +191,6 @@ const ManageNews = () => {
                 </div>
             )}
 
-            {/* Modal thêm news */}
             {showModal && (
                 <div className="modal-overlay">
                     <div className="manage-news-modal-content">
