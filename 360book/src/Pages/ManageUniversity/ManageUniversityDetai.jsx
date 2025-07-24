@@ -7,6 +7,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { parse, setYear } from 'date-fns';
+import { jwtDecode } from 'jwt-decode';
 
 const scoreTypeOptions = [
     { value: 'TNTHPTQG', label: 'Tổt nghiệp trung học phổ thông Quốc Gia' },
@@ -33,7 +34,7 @@ axios.interceptors.request.use(
 const ManageUniversityDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-
+    const [isStaff, setIsStaff] = useState(false);
     const [university, setUniversity] = useState(null);
     const [majorList, setMajorList] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -105,6 +106,21 @@ const ManageUniversityDetail = () => {
         };
         fetchData();
     }, [id]);
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                const decoded = jwtDecode(token);
+                console.log(decoded.scope);
+                if (decoded.scope === "STAFF") {
+                    setIsStaff(true)
+                }
+            } catch (e) {
+                console.error("Invalid token");
+            }
+        }
+    }, []);
 
     const openAddModal = () => {
         setFormAdd({ selectedMajor: null, selectedCombos: [] });
@@ -280,9 +296,51 @@ const ManageUniversityDetail = () => {
             <div className="card detail-card mb-5 shadow-sm">
                 <img src={university.thumbnail || '/default-university.jpg'} alt={university.universityName} className="card-img-top detail-img" />
                 <div className="card-body">
-                    <h2 className="detail-title">{university.universityName} <span className="text-muted">({university.code})</span></h2>
+                    <h2 className="detail-title">
+                        {university.universityName} <span className="text-muted">({university.code})</span>
+                        {university.verified && (
+                            <i className="fas fa-check-circle text-success ms-2" title="Đã xác thực"></i>
+                        )}
+                    </h2>
                     <p className="detail-info"><i className="fas fa-map-marker-alt me-2" />{university.address}</p>
                     {university.main && <p className="detail-info"><i className="fas fa-star me-2" />{university.main}</p>}
+                    {isStaff && (
+                        university.verified ? (
+                            <button
+                                className="btn btn-outline-danger btn-sm mt-2"
+                                onClick={async () => {
+                                    try {
+                                        await axios.put(`/api/uni/v1/un-verify/${university.universityId}`);
+                                        toast.success("Đã bỏ xác thực");
+                                        const res = await axios.get(`/api/uni/v1/${id}`);
+                                        setUniversity(res.data.data);
+                                    } catch (err) {
+                                        console.error(err);
+                                        toast.error("Lỗi khi bỏ xác thực");
+                                    }
+                                }}
+                            >
+                                ❌ Bỏ xác thực
+                            </button>
+                        ) : (
+                            <button
+                                className="btn btn-outline-success btn-sm mt-2"
+                                onClick={async () => {
+                                    try {
+                                        await axios.put(`/api/uni/v1/verify/${university.universityId}`);
+                                        toast.success("Đã xác thực trường");
+                                        const res = await axios.get(`/api/uni/v1/${id}`);
+                                        setUniversity(res.data.data);
+                                    } catch (err) {
+                                        console.error(err);
+                                        toast.error("Lỗi khi xác thực");
+                                    }
+                                }}
+                            >
+                                ✅ Xác thực trường
+                            </button>
+                        )
+                    )}
                 </div>
             </div>
 

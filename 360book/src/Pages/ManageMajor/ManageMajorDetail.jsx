@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import './ManageMajorDetail.css'
 import { toast, ToastContainer } from "react-toastify";
+import { jwtDecode } from "jwt-decode";
 
 const ManageMajorDetail = () => {
     const { id } = useParams();
@@ -18,6 +19,7 @@ const ManageMajorDetail = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
+    const [isAdmin, setIsAdmin] = useState(false);
 
 
     const fetchNganhHoc = async () => {
@@ -33,6 +35,19 @@ const ManageMajorDetail = () => {
             setLoading(false);
         }
     };
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            try {
+                const decoded = jwtDecode(token);
+                if (decoded.scope === "ADMIN") {
+                    setIsAdmin(true);
+                }
+            } catch (err) {
+                console.error("Lỗi giải mã token:", err);
+            }
+        }
+    }, []);
 
 
     useEffect(() => {
@@ -161,12 +176,14 @@ const ManageMajorDetail = () => {
                         }}
                     />
                 </div>
-                <div className="buttons mb-2">
-                    <button className="btn" onClick={() => setShowModal(true)}>
-                        <span></span>
-                        <p data-start="good luck!" data-text="start!" data-title="Thêm Ngành"></p>
-                    </button>
-                </div>
+                {isAdmin && (
+                    <div className="buttons mb-2">
+                        <button className="btn" onClick={() => setShowModal(true)}>
+                            <span></span>
+                            <p data-start="good luck!" data-text="start!" data-title="Thêm Ngành"></p>
+                        </button>
+                    </div>
+                )}
             </div>
 
 
@@ -196,9 +213,11 @@ const ManageMajorDetail = () => {
                                             <button className="btn btn-warning btn-sm me-2" onClick={() => handleEditClick(major)}>
                                                 Sửa
                                             </button>
-                                            <button className="btn btn-danger btn-sm" onClick={() => handleDeleteMajor(major.majorId)}>
-                                                Xóa
-                                            </button>
+                                            {isAdmin && (
+                                                <button className="btn btn-danger btn-sm" onClick={() => handleDeleteMajor(major.majorId)}>
+                                                    Xóa
+                                                </button>
+                                            )}
                                         </>
                                     ) : (
                                         <span className="text-muted">Không thể xóa/sửa</span>

@@ -2,18 +2,32 @@ import { Outlet, Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
 const ProtectedRoutesAdmin = () => {
-    const roles = getRoleFromToken()
-    console.log(roles)
-    return roles && roles.includes("ADMIN") ? <Outlet /> : <Navigate to="/login" />
-}
+    const roles = getRoleFromToken();
+    console.log(roles);
+
+    return roles && (roles.includes("ADMIN") || roles.includes("STAFF")) ? (
+        <Outlet />
+    ) : (
+        <Navigate to="/login" />
+    );
+};
 
 function getRoleFromToken() {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
 
     if (token) {
-        const decodedToken = jwtDecode(token);
-        const roles = decodedToken.scope ? [decodedToken.scope] : [];
-        return roles;
+        try {
+            const decodedToken = jwtDecode(token);
+            // Nếu scope là chuỗi duy nhất (ví dụ: "ADMIN"), bọc vào mảng
+            const roles = decodedToken.scope
+                ? Array.isArray(decodedToken.scope)
+                    ? decodedToken.scope
+                    : [decodedToken.scope]
+                : [];
+            return roles;
+        } catch (e) {
+            console.error("Lỗi khi giải mã token:", e);
+        }
     }
     return null;
 }

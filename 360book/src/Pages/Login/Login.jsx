@@ -59,7 +59,7 @@ const Login = () => {
       localStorage.setItem('token', response.data.data.accessToken);
       const roles = getRoleFromToken();
       console.log(roles);
-      if (roles === "ADMIN") {
+      if (roles === "ADMIN" || roles === "STAFF" ) {
         navigate('/admin')
       } else if (roles === "USER") {
         navigate('/')

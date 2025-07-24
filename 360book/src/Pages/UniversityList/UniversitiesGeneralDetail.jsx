@@ -99,6 +99,13 @@ const UniversitiesGeneralDetail = () => {
                         <h2 className="fw-bold" style={{ color: accentColor }}>
                             {data.universityName}{' '}
                             <span className="badge bg-primary">{data.code}</span>
+                            {data.verified && (
+                                <i
+                                    className="fas fa-check-circle text-success ms-2"
+                                    title="Đã xác thực"
+                                    style={{ fontSize: '1.2rem', verticalAlign: 'middle' }}
+                                ></i>
+                            )}
                         </h2>
                         <p className="mb-1">
                             <strong>Địa chỉ:</strong>{' '}

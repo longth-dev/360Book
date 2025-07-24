@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import Select from "react-select";
 import "./ManageMajorGroup.css";
+import { jwtDecode } from "jwt-decode";
 
 const ManageMajorGroup = () => {
     const [subjectCombinations, setSubjectCombinations] = useState([]);
@@ -14,6 +15,7 @@ const ManageMajorGroup = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
+    const [isAdmin, setIsAdmin] = useState(false);
 
     const [formData, setFormData] = useState({
         id: "",
@@ -57,6 +59,20 @@ const ManageMajorGroup = () => {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            try {
+                const decoded = jwtDecode(token);
+                if (decoded.scope === "ADMIN") {
+                    setIsAdmin(true);
+                }
+            } catch (err) {
+                console.error("Lỗi khi giải mã token:", err);
+            }
+        }
+    }, []);
 
     useEffect(() => {
         fetchSubjectCombinations();
@@ -182,12 +198,14 @@ const ManageMajorGroup = () => {
                         }}
                     />
                 </div>
-                <div className="buttons mb-2">
-                    <button className="btn" onClick={handleAddClick}>
-                        <span></span>
-                        <p data-start="good luck!" data-text="start!" data-title="Thêm"></p>
-                    </button>
-                </div>
+                {isAdmin && (
+                    <div className="buttons mb-2">
+                        <button className="btn" onClick={handleAddClick}>
+                            <span></span>
+                            <p data-start="good luck!" data-text="start!" data-title="Thêm"></p>
+                        </button>
+                    </div>
+                )}
             </div>
             {loading ? (
                 <div className="loader-container">
@@ -210,19 +228,12 @@ const ManageMajorGroup = () => {
                                 <td className="text-center">{c.subjectNames.join(", ")}</td>
                                 <td className="text-center">{c.totalMajor}</td>
                                 <td className="text-center">
-                                    {c.totalMajor === 0 ? (
+                                    {c.totalMajor === 0 && isAdmin ? (
                                         <>
-                                            <button
-                                                onClick={() => handleEditClick(c)}
-                                                className="btn btn-sm btn-warning me-2"
-                                            >
+                                            <button onClick={() => handleEditClick(c)} className="btn btn-sm btn-warning me-2">
                                                 Edit
                                             </button>
-
-                                            <button
-                                                onClick={() => handleDelete(c.id)}
-                                                className="btn btn-sm btn-danger"
-                                            >
+                                            <button onClick={() => handleDelete(c.id)} className="btn btn-sm btn-danger">
                                                 Delete
                                             </button>
                                         </>
