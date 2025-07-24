@@ -172,7 +172,7 @@ const ManageMajorDetail = () => {
                         value={searchTerm}
                         onChange={(e) => {
                             setSearchTerm(e.target.value);
-                            setCurrentPage(1); // reset về trang đầu khi tìm
+                            setCurrentPage(1); 
                         }}
                     />
                 </div>

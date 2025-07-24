@@ -63,7 +63,7 @@ const ManageSchedule = () => {
             if (scheduleId) {
                 // 🛠️ PUT UPDATE
                 await axios.put(`/api/uni/schedule/${scheduleId}`, {
-                    content: isMain ? undefined : content, // không gửi content nếu là main
+                    content: content, // không gửi content nếu là main
                     startDate,
                     endDate,
                     note: schedule.note || ""

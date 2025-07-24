@@ -93,8 +93,6 @@ const Login = () => {
   try {
     const token = credentialResponse.credential;
     const decoded = jwtDecode(token);
-
-    // Gửi email và name về BE
     const response = await axios.post('/api/auth/gmail-login', {
       email: decoded.email,
       name: decoded.name
