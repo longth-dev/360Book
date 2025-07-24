@@ -62,14 +62,14 @@ function App() {
 
         {/** MANAGE ADMIN */}
         <Route element={<ProtectedRoutesAdmin />}>
-        <Route path='/admin' element={<LayoutAdmin />}>
-          <Route path="/admin/manage-dai-hoc" element={<ManageUniversity />} />
-          <Route path="/admin/universities/:id" element={<ManageUniversityDetail />} />
-          <Route path="/admin/manage-nganh-hoc" element={<ManageMajorDetail />} />
-          <Route path="/admin/manage-thoi-gian-thi" element={<ManageSchedual />} />
-          <Route path="/admin/manage-to-hop-mon" element={<ManageMajorGroup />} />
-          <Route path="/admin/manage-tin-tuc" element={<ManageNews />} />
-          <Route path="/admin/diem-chuan" element={<ManageScore />} />
+          <Route path='/admin' element={<LayoutAdmin />}>
+            <Route path="/admin/manage-dai-hoc" element={<ManageUniversity />} />
+            <Route path="/admin/universities/:id" element={<ManageUniversityDetail />} />
+            <Route path="/admin/manage-nganh-hoc" element={<ManageMajorDetail />} />
+            <Route path="/admin/manage-thoi-gian-thi" element={<ManageSchedual />} />
+            <Route path="/admin/manage-to-hop-mon" element={<ManageMajorGroup />} />
+            <Route path="/admin/manage-tin-tuc" element={<ManageNews />} />
+            <Route path="/admin/diem-chuan" element={<ManageScore />} />
           </Route>
         </Route>
 

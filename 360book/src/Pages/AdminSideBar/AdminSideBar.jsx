@@ -1,6 +1,6 @@
 import React from "react";
 import './AdminSideBar.css';
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 
 const AdminSideBar = () => {
     const handleLogout = () => {
@@ -13,10 +13,12 @@ const AdminSideBar = () => {
         <div className="sidebar">
             <header>
                 <div className="image-text">
-                    <div className="text logo-text">
-                        <span className="name">360 BOOK!</span>
-                        <span className="profession">Web manager universities</span>
-                    </div>
+                    <Link to="/" style={{ textDecoration: 'none' }}>
+                        <div className="text logo-text">
+                            <span className="name">360 BOOK!</span>
+                            <span className="profession">Web manager universities</span>
+                        </div>
+                    </Link>
                 </div>
             </header>
             <hr style={{ color: "white" }} />

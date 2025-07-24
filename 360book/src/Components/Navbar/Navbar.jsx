@@ -82,7 +82,7 @@ const Navbar = () => {
                                 alt="New"
                                 style={{ width: "30px", height: "auto", marginRight: "8px" }}
                             />
-                            Tính điểm THPT Quốc Gia
+                            Tra cứu các loại điểm
                         </Link>
                     </li>
                     <li className="nav-item">
