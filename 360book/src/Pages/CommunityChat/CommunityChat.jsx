@@ -3,21 +3,40 @@ import Navbar from "../../Components/Navbar/Navbar";
 import Footer from "../../Components/Footer/Footer";
 import axios from "axios";
 import "./CommunityChat.css";
+import { jwtDecode } from "jwt-decode"; // ✅ Đúng
+
 
 const CommunityChat = () => {
   const [chats, setChats] = useState([]);
   const [newChat, setNewChat] = useState("");
   const [replyMap, setReplyMap] = useState({});
-  const [userRole, setUserRole] = useState("user"); // mặc định là user
+  const [activeReplyChatId, setActiveReplyChatId] = useState(null);
+    const [userRole, setUserRole] = useState(null); // lưu role
+  
 
-  useEffect(() => {
+   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setUserRole(decoded.scope); // ví dụ: "ADMIN", "USER"
+        console.log(decoded.scope)
+      } catch (error) {
+        console.error("Invalid token", error);
+      }
+    }
+
     fetchChats();
   }, []);
+  
 
   const fetchChats = async () => {
     try {
       const res = await axios.get("/api/communityChats/getAllChats");
-      setChats(res.data || []);
+      const rawChats = Array.isArray(res.data.data.chatListDetails)
+        ? res.data.data.chatListDetails
+        : [];
+      setChats(buildChatTree(rawChats));
     } catch (error) {
       console.error("Error fetching chats", error);
     }
@@ -39,26 +58,60 @@ const CommunityChat = () => {
     if (!replyContent?.trim()) return;
     try {
       await axios.post(`/api/communityChats/replyChat/${chatId}`, {
-        reply: replyContent,
+        content: replyContent,
       });
       setReplyMap({ ...replyMap, [chatId]: "" });
+      setActiveReplyChatId(null);
       fetchChats();
     } catch (error) {
       console.error("Error replying chat", error);
     }
   };
 
-  const handleAdminAction = async (action, chatId) => {
-    try {
-      await axios.put(`/api/communityChats/${action}/${chatId}`);
-      fetchChats();
-    } catch (error) {
-      console.error(`${action} failed`, error);
+ const handleAdminAction = async (action, chatId) => {
+  try {
+    const url = `/api/communityChats/${action}/${chatId}`;
+
+    if (action === "pin" || action === "unPin") {
+      await axios.put(url); // method PUT cho pin và unPin
+    } else if (action === "delete") {
+      await axios.delete(url); // method DELETE cho delete
+    } else {
+      console.warn(`Unknown action: ${action}`);
     }
+
+    fetchChats();
+  } catch (error) {
+    console.error(`${action} failed`, error);
+  }
+};
+
+
+  const buildChatTree = (flatChats) => {
+    const chatMap = {};
+    const roots = [];
+
+    flatChats.forEach((chat) => {
+      chat.replies = [];
+      chatMap[chat.communityChatId] = chat;
+    });
+
+    flatChats.forEach((chat) => {
+      if (chat.parentCommunityChatId) {
+        const parent = chatMap[chat.parentCommunityChatId];
+        if (parent) {
+          parent.replies.push(chat);
+        }
+      } else {
+        roots.push(chat);
+      }
+    });
+
+    return roots;
   };
 
-  const pinnedChats = chats.filter((chat) => chat.pinned);
-  const normalChats = chats.filter((chat) => !chat.pinned);
+  const pinnedChats = chats.filter((chat) => chat.pin);
+  const normalChats = chats.filter((chat) => !chat.pin);
 
   return (
     <div className="community-chat-page">
@@ -72,13 +125,15 @@ const CommunityChat = () => {
             <h2>📌 Tin nhắn được ghim</h2>
             {pinnedChats.map((chat) => (
               <ChatCard
-                key={chat.id}
+                key={chat.communityChatId}
                 chat={chat}
-                isAdmin={userRole === "admin"}
                 replyMap={replyMap}
                 setReplyMap={setReplyMap}
                 sendReply={sendReply}
                 handleAdminAction={handleAdminAction}
+                activeReplyChatId={activeReplyChatId}
+                setActiveReplyChatId={setActiveReplyChatId}
+                 isAdmin={userRole === "ADMIN"}
               />
             ))}
           </div>
@@ -88,13 +143,15 @@ const CommunityChat = () => {
           <h2>🗨️ Tất cả tin nhắn</h2>
           {normalChats.map((chat) => (
             <ChatCard
-              key={chat.id}
+              key={chat.communityChatId}
               chat={chat}
-              isAdmin={userRole === "admin"}
               replyMap={replyMap}
               setReplyMap={setReplyMap}
               sendReply={sendReply}
               handleAdminAction={handleAdminAction}
+              activeReplyChatId={activeReplyChatId}
+              setActiveReplyChatId={setActiveReplyChatId}
+                isAdmin={userRole === "ADMIN"}
             />
           ))}
         </div>
@@ -121,55 +178,89 @@ const ChatCard = ({
   setReplyMap,
   sendReply,
   handleAdminAction,
+  activeReplyChatId,
+  setActiveReplyChatId,
 }) => (
   <div className="chat-card">
     <div className="chat-header">
-      <strong>{chat.sender || "Người dùng ẩn danh"}</strong>
+      <strong>{chat.userId || "Người dùng ẩn danh"}</strong>
       <span className="timestamp">
-        {new Date(chat.timestamp).toLocaleString()}
+        {new Date(chat.createAt).toLocaleString()}
       </span>
     </div>
 
     <div className="chat-content">{chat.content}</div>
 
-    {chat.reply && (
-      <div className="chat-reply">
-        <span className="reply-label">↳ Phản hồi:</span>
-        <div className="reply-content">{chat.reply}</div>
-      </div>
-    )}
-
     <div className="chat-actions">
-      <input
-        type="text"
-        placeholder="Trả lời..."
-        value={replyMap[chat.id] || ""}
-        onChange={(e) =>
-          setReplyMap((prev) => ({ ...prev, [chat.id]: e.target.value }))
-        }
-      />
-      <button onClick={() => sendReply(chat.id)}>Trả lời</button>
+      {activeReplyChatId === chat.communityChatId ? (
+        <>
+          <input
+            type="text"
+            placeholder="Trả lời..."
+            value={replyMap[chat.communityChatId] || ""}
+            onChange={(e) =>
+              setReplyMap((prev) => ({
+                ...prev,
+                [chat.communityChatId]: e.target.value,
+              }))
+            }
+          />
+          <button onClick={() => sendReply(chat.communityChatId)}>Gửi</button>
+          <button onClick={() => setActiveReplyChatId(null)}>Hủy</button>
+        </>
+      ) : (
+        <button onClick={() => setActiveReplyChatId(chat.communityChatId)}>
+          Trả lời
+        </button>
+      )}
 
       {isAdmin && (
-        <>
-          {chat.pinned ? (
-            <button onClick={() => handleAdminAction("unPin", chat.id)}>
-              Bỏ ghim
-            </button>
-          ) : (
-            <button onClick={() => handleAdminAction("pin", chat.id)}>
-              Ghim
-            </button>
-          )}
-          <button
-            onClick={() => handleAdminAction("delete", chat.id)}
-            className="delete-btn"
-          >
-            Xóa
-          </button>
-        </>
-      )}
+  <>
+    {!chat.parentCommunityChatId && ( // chỉ hiện ghim nếu là chat gốc
+      chat.pin ? (
+        <button
+          onClick={() => handleAdminAction("unPin", chat.communityChatId)}
+        >
+          Bỏ ghim
+        </button>
+      ) : (
+        <button
+          onClick={() => handleAdminAction("pin", chat.communityChatId)}
+        >
+          Ghim
+        </button>
+      )
+    )}
+
+    <button
+      onClick={() => handleAdminAction("delete", chat.communityChatId)}
+      className="btn btn-sm btn-danger"
+      style={{ backgroundColor: "red", marginLeft: "0.5rem" }}
+    >
+      <i className="bi bi-trash"></i> Xóa
+    </button>
+  </>
+)}
+
     </div>
+
+    {chat.replies && chat.replies.length > 0 && (
+      <div className="chat-replies">
+        {chat.replies.map((reply) => (
+          <ChatCard
+            key={reply.communityChatId}
+            chat={reply}
+            replyMap={replyMap}
+            setReplyMap={setReplyMap}
+            sendReply={sendReply}
+            handleAdminAction={handleAdminAction}
+            activeReplyChatId={activeReplyChatId}
+            setActiveReplyChatId={setActiveReplyChatId}
+               isAdmin={isAdmin} // 👈 THÊM DÒNG NÀY
+          />
+        ))}
+      </div>
+    )}
   </div>
 );
 

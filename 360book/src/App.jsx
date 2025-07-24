@@ -70,7 +70,6 @@ function App() {
           <Route path="/admin/manage-to-hop-mon" element={<ManageMajorGroup />} />
           <Route path="/admin/manage-tin-tuc" element={<ManageNews />} />
           <Route path="/admin/diem-chuan" element={<ManageScore />} />
-          <Route path="hoi-xoay-dap-xoay" element={<ManageQA />} />
           </Route>
         </Route>
 

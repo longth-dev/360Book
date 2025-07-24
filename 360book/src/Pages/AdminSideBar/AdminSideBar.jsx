@@ -54,12 +54,6 @@ const AdminSideBar = () => {
                                 <span className="text nav-text">Quản lý tin tức</span>
                             </NavLink>
                         </li>
-                        <li className="nav-link">
-                            <NavLink to="/admin/hoi-xoay-dap-xoay">
-                                <i className="fa-solid fa-circle-question icon"></i>
-                                <span className="text nav-text">Quản lý hỏi xoáy đáp xoay</span>
-                            </NavLink>
-                        </li>
                     </ul>
                 </div>
 
