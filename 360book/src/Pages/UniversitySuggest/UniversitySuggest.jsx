@@ -40,9 +40,9 @@ export default function UniversitySuggest() {
     };
 
     return (
-        <>
+        <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
             <Navbar />
-            <div className="suggest-container" style={{ maxWidth: 800, margin: "40px auto", background: "#fff", borderRadius: 12, boxShadow: "0 2px 12px #bcd2f7", padding: 32 }}>
+            <div className="suggest-container" style={{ maxWidth: 800, margin: "40px auto", background: "#fff", borderRadius: 12, boxShadow: "0 2px 12px #bcd2f7", padding: 32, flex: 1 }}>
                 <h2 style={{ color: "#225BBF", textAlign: "center", marginBottom: 24 }}>Gợi ý trường đại học phù hợp</h2>
 
                 <div style={{ display: "flex", gap: 16, marginBottom: 24, justifyContent: "center", flexWrap: "wrap" }}>
@@ -126,6 +126,6 @@ export default function UniversitySuggest() {
                 )}
             </div>
             <Footer />
-        </>
+        </div>
     );
 }
