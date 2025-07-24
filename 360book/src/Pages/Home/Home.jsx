@@ -119,8 +119,8 @@ const Home = () => {
 
     const fetchNews = async () => {
         try {
-            const response = await axios.get("/api/new/GetAll");
-            setNewsList(response.data.data.news || []);
+            const response = await axios.get("/api/news/GetAll");
+            setNewsList(response.data.data.newDetailResponseList || []);
         } catch (error) {
             console.error("Error fetching news:", error);
             toast.error("Không thể lấy danh sách tin tức");
