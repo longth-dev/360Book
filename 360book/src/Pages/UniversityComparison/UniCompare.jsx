@@ -86,8 +86,13 @@ const UniCompare = () => {
 
   // Render sao đánh giá
   const renderStars = (rating) => {
-    const fullStars = Math.floor(rating);
-    const halfStar = rating % 1 >= 0.5;
+    const parsedRating = parseFloat(rating);
+    if (isNaN(parsedRating) || !isFinite(parsedRating)) return (
+      <span className="text-muted">Chưa có</span>
+    );
+
+    const fullStars = Math.floor(parsedRating);
+    const halfStar = parsedRating % 1 >= 0.5;
     const stars = [];
     for (let i = 0; i < fullStars; i++) {
       stars.push(<i key={i} className="bi bi-star-fill" style={{ color: '#FFD700', fontSize: 22 }}></i>);
@@ -171,8 +176,16 @@ const UniCompare = () => {
                             </div>
                             {/* Đánh giá sao */}
                             <div className="mb-2 d-flex align-items-center justify-content-center" style={{ gap: 4 }}>
-                              {renderStars(uni.rating)}
-                              <span className="fw-bold ms-2" style={{ color: '#222', fontSize: 20 }}>{uni.rating?.toFixed(1) ?? '--'}</span>
+                              {renderStars(uni.pointRating)}
+                              {!isNaN(parseFloat(uni.pointRating)) && isFinite(uni.pointRating) ? (
+                                <span className="fw-bold ms-2" style={{ color: '#222', fontSize: 20 }}>
+                                  {parseFloat(uni.pointRating).toFixed(1)} / 5
+                                </span>
+                              ) : (
+                                <span className="fw-bold ms-2 text-muted" style={{ fontSize: 18 }}>
+                                  Chưa có đánh giá
+                                </span>
+                              )}
                             </div>
                             <div className="mb-1"><span className="badge bg-primary" style={{ fontSize: 15 }}>{uni.code}</span></div>
                             <div className="mb-1"><i className="bi bi-geo-alt-fill me-1" style={{ color: accentColor }}></i><strong>Địa điểm:</strong> {uni.address || <span className="text-muted">Chưa cập nhật</span>}</div>

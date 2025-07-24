@@ -11,7 +11,7 @@ export default function ExamSchedule() {
     useEffect(() => {
         const fetchSchedule = async () => {
             try {
-                const response = await axios.get("/api/uni/exam-schedule");
+                const response = await axios.get("/api/uni/v1/exam-schedule");
                 const raw = response.data.data || [];
 
                 const grouped = {};

@@ -16,6 +16,8 @@ const UniversitiesGeneralDetail = () => {
     const location = useLocation();
     const preselectedCombo = location.state?.selectedCombo || '';
     const [selectedComboCode, setSelectedComboCode] = useState(preselectedCombo);
+    const [hoveredStar, setHoveredStar] = useState(0); // ⭐ trạng thái hover
+    const [selectedStar, setSelectedStar] = useState(0); // ⭐ đã chọn
 
     useEffect(() => {
         const fetchData = async () => {
@@ -32,6 +34,25 @@ const UniversitiesGeneralDetail = () => {
         };
         fetchData();
     }, [id]);
+
+    const reloadData = async () => {
+        try {
+            const res = await axios.get(`/api/uni/v1/${id}`);
+            setData(res.data.data);
+        } catch (err) {
+            setError("Không thể tải lại dữ liệu.");
+        }
+    };
+
+    const handleRate = async (star) => {
+        try {
+            await axios.post(`/api/uni/v1/rating/${data.universityId}`, { rating: star });
+            setSelectedStar(star);
+            await reloadData();
+        } catch (err) {
+            alert("Lỗi khi gửi đánh giá.");
+        }
+    };
 
     if (loading) {
         return (
@@ -87,6 +108,40 @@ const UniversitiesGeneralDetail = () => {
                             <strong>Loại trường:</strong>{' '}
                             {data.main || <span className="text-muted">Chưa cập nhật</span>}
                         </p>
+                        {/* Điểm đánh giá trung bình */}
+                        {!isNaN(parseFloat(data.pointRating)) && isFinite(data.pointRating) ? (
+                            <>
+                                {Array.from({ length: 5 }, (_, i) => (
+                                    <i
+                                        key={i}
+                                        className={`me-1 ${i < Math.round(parseFloat(data.pointRating)) ? "fas fa-star text-warning" : "far fa-star text-warning"
+                                            }`}
+                                    ></i>
+                                ))}
+                                <span className="ms-1 text-muted">({parseFloat(data.pointRating).toFixed(1)} / 5)</span>
+                            </>
+                        ) : (
+                            <span className="text-muted">Chưa có</span>
+                        )}
+
+                        {/* ⭐⭐ Đánh giá tương tác ⭐⭐ */}
+                        <div className="mt-1">
+                            <label className="form-label fw-bold mb-1">Đánh giá của bạn:</label>
+                            <div>
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                    <i
+                                        key={star}
+                                        className={`fa-star me-1 ${(hoveredStar || selectedStar) >= star ? "fas text-warning" : "far text-muted"
+                                            }`}
+                                        style={{ cursor: "pointer", fontSize: "1.4rem" }}
+                                        onMouseEnter={() => setHoveredStar(star)}
+                                        onMouseLeave={() => setHoveredStar(0)}
+                                        onClick={() => handleRate(star)}
+                                    ></i>
+                                ))}
+                            </div>
+                        </div>
+
                     </div>
                     <div className="col-md-3 text-md-end text-center mt-3 mt-md-0">
                         <button
