@@ -57,7 +57,7 @@ function App() {
         <Route path="/danh-sach-truong/:id" element={<UniversitiesGeneralDetail />} />
         <Route path="/lich-thi" element={<ExamSchedule />} />
         <Route path="/filter-universities/:type/:id" element={<FilterUniversities />} />
-        <Route path="/goi-y-dai-hoc" element={<UniversitySuggest />} />
+        {/* <Route path="/goi-y-dai-hoc" element={<UniversitySuggest />} /> */}
         <Route path="/hoi-va-dap" element={<CommunityChat />} />
 
         {/** MANAGE ADMIN */}
@@ -79,7 +79,7 @@ function App() {
         <Route path="/user/profile" element={<UserProfile />} />
         <Route path="/diem-chuan" element={<AdmissionScore />} />
         <Route path="/diem-chuan/:id" element={<AdmissionScore />} />
-        <Route path="/tinh-diem" element={<ScoreCalculator />} />
+        <Route path="/tinh-diem" element={<UniversitySuggest />} />
         <Route path="/so-sanh" element={<UniCompare />} />
         {/* Add more routes as needed */}
         <Route path="/staff" element={<VerifyInfo />} />

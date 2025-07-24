@@ -4,6 +4,7 @@ import axios from 'axios';
 import Navbar from '../../Components/Navbar/Navbar';
 import Footer from '../../Components/Footer/Footer';
 import './ListUniversitiesView.css';
+import { jwtDecode } from 'jwt-decode';
 
 const accentColor = '#225bbf';
 
@@ -18,6 +19,7 @@ const UniversitiesGeneralDetail = () => {
     const [selectedComboCode, setSelectedComboCode] = useState(preselectedCombo);
     const [hoveredStar, setHoveredStar] = useState(0); // ⭐ trạng thái hover
     const [selectedStar, setSelectedStar] = useState(0); // ⭐ đã chọn
+    const [isFavorite, setIsFavorite] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -32,6 +34,28 @@ const UniversitiesGeneralDetail = () => {
                 setLoading(false);
             }
         };
+        const checkFavorite = async () => {
+            const token = localStorage.getItem("token");
+            let decoded = "";
+            if (token) {
+                try {
+                    decoded = jwtDecode(token);
+                } catch (err) {
+                    console.error("Lỗi khi giải mã token:", err);
+                }
+            }
+            if(decoded === "") return;
+            try {
+                const res = await axios.post("/api/uni/v1/check-favorite", {
+                    username: decoded.sub,
+                    universityId: parseInt(id)
+                });
+                setIsFavorite(res.data.data === true);
+            } catch (err) {
+                console.error("Lỗi khi kiểm tra yêu thích", err);
+            }
+        };
+        checkFavorite();
         fetchData();
     }, [id]);
 
@@ -79,6 +103,19 @@ const UniversitiesGeneralDetail = () => {
     const allCombos = data.universityMajors.flatMap(major => major.combo || []);
     const uniqueComboCodes = [...new Set(allCombos.map(c => c.codeCombination))];
 
+    const handleFavoriteToggle = async () => {
+        try {
+            if (isFavorite) {
+                await axios.delete(`/api/uni/favorite/${data.universityId}`);
+                setIsFavorite(false);
+            } else {
+                await axios.post(`/api/uni/favorite/${data.universityId}`);
+                setIsFavorite(true);
+            }
+        } catch (err) {
+            alert("Lỗi khi cập nhật yêu thích.");
+        }
+    };
     return (
         <>
             <Navbar />
@@ -160,6 +197,12 @@ const UniversitiesGeneralDetail = () => {
                             }
                         >
                             Xem điểm chuẩn
+                        </button><br/>
+                        <button
+                            className={`mt-2 btn ${isFavorite ? "btn-danger" : "btn-outline-danger"}`}
+                            onClick={handleFavoriteToggle}
+                        >
+                            {isFavorite ? "💔 Bỏ yêu thích" : "❤️ Thêm vào yêu thích"}
                         </button>
                     </div>
                 </div>

@@ -35,7 +35,7 @@ const FavoriteUniversity = () => {
 
     const handleUnlike = async (universityId) => {
         try {
-            await axios.post(`/api/xoa-truong-yeu-thich/${universityId}`);
+            await axios.delete(`/api/uni/favorite/${universityId}`);
             setFavorites(prev => prev.filter(u => u.universityId !== universityId));
             toast.success("Đã xoá trường khỏi danh sách yêu thích");
         } catch (error) {
@@ -69,7 +69,7 @@ const FavoriteUniversity = () => {
 
 
     const handleCardClick = (id) => {
-        navigate(`/truong-dai-hoc/${id}`);
+        navigate(`/danh-sach-truong/${id}`);
     };
 
     return (
