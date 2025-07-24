@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../../Components/Navbar/Navbar";
 import Footer from "../../Components/Footer/Footer";
 import { Spinner } from "react-bootstrap";
 import "./AdmissionScore.css";
-import { useLocation } from 'react-router-dom';
 
 const scoreTypeMap = {
   DGNLHCM: "Đánh giá năng lực HCM",
   DGNLHN: "Đánh giá năng lực HN",
   TNTHPTQG: "THPT quốc gia",
   HOCBA: "Học bạ"
-  // … thêm mapping nếu cần
 };
 
 const AdmissionScore = () => {
@@ -22,17 +20,13 @@ const AdmissionScore = () => {
   const [universities, setUniversities] = useState([]);
   const [selectedUniversityId, setSelectedUniversityId] = useState(universityId || "");
   const [loading, setLoading] = useState(true);
-
-
-
-  // pivot data per-year
   const [majorsByYear, setMajorsByYear] = useState({});
   const [typesByYear, setTypesByYear] = useState({});
   const [years, setYears] = useState([]);
 
   const allScoreTypes = Object.keys(scoreTypeMap);
 
-  // 1. Fetch danh sách trường
+  // Fetch danh sách trường
   useEffect(() => {
     axios.get("/api/uni/v1")
       .then(res => {
@@ -47,7 +41,7 @@ const AdmissionScore = () => {
       .catch(err => console.error(err));
   }, []);
 
-  // 2. Khi chọn trường, fetch và pivot majors
+  // Khi chọn trường, fetch và pivot majors
   useEffect(() => {
     if (!selectedUniversityId) return;
     fetchMajors(selectedUniversityId);
@@ -107,9 +101,9 @@ const AdmissionScore = () => {
   };
 
   return (
-    <>
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Navbar />
-      <div className="admission-page-wrapper">
+      <div className="admission-page-wrapper" style={{ flex: 1 }}>
         <div className="admission-container">
           <h1 className="admission-title">🎓 Tra Cứu Điểm Chuẩn Đại Học</h1>
 
@@ -186,7 +180,8 @@ const AdmissionScore = () => {
         </div>
       </div>
       <Footer />
-    </>
+    </div>
   );
 };
+
 export default AdmissionScore;

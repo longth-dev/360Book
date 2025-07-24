@@ -5,10 +5,18 @@
   padding: 0;
 }
 
-/* Wrapper for the whole page content */
+/* Ensure the wrapper doesn't interfere with the flex layout */
 .admission-page-wrapper {
   padding: 4rem 1rem;
   background-color: #f9fafb;
+  flex: 1; /* Ensure it takes available space */
+}
+
+/* Ensure footer stays at the bottom and spans full width */
+footer {
+  width: 100%;
+  background-color: #f8f9fa; /* Match your Footer component's background */
+  border-top: 1px solid #e5e7eb; /* Optional: match table border */
 }
 
 /* Inner container */
