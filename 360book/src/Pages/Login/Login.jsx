@@ -90,26 +90,32 @@ const Login = () => {
   }
 
   const handleGoogleLogin = async (credentialResponse) => {
-    try {
-      const token = credentialResponse.credential;
-      const response = await axios.post('/api/google-login', { token });
-      localStorage.setItem('token', response.data.data.token);
+  try {
+    const token = credentialResponse.credential;
+    const decoded = jwtDecode(token);
 
-      toast.success("Login Successfully");
+    // Gửi email và name về BE
+    const response = await axios.post('/api/auth/gmail-login', {
+      email: decoded.email,
+      name: decoded.name
+    });
 
-      const roles = getRoleFromToken();
-      if (roles === "ADMIN") {
-        navigate('/admin');
-      } else if (roles === "USER") {
-        navigate('/');
-      } else {
-        navigate('/');
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Google Login Failed");
+    localStorage.setItem('token', response.data.data.accessToken);
+    toast.success("Login Successfully");
+
+    const roles = getRoleFromToken();
+    if (roles === "ADMIN") {
+      navigate('/admin');
+    } else if (roles === "USER") {
+      navigate('/');
+    } else {
+      navigate('/');
     }
-  };
+  } catch (error) {
+    console.error("Google Login Error:", error);
+    toast.error("Google Login Failed");
+  }
+};
 
 
   return (
