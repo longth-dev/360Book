@@ -60,19 +60,26 @@ const NewsCarousel = ({ newsList }) => {
       <h2 className="mb-4">📢 Tin tức nổi bật</h2>
       <Slider {...settings}>
         {newsList.map((news) => (
-          <div key={news.id} className="p-2">
-            <div className="card h-100 shadow-sm">
-              <img
-                src={news.thumbnail || "https://picsum.photos/300/180"}
-                className="card-img-top"
-                alt={news.title}
-                style={{ height: "180px", objectFit: "cover" }}
-              />
-              <div className="card-body">
-                <h5 className="card-title">{news.title}</h5>
-                <p className="card-text text-muted">{news.description}</p>
+          <div key={news.newId} className="p-2">
+            <a
+              href={news.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <div className="card h-100 shadow-sm">
+                <img
+                  src={news.thumbnail || "https://picsum.photos/300/180"}
+                  className="card-img-top"
+                  alt={news.title}
+                  style={{ height: "180px", objectFit: "cover" }}
+                />
+                <div className="card-body">
+                  <h5 className="card-title">{news.title}</h5>
+                  <p className="card-text text-muted">{news.description}</p>
+                </div>
               </div>
-            </div>
+            </a>
           </div>
         ))}
       </Slider>

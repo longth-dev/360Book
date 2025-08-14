@@ -1,92 +1,111 @@
 import React, { useEffect, useState } from "react";
+import { useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../../Components/Navbar/Navbar";
 import Footer from "../../Components/Footer/Footer";
 import { Spinner } from "react-bootstrap";
 import "./AdmissionScore.css";
 
-const AdmissionScore = () => {
-  const [universities, setUniversities] = useState([]);
-  const [selectedUniversityId, setSelectedUniversityId] = useState("");
-  const [filteredMajors, setFilteredMajors] = useState([]);
-  const [loading, setLoading] = useState(true);
+const scoreTypeMap = {
+  DGNLHCM: "Đánh giá năng lực HCM",
+  DGNLHN: "Đánh giá năng lực HN",
+  TNTHPTQG: "THPT quốc gia",
+  HOCBA: "Học bạ"
+};
 
-  // 1. Fetch danh sách trường
+const AdmissionScore = () => {
+  const { id } = useParams();
+  const location = useLocation();
+  const { universityId } = location.state || {};
+  const [universities, setUniversities] = useState([]);
+  const [selectedUniversityId, setSelectedUniversityId] = useState(universityId || "");
+  const [loading, setLoading] = useState(true);
+  const [majorsByYear, setMajorsByYear] = useState({});
+  const [typesByYear, setTypesByYear] = useState({});
+  const [years, setYears] = useState([]);
+
+  const allScoreTypes = Object.keys(scoreTypeMap);
+
+  // Fetch danh sách trường
   useEffect(() => {
-    const fetchUniversities = async () => {
-      try {
-        const res = await axios.get("/api/uni/v1");
+    axios.get("/api/uni/v1")
+      .then(res => {
         const data = res.data.data || [];
         setUniversities(data);
-        if (data.length > 0) {
-          setSelectedUniversityId(data[0].universityId);
+        let initialId = id || universityId || (data[0]?.universityId ?? "");
+        if (initialId) {
+          setSelectedUniversityId(initialId);
+          fetchMajors(initialId);
         }
-      } catch (error) {
-        console.error("Lỗi khi tải danh sách trường:", error);
-      }
-    };
-
-    fetchUniversities();
+      })
+      .catch(err => console.error(err));
   }, []);
 
-  // 2. Fetch danh sách ngành khi chọn trường
+  // Khi chọn trường, fetch và pivot majors
   useEffect(() => {
-    const fetchMajors = async () => {
-      if (!selectedUniversityId) return;
-      setLoading(true);
-      try {
-        const res = await axios.get(`/api/uni/v1/major/by-uni?universityId=${selectedUniversityId}`);
-        const majors = parseMajorRows(res.data.data || []);
-        setFilteredMajors(majors);
-      } catch (error) {
-        console.error("Lỗi khi tải ngành:", error);
-        setFilteredMajors([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMajors();
+    if (!selectedUniversityId) return;
+    fetchMajors(selectedUniversityId);
   }, [selectedUniversityId]);
 
-  // Xử lý dữ liệu để render table
-  const parseMajorRows = (majors) => {
-    const result = [];
+  const fetchMajors = (uniId) => {
+    setLoading(true);
+    axios.get(`/api/uni/v1/major/by-uni?universityId=${uniId}`)
+      .then(res => {
+        const raw = res.data.data || [];
+        const byYear = {};
+        const typesYear = {};
 
-    majors.forEach((major) => {
-      const year2024 = major.scoreOverview?.find((y) => y.year === 2024);
-      if (!year2024 || !year2024.scoreDetails) return;
+        raw.forEach(major => {
+          const combos = major.combo?.length
+            ? major.combo
+            : [{ codeCombination: "Chưa rõ", subjectName: ["Chưa rõ"] }];
 
-      const combos = major.combo?.length > 0
-        ? major.combo
-        : [{ codeCombination: "Chưa rõ", subjectName: ["Chưa rõ"] }];
+          (major.scoreOverview || []).forEach(({ year, scoreDetails }) => {
+            if (!byYear[year]) byYear[year] = [];
+            if (!typesYear[year]) typesYear[year] = new Set();
 
-      combos.forEach((combo) => {
-        year2024.scoreDetails.forEach((scoreDetail) => {
-          result.push({
-            majorId: major.majorId,
-            majorName: major.majorName,
-            codeCombination: combo.codeCombination,
-            subjectName: combo.subjectName.join(", "),
-            scoreType: scoreDetail.type,
-            score: scoreDetail.score
+            const scoresMap = {};
+            scoreDetails.forEach(({ type, score }) => {
+              typesYear[year].add(type);
+              scoresMap[type] = score;
+            });
+
+            byYear[year].push({
+              majorId: major.majorId,
+              majorCode: major.majorCode,
+              majorName: major.majorName,
+              combos,
+              scoresMap
+            });
           });
         });
-      });
-    });
 
-    return result;
+        const typesByYearArr = {};
+        Object.keys(typesYear).forEach(y => {
+          typesByYearArr[y] = Array.from(typesYear[y]);
+        });
+
+        setMajorsByYear(byYear);
+        setTypesByYear(typesByYearArr);
+        setYears(
+          Object.keys(byYear).sort((a, b) => parseInt(b) - parseInt(a))
+        );
+      })
+      .catch(err => {
+        console.error(err);
+        setMajorsByYear({});
+        setTypesByYear({});
+        setYears([]);
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
-    <>
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Navbar />
-      <div className="admission-page-wrapper">
+      <div className="admission-page-wrapper" style={{ flex: 1 }}>
         <div className="admission-container">
           <h1 className="admission-title">🎓 Tra Cứu Điểm Chuẩn Đại Học</h1>
-          <p className="admission-subtitle">
-            Chọn trường đại học để xem điểm chuẩn theo ngành và tổ hợp môn
-          </p>
 
           {/* Dropdown chọn trường */}
           <div className="admission-select mb-4">
@@ -95,58 +114,73 @@ const AdmissionScore = () => {
               id="university-select"
               className="form-select"
               value={selectedUniversityId}
-              onChange={(e) => setSelectedUniversityId(e.target.value)}
+              onChange={e => setSelectedUniversityId(e.target.value)}
             >
-              {universities.map((uni) => (
-                <option key={uni.universityId} value={uni.universityId}>
-                  {uni.universityName}
+              {universities.map(u => (
+                <option key={u.universityId} value={u.universityId}>
+                  {u.universityName}
                 </option>
               ))}
             </select>
           </div>
 
-          {/* Hiển thị bảng hoặc loader */}
-          {loading ? (
+          {/* Loader */}
+          {loading && (
             <div className="text-center my-5">
               <Spinner animation="border" variant="primary" />
             </div>
-          ) : filteredMajors.length > 0 ? (
-            <div className="admission-table-wrapper">
-              <table className="admission-table">
-                <thead>
-                  <tr>
-                    <th>STT</th>
-                    <th>Mã Ngành</th>
-                    <th>Tên Ngành</th>
-                    <th>Tổ Hợp Môn</th>
-                    <th>Loại Điểm</th>
-                    <th>Điểm 2024</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredMajors.map((row, index) => (
-                    <tr key={`${row.majorId}-${index}`}>
-                      <td>{index + 1}</td>
-                      <td>{row.majorId}</td>
-                      <td>{row.majorName}</td>
-                      <td>
-                        <strong>{row.codeCombination}</strong>
-                        <div className="text-muted small">{row.subjectName}</div>
-                      </td>
-                      <td>{row.scoreType}</td>
-                      <td className="highlight">{row.score}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <p className="text-muted">Không có dữ liệu ngành cho trường này.</p>
           )}
+
+          {/* Tables per year */}
+          {!loading && years.length > 0
+            ? years.map(year => (
+              <div key={year} className="mb-5">
+                <h2>Năm {year}</h2>
+                <div className="admission-table-wrapper">
+                  <table className="admission-table w-100">
+                    <thead>
+                      <tr>
+                        <th>STT</th>
+                        <th>Mã Ngành</th>
+                        <th>Tên Ngành</th>
+                        <th>Tổ Hợp Môn</th>
+                        {allScoreTypes.map(type => (
+                          <th key={type}>{scoreTypeMap[type]}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {majorsByYear[year].map((item, idx) => (
+                        <tr key={`${year}-${item.majorId}`}>
+                          <td>{idx + 1}</td>
+                          <td>{item.majorCode}</td>
+                          <td>{item.majorName}</td>
+                          <td>
+                            <strong>
+                              {item.combos.map(c => c.codeCombination).join(", ")}
+                            </strong>
+                          </td>
+                          {allScoreTypes.map(type => (
+                            <td key={type} className="highlight">
+                              {item.scoresMap[type] ?? "–"}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ))
+            : !loading && (
+              <p className="text-muted">
+                Không có dữ liệu ngành cho trường này.
+              </p>
+            )}
         </div>
       </div>
       <Footer />
-    </>
+    </div>
   );
 };
 

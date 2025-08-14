@@ -7,7 +7,6 @@ import "./SubjectCombinationViewer.css";
 
 export default function SubjectCombinationViewer() {
     const location = useLocation();
-    // Nếu được truyền từ Home, sẽ có comboCode ở location.state.selected.value
     const initialCombo = location.state?.selected?.value || "";
     const [selectedCombo, setSelectedCombo] = useState(initialCombo);
     const [subjectCombinations, setSubjectCombinations] = useState([]);
@@ -16,22 +15,19 @@ export default function SubjectCombinationViewer() {
     const [loadingUniversities, setLoadingUniversities] = useState(false);
     const [error, setError] = useState(null);
 
-    // Fetch danh sách tổ hợp môn
     useEffect(() => {
         setLoadingCombos(true);
         setError(null);
-        axios.get("api/uni/v1/subject-combo")
+        axios.get("/api/uni/v1/subject-combo")
             .then(res => {
                 setSubjectCombinations(res.data.data || []);
             })
-            .catch(err => {
+            .catch(() => {
                 setError("Không thể tải danh sách tổ hợp môn. Vui lòng thử lại sau.");
-                setSubjectCombinations([]);
             })
             .finally(() => setLoadingCombos(false));
     }, []);
 
-    // Fetch danh sách trường đại học theo tổ hợp môn
     useEffect(() => {
         if (!selectedCombo) {
             setUniversities([]);
@@ -41,22 +37,20 @@ export default function SubjectCombinationViewer() {
         setError(null);
         axios.get(`/api/uni/v1/by-combo?comboCode=${selectedCombo}`)
             .then(res => {
-                // Nếu data là object trường đại học (1 trường), đưa vào mảng
                 const detailList = res.data.data?.detailResponseList || [];
                 const mapped = detailList.map(item => ({
                     ...item.university,
-                    total: item.total
+                    total: item.total,
+                    universityMajors: item.university.universityMajors || []
                 }));
                 setUniversities(mapped);
             })
-            .catch(err => {
+            .catch(() => {
                 setError("Không thể tải danh sách trường đại học. Vui lòng thử lại sau.");
                 setUniversities([]);
             })
             .finally(() => setLoadingUniversities(false));
     }, [selectedCombo]);
-
-    const selectedComboData = subjectCombinations.find(combo => combo.codeCombination === selectedCombo);
 
     return (
         <>
@@ -65,65 +59,80 @@ export default function SubjectCombinationViewer() {
                 <div className="subject-combination-container">
                     <div className="subject-combination-header">
                         <h2>Tra cứu tổ hợp môn xét tuyển</h2>
-                        {/* <p>Chọn tổ hợp môn để xem danh sách các trường đại học xét tuyển</p> */}
                     </div>
-                    {/* Nếu muốn cho phép chọn lại tổ hợp môn, mở lại phần này */}
-                    {/* <div className="subject-selector-wrapper">
-                        ...
-                    </div> */}
+
+                    <div className="subject-selector-wrapper">
+                        <label className="subject-selector-label">Chọn tổ hợp môn xét tuyển</label>
+                        <select
+                            className="subject-selector"
+                            value={selectedCombo}
+                            onChange={e => setSelectedCombo(e.target.value)}
+                            disabled={loadingCombos}
+                        >
+                            <option value="">-- Chọn tổ hợp môn --</option>
+                            {subjectCombinations.map(combo => (
+                                <option key={combo.codeCombination} value={combo.codeCombination}>
+                                    {combo.codeCombination} – {combo.subjectName.join(", ")}
+                                </option>
+                            ))}
+                        </select>
+                        {loadingCombos && (
+                            <div className="text-center mt-2">
+                                <small className="text-muted">Đang tải danh sách tổ hợp môn...</small>
+                            </div>
+                        )}
+                    </div>
+
                     {error && (
                         <div className="alert alert-warning" role="alert">
                             <strong>Lưu ý:</strong> {error}
                         </div>
                     )}
-                    {/* Giữ lại phần hiển thị kết quả nếu có selectedCombo, hoặc empty-state nếu không có */}
-                    {selectedCombo ? (
-                        <div className="results-section">
-                            <div className="results-header">
-                                <div>
-                                    <h3 className="results-title">
-                                        Kết quả tra cứu tổ hợp môn {selectedCombo}
-                                        {selectedComboData && ` - ${selectedComboData.name}`}
-                                    </h3>
-                                    <div className="results-count">
-                                        {loadingUniversities ? 'Đang tải...' : `${universities.length} trường đại học`}
-                                    </div>
-                                </div>
+
+                    <div className="results-section">
+                        <div className="results-header">
+                            <h3 className="results-title">
+                                Kết quả tra cứu tổ hợp môn {selectedCombo}
+                            </h3>
+                            <div className="results-count">
+                                {loadingUniversities
+                                    ? 'Đang tải...'
+                                    : `${universities.length} trường đại học`}
                             </div>
-                            {loadingUniversities ? (
-                                <div className="text-center py-4">
-                                    <div className="spinner-border text-primary" role="status">
-                                        <span className="visually-hidden">Đang tải...</span>
-                                    </div>
-                                    <p className="mt-2 text-muted">Đang tải danh sách trường đại học...</p>
+                        </div>
+
+                        {loadingUniversities ? (
+                            <div className="text-center py-4">
+                                <div className="spinner-border text-primary" role="status">
+                                    <span className="visually-hidden">Đang tải...</span>
                                 </div>
-                            ) : universities.length > 0 ? (
+                                <p className="mt-2 text-muted">Đang tải danh sách trường đại học...</p>
+                            </div>
+                        ) : selectedCombo ? (
+                            universities.length > 0 ? (
                                 <div className="table-responsive">
                                     <table className="universities-table">
                                         <thead>
                                             <tr>
-                                                <th>STT</th>
-                                                <th>Tên trường</th>
-                                                <th>Mã trường</th>
-                                                <th>Ngành xét tuyển</th>
-                                                <th>Thao tác</th>
+                                                <th className="text-center">STT</th>
+                                                <th className="text-center">Tên trường</th>
+                                                <th className="text-center">Mã trường</th>
+                                                <th className="text-center">Số lượng ngành xét tuyển tổ hợp</th>
+                                                <th className="text-center">Thao tác</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {universities.map((uni, index) => (
                                                 <tr key={uni.universityId}>
-                                                    <td>{index + 1}</td>
-                                                    <td className="university-name">{uni.universityName}</td>
-                                                    <td>{uni.code}</td>
-                                                    <td className="majors-list">
-                                                        {uni.universityMajors
-                                                            ? uni.universityMajors.map(m => m.majorName).join(", ")
-                                                            : 'Chưa cập nhật'}
-                                                    </td>
-                                                    <td>
+                                                    <td className="text-center">{index + 1}</td>
+                                                    <td className="university-name text-center">{uni.universityName}</td>
+                                                    <td className="text-center">{uni.code}</td>
+                                                    <td className="text-center">{uni.total}</td>
+                                                    <td className="text-center">
                                                         <Link
                                                             to={`/danh-sach-truong/${uni.universityId}`}
                                                             className="detail-btn"
+                                                            state={{ selectedCombo }}
                                                         >
                                                             Xem chi tiết
                                                         </Link>
@@ -141,25 +150,20 @@ export default function SubjectCombinationViewer() {
                                         Chưa có trường đại học nào xét tuyển tổ hợp môn này
                                     </div>
                                 </div>
-                            )}
-                        </div>
-                    ) : (
-                        <div className="empty-state">
-                            <div className="empty-state-icon">📚</div>
-                            <div className="empty-state-text">Chưa có dữ liệu</div>
-                            <div className="empty-state-subtext">
-                                Vui lòng chọn tổ hợp môn để xem kết quả tra cứu
+                            )
+                        ) : (
+                            <div className="empty-state">
+                                <div className="empty-state-icon">📚</div>
+                                <div className="empty-state-text">Chưa có dữ liệu</div>
+                                <div className="empty-state-subtext">
+                                    Vui lòng chọn tổ hợp môn để xem kết quả tra cứu
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
             </div>
             <Footer />
         </>
     );
 }
-
-
-
-
-

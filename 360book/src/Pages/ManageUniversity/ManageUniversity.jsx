@@ -5,6 +5,7 @@ import { toast, ToastContainer } from "react-toastify";
 import AddUniversityPopUp from "./AddUniversityPopUp";
 import UpdateUniversityPopUp from "./UpdateUniversityPopUp";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const ManageUniversity = () => {
     const navigate = useNavigate();
@@ -15,6 +16,7 @@ const ManageUniversity = () => {
     const [showModal, setShowModal] = useState(false);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [universityToEdit, setUniversityToEdit] = useState(null);
+    const [isAdmin, setIsAdmin] = useState(false);
 
 
 
@@ -28,6 +30,20 @@ const ManageUniversity = () => {
             toast.error("Tải danh sách trường đại học thất bại");
         }
     };
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            try {
+                const decoded = jwtDecode(token);
+                if (decoded.scope === "ADMIN") {
+                    setIsAdmin(true);
+                }
+            } catch (err) {
+                console.error("Lỗi khi giải mã token:", err);
+            }
+        }
+    }, []);
 
     useEffect(() => {
         fetchUniversity();
@@ -117,7 +133,7 @@ const ManageUniversity = () => {
                 <input
                     type="text"
                     className="form-control mb-2"
-                    style={{ maxWidth: '300px' }}
+                    style={{ maxWidth: '400px' }}
                     placeholder="🔍 Tìm kiếm theo tên hoặc mã trường..."
                     value={searchTerm}
                     onChange={(e) => {
@@ -125,12 +141,14 @@ const ManageUniversity = () => {
                         setCurrentPage(1);
                     }}
                 />
-                <div className="buttons mb-2">
-                    <button className="btn" onClick={() => setShowModal(true)}>
-                        <span></span>
-                        <p data-start="good luck!" data-text="start!" data-title="Tạo mới"></p>
-                    </button>
-                </div>
+                {isAdmin && (
+                    <div className="buttons mb-2">
+                        <button className="btn" onClick={() => setShowModal(true)}>
+                            <span></span>
+                            <p data-start="good luck!" data-text="start!" data-title="Tạo mới"></p>
+                        </button>
+                    </div>
+                )}
             </div>
 
             {showModal && (

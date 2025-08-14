@@ -7,6 +7,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { parse, setYear } from 'date-fns';
+import { jwtDecode } from 'jwt-decode';
 
 const scoreTypeOptions = [
     { value: 'TNTHPTQG', label: 'Tổt nghiệp trung học phổ thông Quốc Gia' },
@@ -33,11 +34,12 @@ axios.interceptors.request.use(
 const ManageUniversityDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-
+    const [isStaff, setIsStaff] = useState(false);
     const [university, setUniversity] = useState(null);
     const [majorList, setMajorList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isEditingScore, setIsEditingScore] = useState(false);
 
     // Add Major modal
     const [showAddModal, setShowAddModal] = useState(false);
@@ -51,7 +53,11 @@ const ManageUniversityDetail = () => {
     // Edit Major modal
     const [showEditModal, setShowEditModal] = useState(false);
     const [editMajor, setEditMajor] = useState(null);
-    const [formEdit, setFormEdit] = useState({ name: '', selectedCombos: [] });
+    const [formEdit, setFormEdit] = useState({
+        name: '',
+        majorCode: '',
+        selectedCombos: []
+    });
     const [updating, setUpdating] = useState(false);
 
     // Options
@@ -101,6 +107,21 @@ const ManageUniversityDetail = () => {
         fetchData();
     }, [id]);
 
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                const decoded = jwtDecode(token);
+                console.log(decoded.scope);
+                if (decoded.scope === "STAFF") {
+                    setIsStaff(true)
+                }
+            } catch (e) {
+                console.error("Invalid token");
+            }
+        }
+    }, []);
+
     const openAddModal = () => {
         setFormAdd({ selectedMajor: null, selectedCombos: [] });
         setShowAddModal(true);
@@ -111,7 +132,10 @@ const ManageUniversityDetail = () => {
         setEditMajor(major);
         setFormEdit({
             name: major.majorName,
-            selectedCombos: combosOptions.filter(c => major.combo.some(mc => mc.codeCombination === c.value))
+            majorCode: major.majorCode,  // ← thêm dòng này
+            selectedCombos: combosOptions.filter(c =>
+                major.combo.some(mc => mc.codeCombination === c.value)
+            )
         });
         setShowEditModal(true);
     };
@@ -149,7 +173,8 @@ const ManageUniversityDetail = () => {
         setUpdating(true);
         try {
             await axios.put(`/api/uni/v1/${id}/major`, {
-                codeMajor: formEdit.name,
+                majorName: formEdit.name,
+                codeMajor: formEdit.majorCode,
                 combos: formEdit.selectedCombos.map(c => c.value)
             });
             toast.success('Cập nhật ngành thành công');
@@ -182,14 +207,24 @@ const ManageUniversityDetail = () => {
         }
         setAddingScore(true);
         try {
-            // 1. Gọi API thêm điểm
-            await axios.post('/api/uni/v1/score', {
-                universityId: Number(id),
-                majorId: scoreDetails.majorId,
-                year: Number(newScore.year),
-                score: parseFloat(newScore.score),
-                type: newScore.type.value
-            });
+            if (isEditingScore !== true) {
+                // 1. Gọi API thêm điểm
+                await axios.post('/api/uni/v1/score', {
+                    universityId: Number(id),
+                    majorId: scoreDetails.majorId,
+                    year: Number(newScore.year),
+                    score: parseFloat(newScore.score),
+                    type: newScore.type.value
+                });
+            } else {
+                await axios.put('/api/uni/v1/score', {
+                    universityId: Number(id),
+                    majorId: scoreDetails.majorId,
+                    year: Number(newScore.year),
+                    score: parseFloat(newScore.score),
+                    type: newScore.type.value
+                });
+            }
 
             toast.success('Thêm điểm thành công');
 
@@ -209,12 +244,43 @@ const ManageUniversityDetail = () => {
 
             // 4. Xóa form
             setNewScore({ year: '', type: null, score: '' });
+            setIsEditingScore(false); // 👈 reset mode về thêm mới
 
         } catch (err) {
             console.error(err);
             toast.error('Lỗi khi thêm điểm');
         } finally {
             setAddingScore(false);
+        }
+    };
+
+    const handleDeleteScore = async (year, type) => {
+        if (!window.confirm(`Xoá điểm ${type} của năm ${year}?`)) return;
+        try {
+            await axios.delete(`/api/uni/v1/score`, {
+                params: {
+                    universityId: id,
+                    majorId: scoreDetails.majorId,
+                    year,
+                    type
+                }
+            });
+
+            toast.success("Xoá điểm thành công");
+
+            // Cập nhật lại dữ liệu
+            const res = await axios.get(`/api/uni/v1/${id}`);
+            const updatedMajors = res.data.data.universityMajors || [];
+            setMajorList(updatedMajors);
+
+            const updatedMajor = updatedMajors.find(m => m.majorId === scoreDetails.majorId);
+            setScoreDetails(prev => ({
+                ...prev,
+                scoreOverview: updatedMajor ? updatedMajor.scoreOverview || [] : prev.scoreOverview
+            }));
+        } catch (err) {
+            console.error(err);
+            toast.error("Xoá điểm thất bại");
         }
     };
 
@@ -230,9 +296,51 @@ const ManageUniversityDetail = () => {
             <div className="card detail-card mb-5 shadow-sm">
                 <img src={university.thumbnail || '/default-university.jpg'} alt={university.universityName} className="card-img-top detail-img" />
                 <div className="card-body">
-                    <h2 className="detail-title">{university.universityName} <span className="text-muted">({university.code})</span></h2>
+                    <h2 className="detail-title">
+                        {university.universityName} <span className="text-muted">({university.code})</span>
+                        {university.verified && (
+                            <i className="fas fa-check-circle text-success ms-2" title="Đã xác thực"></i>
+                        )}
+                    </h2>
                     <p className="detail-info"><i className="fas fa-map-marker-alt me-2" />{university.address}</p>
                     {university.main && <p className="detail-info"><i className="fas fa-star me-2" />{university.main}</p>}
+                    {isStaff && (
+                        university.verified ? (
+                            <button
+                                className="btn btn-outline-danger btn-sm mt-2"
+                                onClick={async () => {
+                                    try {
+                                        await axios.put(`/api/uni/v1/un-verify/${university.universityId}`);
+                                        toast.success("Đã bỏ xác thực");
+                                        const res = await axios.get(`/api/uni/v1/${id}`);
+                                        setUniversity(res.data.data);
+                                    } catch (err) {
+                                        console.error(err);
+                                        toast.error("Lỗi khi bỏ xác thực");
+                                    }
+                                }}
+                            >
+                                ❌ Bỏ xác thực
+                            </button>
+                        ) : (
+                            <button
+                                className="btn btn-outline-success btn-sm mt-2"
+                                onClick={async () => {
+                                    try {
+                                        await axios.put(`/api/uni/v1/verify/${university.universityId}`);
+                                        toast.success("Đã xác thực trường");
+                                        const res = await axios.get(`/api/uni/v1/${id}`);
+                                        setUniversity(res.data.data);
+                                    } catch (err) {
+                                        console.error(err);
+                                        toast.error("Lỗi khi xác thực");
+                                    }
+                                }}
+                            >
+                                ✅ Xác thực trường
+                            </button>
+                        )
+                    )}
                 </div>
             </div>
 
@@ -243,12 +351,13 @@ const ManageUniversityDetail = () => {
                     <button className="btn btn-success" onClick={openAddModal}>Thêm ngành</button>
                 </div>
                 <table className="table table-hover">
-                    <thead><tr><th>STT</th><th>Ngành</th><th>Tổ hợp</th><th>Điểm chuẩn</th><th>HĐ</th></tr></thead>
+                    <thead><tr><th>STT</th><th>Ngành</th><th>Mã Ngành</th><th>Tổ hợp</th><th>Điểm chuẩn</th><th>HĐ</th></tr></thead>
                     <tbody>
                         {majorList.map((m, idx) => (
                             <tr key={m.majorId}>
                                 <td>{idx + 1}</td>
                                 <td>{m.majorName}</td>
+                                <td>{m.majorCode}</td>
                                 <td>{m.combo.map(c => c.codeCombination).join(', ')}</td>
                                 <td><button className="btn btn-link p-0" onClick={() => openScoreModal(m)}>Xem chi tiết</button></td>
                                 <td><button className="btn btn-sm btn-outline-primary" onClick={() => openEditModal(m)}>Edit</button></td>
@@ -294,6 +403,18 @@ const ManageUniversityDetail = () => {
                     <div className="modal-content p-4 bg-white rounded shadow-lg" onClick={e => e.stopPropagation()}>
                         <h5 className="text-center mb-3">Chỉnh sửa Ngành: {formEdit.name}</h5>
                         <div className="form-group mb-3">
+                            <label>Mã ngành</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={formEdit.majorCode}
+                                onChange={e => setFormEdit(prev => ({
+                                    ...prev,
+                                    majorCode: e.target.value
+                                }))}
+                            />
+                        </div>
+                        <div className="form-group mb-3">
                             <label>Chọn tổ hợp môn</label>
                             <Select options={combosOptions} value={formEdit.selectedCombos} onChange={opts => setFormEdit(prev => ({ ...prev, selectedCombos: opts || [] }))} isMulti placeholder="-- chọn tổ hợp --" />
                         </div>
@@ -317,7 +438,7 @@ const ManageUniversityDetail = () => {
                             <div className="d-flex gap-2 align-items-end">
                                 <div className="form-group col-4">
                                     <label>Loại</label>
-                                    <Select options={scoreTypeOptions} value={newScore.type} onChange={opt => setNewScore(prev => ({ ...prev, type: opt }))} placeholder="chọn loại" />
+                                    <Select options={scoreTypeOptions} value={newScore.type} onChange={opt => setNewScore(prev => ({ ...prev, type: opt }))} placeholder="chọn loại" isDisabled={isEditingScore} />
                                 </div>
                                 <div className="form-group col-2">
                                     <label>Năm</label>
@@ -334,6 +455,7 @@ const ManageUniversityDetail = () => {
                                         placeholderText="chọn năm"
                                         className="form-control"
                                         maxDate={new Date(currentYear, 11)}
+                                        disabled={isEditingScore}
                                     />
                                 </div>
                                 <div className="form-group col-2">
@@ -362,14 +484,38 @@ const ManageUniversityDetail = () => {
                                             <tr key={i}>
                                                 <td>{type}</td>
                                                 <td>{score}</td>
-                                                <td><button className="btn btn-sm btn-outline-primary">Edit</button></td>
+                                                <td>
+                                                    <button
+                                                        className="btn btn-sm btn-outline-primary me-2"
+                                                        onClick={() => {
+                                                            setNewScore({
+                                                                year: year.toString(),
+                                                                type: scoreTypeOptions.find(opt => opt.value === type),
+                                                                score: score.toString()
+                                                            });
+                                                            setIsEditingScore(true);
+                                                        }}
+                                                    >
+                                                        Edit
+                                                    </button>
+                                                    <button
+                                                        className="btn btn-sm btn-outline-danger me-2"
+                                                        onClick={() => handleDeleteScore(year, type)}
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </td>
                                             </tr>
                                         ))}
                                     </tbody>
                                 </table>
                             </div>
                         ))}
-                        <div className="text-end"><button className="btn btn-secondary" onClick={() => setShowScoreModal(false)}>Đóng</button></div>
+                        <div className="text-end"><button className="btn btn-secondary" onClick={() => {
+                            setShowScoreModal(false);
+                            setIsEditingScore(false);
+                            setNewScore({ year: '', type: null, score: '' });
+                        }}>Đóng</button></div>
                     </div>
                 </div>
             )}

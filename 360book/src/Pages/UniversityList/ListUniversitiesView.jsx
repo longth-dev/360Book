@@ -1,10 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import Navbar from "../../Components/Navbar/Navbar";
 import Footer from "../../Components/Footer/Footer";
 import "./ListUniversitiesView.css";
+
+const strengthOptions = [
+    { value: "", label: "Tất cả lĩnh vực" },
+    { value: "Education", label: "Giáo dục" },
+    { value: "STEM", label: "Khoa học - Công nghệ - Kỹ thuật - Toán" },
+    { value: "Health_Medicine", label: "Y tế & Sức khỏe" },
+    { value: "Language_Social_Sciences", label: "Ngôn ngữ & Khoa học Xã hội" },
+    { value: "Economics_Law_Management", label: "Kinh tế - Luật - Quản lý" },
+    { value: "Multidisciplinary", label: "Đa ngành" },
+    { value: "Arts_Design", label: "Nghệ thuật & Thiết kế" },
+    { value: "Agriculture_Environment", label: "Nông nghiệp & Môi trường" },
+];
 
 const ListUniversitiesView = () => {
     const [universities, setUniversities] = useState([]);
@@ -12,6 +24,11 @@ const ListUniversitiesView = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
     const [searchTerm, setSearchTerm] = useState("");
+    const [selectedStrength, setSelectedStrength] = useState("");
+    const { type, id } = useParams(); // hoặc chỉ id nếu đường dẫn là strength/:id
+    const location = useLocation();
+    const selected = location.state?.selected;
+
     useEffect(() => {
         axios.get("/api/uni/v1")
             .then((res) => {
@@ -25,13 +42,23 @@ const ListUniversitiesView = () => {
                 setLoading(true); // loader vẫn hiển thị khi lỗi
                 console.error(err);
             });
+
+
     }, []);
 
+    useEffect(() => {
+        if (selected?.value) {
+            setSelectedStrength(selected.value);
+        }
+    }, [selected]);
+
     const listUniversity = universities.filter(university =>
-        university.universityName.toLowerCase().includes(searchTerm.toLowerCase())
+        university.universityName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (selectedStrength === "" || university.main === selectedStrength)
     );
 
     const totalPages = Math.ceil(listUniversity.length / itemsPerPage);
+
 
 
     const currentItems = listUniversity.slice(
@@ -49,7 +76,7 @@ const ListUniversitiesView = () => {
         setCurrentPage(page);
     };
 
-
+    const filtered = universities.filter(u => u.main === id);
 
     return (
         <>
@@ -57,14 +84,26 @@ const ListUniversitiesView = () => {
             <Navbar />
             <div className="university-list-container">
                 <h2 className="university-list-title">Danh sách trường đại học</h2>
-                <input
-                    type="text"
-                    className="form-control"
-                    style={{ maxWidth: '320px' }}
-                    placeholder="🔍 Tìm kiếm theo tên hoặc mã trường..."
-                    value={searchTerm}
-                    onChange={handleSearchChange}
-                />
+                <div className="d-flex gap-3 flex-wrap align-items-center mb-3">
+                    <input
+                        type="text"
+                        className="form-control"
+                        style={{ maxWidth: '320px' }}
+                        placeholder="🔍 Tìm kiếm theo tên hoặc mã trường..."
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                    />
+                    <select
+                        className="form-select"
+                        style={{ maxWidth: '280px' }}
+                        value={selectedStrength}
+                        onChange={(e) => setSelectedStrength(e.target.value)}
+                    >
+                        {strengthOptions.map(option => (
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                        ))}
+                    </select>
+                </div>
                 {loading ? (
                     <div className="row">
                         <div className="loader-container">

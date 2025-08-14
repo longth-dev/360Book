@@ -12,6 +12,17 @@ import NewsCarousel from "./NewsCarousel";
 import AdmissionSlider from "./AdmissionSlider";
 import Select from "react-select";
 
+const STRENGTH_OPTIONS = [
+    { value: "Education", label: "Giáo dục" },
+    { value: "STEM", label: "Khoa học - Công nghệ - Kỹ thuật - Toán" },
+    { value: "Health_Medicine", label: "Y tế & Sức khỏe" },
+    { value: "Language_Social_Sciences", label: "Ngôn ngữ & Khoa học Xã hội" },
+    { value: "Economics_Law_Management", label: "Kinh tế - Luật - Quản lý" },
+    { value: "Multidisciplinary", label: "Đa ngành" },
+    { value: "Arts_Design", label: "Nghệ thuật & Thiết kế" },
+    { value: "Agriculture_Environment", label: "Nông nghiệp & Môi trường" },
+];
+
 const Home = () => {
     const navigate = useNavigate();
     const [PTTS, setPTTS] = useState([]);
@@ -27,17 +38,20 @@ const Home = () => {
     const [phuongThuc, setPhuongThuc] = useState("TNTHPTQG");
     const [majors, setMajors] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
+    const [selectedComboOption, setSelectedComboOption] = useState(null);
 
     // Hàm chuyển trang sang FilterUniversities hoặc SubjectCombinationViewer
     const handleGoToFilterPage = (type, valueObj) => {
         if (type === "combo") {
-            navigate("/tra-cuu-to-hop-mon");
+            navigate(`/tra-cuu-to-hop-mon?comboCode=${valueObj.value}`, {
+                state: { selected: valueObj }
+            });
         } else if (type === "major") {
             navigate(`/filter-universities/major/${valueObj.value}`, {
                 state: { selected: valueObj }
             });
         } else if (type === "strength") {
-            navigate(`/filter-universities/strength/${valueObj.value}`, {
+            navigate(`/danh-sach-truong`, {
                 state: { selected: valueObj }
             });
         }
@@ -53,7 +67,9 @@ const Home = () => {
         } else if (btnName === "THM") {
             setSearchMode("THM");
         }
-        else if (btnName === "TheManh") fetchTheManh();
+        else if (btnName === "TheManh") {
+            setSearchMode("TheManh");
+        }
     };
 
     const handleClickTaiDay = () => {
@@ -106,21 +122,10 @@ const Home = () => {
         }
     };
 
-    const fetchTheManh = async () => {
-        try {
-            const response = await axios.get("/api/the-manh");
-            setTheManh(response.data.data)
-            setActiveData(response.data.data)
-        } catch (error) {
-            console.log(error)
-            toast.error("fail lay len the manh")
-        }
-    }
-
     const fetchNews = async () => {
         try {
-            const response = await axios.get("/api/new/GetAll");
-            setNewsList(response.data.data.news || []);
+            const response = await axios.get("/api/news/GetAll");
+            setNewsList(response.data.data.newDetailResponseList || []);
         } catch (error) {
             console.error("Error fetching news:", error);
             toast.error("Không thể lấy danh sách tin tức");
@@ -218,7 +223,7 @@ const Home = () => {
                         </button>
 
                         <button
-                            onClick={() => { handleClick('ThemManh'); fetchTheManh(); }}
+                            onClick={() => { handleClick('TheManh') }}
                             className={`home-button btn btn-outline-light px-4 py-2 fw-semibold hover-yellow ${activeButton === 'TheManh' ? 'active' : ''}`}
                             style={{ borderRadius: "5px", color: "grey", backgroundColor: "white" }}
                         >
@@ -254,11 +259,7 @@ const Home = () => {
                                         fetchPTTSafterSearching();
                                     }}
                                 >
-                                    <svg
-                                        className="icon"
-                                        viewBox="0 0 48 48"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
+                                    <svg className="icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
                                         <path
                                             fill="#ffffff"
                                             d="M12 39c-.549 0-1.095-.15-1.578-.447A3.008 3.008 0 0 1 9 36V12c0-1.041.54-2.007 1.422-2.553a3.014 3.014 0 0 1 2.919-.132l24 12a3.003 3.003 0 0 1 0 5.37l-24 12c-.42.21-.885.315-1.341.315z"
@@ -266,109 +267,111 @@ const Home = () => {
                                     </svg>
                                     <span className="text">Search</span>
                                 </button>
-
                             </div>
-                        ) : (
-                            (searchMode === "major" || searchMode === "THM") ? (
-                                <div style={{ position: "relative", width: "100%" }}>
-                                    <input
-                                        type="text"
-                                        className="form-control form-control-lg"
-                                        placeholder={
-                                            searchMode === "major"
-                                                ? "Chọn ngành..."
-                                                : "Chọn tổ hợp môn..."
-                                        }
-                                        onFocus={() => setShowDropdown(true)}
-                                        onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                        value={searchTerm}
-                                    />
-
-                                    {showDropdown && (
-                                        <div
-                                            className="dropdown-menu show"
-                                            style={{
-                                                position: "absolute",
-                                                top: "100%",
-                                                left: 0,
-                                                width: "100%",
-                                                maxHeight: "300px",
-                                                overflowY: "auto",
-                                                marginTop: "8px",
-                                                zIndex: 10
-                                            }}
-                                        >
-                                            {(searchMode === "major" ? majors : THM)
-                                                .filter(item => {
-                                                    const label = searchMode === "major"
-                                                        ? item.majorName
-                                                        : `${item.codeCombination} - ${item.subjectName.join(', ')}`;
-                                                    return label.toLowerCase().includes(searchTerm.toLowerCase());
-                                                })
-                                                .map(item => {
-                                                    const label = searchMode === "major"
-                                                        ? item.majorName
-                                                        : `${item.codeCombination} - ${item.subjectName.join(', ')}`;
-                                                    return (
-                                                        <div
-                                                            key={item.majorId || item.codeCombination}
-                                                            className="dropdown-item"
-                                                            onClick={() => {
-                                                                if (searchMode === "major") {
-                                                                    handleSelectMajor({ value: item.majorId, label });
-                                                                    handleGoToFilterPage("major", { value: item.majorId, label });
-                                                                } else if (searchMode === "THM") {
-                                                                    handleSelectTHM({ value: item.codeCombination, label });
-                                                                    handleGoToFilterPage("combo", { value: item.codeCombination, label });
-                                                                } else if (searchMode === "strength") {
-                                                                    // Nếu có dropdown strength thì xử lý ở đây
-                                                                    // handleGoToFilterPage("strength", { value: item.strengthId, label });
-                                                                }
-                                                                setSearchTerm(label);
-                                                                setShowDropdown(false);
-                                                            }}
-                                                        >
-                                                            {label}
-                                                        </div>
-                                                    );
-                                                })}
-                                        </div>
-                                    )}
-                                </div>
-                            ) : (
+                        ) : ["major", "THM", "TheManh"].includes(searchMode) ? (
+                            <div style={{ position: "relative", width: "100%" }}>
                                 <input
                                     type="text"
                                     className="form-control form-control-lg"
-                                    placeholder="Tìm kiếm trường, ngành, điểm chuẩn..."
-                                    style={{ borderRadius: "5px", paddingLeft: "25px", fontSize: "1.2rem", cursor: "pointer" }}
-                                    onFocus={() => setIsInputFocused(true)}
-                                    onBlur={() => setIsInputFocused(false)}
+                                    placeholder={
+                                        searchMode === "major"
+                                            ? "Chọn ngành..."
+                                            : searchMode === "THM"
+                                                ? "Chọn tổ hợp môn..."
+                                                : "Chọn lĩnh vực thế mạnh..."
+                                    }
+                                    onFocus={() => setShowDropdown(true)}
+                                    onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    value={searchTerm}
                                 />
-                            )
-                        )}
-                        {/* {activeData.length > 0 && (showDropdown || isInputFocused) && (
-                            <div
-                                className="dropdown-menu show"
-                                style={{
-                                    position: "absolute",
-                                    top: "100%",
-                                    left: 0,
-                                    width: "100%",
-                                    maxHeight: '300px',
-                                    overflowY: 'auto',
-                                    marginTop: "8px",
-                                    cursor: "pointer",
-                                    zIndex: 10
-                                }}
-                            >
-                                {activeData.map((university, index) => (
-                                    <div key={university.universityId} className="dropdown-item">
-                                        <strong>ID:</strong> {university.universityId} - <strong>Name:</strong> {university.scoreType || university.tenKhoi || university.tenNganh || university.name}
+
+                                {showDropdown && (
+                                    <div
+                                        className="dropdown-menu show"
+                                        style={{
+                                            position: "absolute",
+                                            top: "100%",
+                                            left: 0,
+                                            width: "100%",
+                                            maxHeight: "300px",
+                                            overflowY: "auto",
+                                            marginTop: "8px",
+                                            zIndex: 10
+                                        }}
+                                    >
+                                        {(searchMode === "major"
+                                            ? majors
+                                            : searchMode === "THM"
+                                                ? THM
+                                                : STRENGTH_OPTIONS
+                                        )
+                                            .filter((item) => {
+                                                const label =
+                                                    searchMode === "major"
+                                                        ? item.majorName
+                                                        : searchMode === "THM"
+                                                            ? `${item.codeCombination} - ${item.subjectName.join(", ")}`
+                                                            : item.label;
+
+                                                return label.toLowerCase().includes(searchTerm.toLowerCase());
+                                            })
+                                            .map((item) => {
+                                                const label =
+                                                    searchMode === "major"
+                                                        ? item.majorName
+                                                        : searchMode === "THM"
+                                                            ? `${item.codeCombination} - ${item.subjectName.join(", ")}`
+                                                            : item.label;
+
+                                                const value =
+                                                    searchMode === "major"
+                                                        ? item.majorId
+                                                        : searchMode === "THM"
+                                                            ? item.codeCombination
+                                                            : item.value;
+
+                                                return (
+                                                    <div
+                                                        key={value}
+                                                        className="dropdown-item"
+                                                        onClick={() => {
+                                                            if (searchMode === "major") {
+                                                                handleSelectMajor({ value, label });
+                                                                handleGoToFilterPage("major", { value, label });
+                                                            } else if (searchMode === "THM") {
+                                                                handleSelectTHM({ value, label });
+                                                                handleGoToFilterPage("combo", { value, label });
+                                                            } else if (searchMode === "TheManh") {
+                                                                handleGoToFilterPage("strength", { value, label });
+                                                            }
+
+                                                            setSearchTerm(label);
+                                                            setShowDropdown(false);
+                                                        }}
+                                                    >
+                                                        {label}
+                                                    </div>
+                                                );
+                                            })}
                                     </div>
-                                ))}
+                                )}
                             </div>
-                        )} */}
+                        ) : (
+                            <input
+                                type="text"
+                                className="form-control form-control-lg"
+                                placeholder="Tìm kiếm trường, ngành, điểm chuẩn..."
+                                style={{
+                                    borderRadius: "5px",
+                                    paddingLeft: "25px",
+                                    fontSize: "1.2rem",
+                                    cursor: "pointer"
+                                }}
+                                onFocus={() => setIsInputFocused(true)}
+                                onBlur={() => setIsInputFocused(false)}
+                            />
+                        )}
                     </div>
 
 
